@@ -484,7 +484,8 @@ const LetterTile = styled.div`
   text-align: center;
   line-height: 35px;
   margin: 5px;
-  cursor: pointer;
+  cursor: ${(props) => (!props.disabled && "pointer")};
+  opacity: ${(props) => (props.disabled && 0.2)};
 
   &.letter {
     background-color: ${(props) => (props.selected ? "blue" : "#DCDCDC")};
@@ -500,6 +501,8 @@ const LetterTile = styled.div`
   &.position {
     background-color: ${(props) => (props.selected ? "purple" : "#778899")};
   }
+
+
 `;
 
 const TileContainer = styled.div`
@@ -514,10 +517,36 @@ const ChordPicker = (props) => {
   const [position, setPosition] = useState(0);
 
   const letters = ["C", "D", "E", "F", "G", "A", "B"];
-  const accidentals = ["", "#", "b"];
+  const accidentals = ["#", "b"];
   const qualities = ["M", "m"];
   const positions = [0, 1, 2];
 
+  const handleAccidental = (v) => {
+    setNoteAccidental(prevState => {
+
+      if (["C", "F"].includes(chordRoot) && v === "b") {
+        return
+      } else if (["E", "B"].includes(chordRoot) && v === "#"){
+        return
+      }
+
+      if (prevState === v) {
+        return ""
+      } else {
+        return v
+      }
+    })
+  }
+
+  const handleRoot = v => {
+    if (noteAccidental === "#" && ["E", "B"].includes(v)) {
+      setNoteAccidental("")
+    } else if (noteAccidental === "b" && ["C", "F"].includes(v)) {
+      setNoteAccidental("")
+    }
+
+    setChordRoot(v)
+  }
 
   return (
     <React.Fragment>
@@ -527,7 +556,7 @@ const ChordPicker = (props) => {
             key={i}
             className="letter"
             selected={l === chordRoot}
-            onClick={() => setChordRoot(l)}
+            onClick={() => handleRoot(l)}
           >
             {l}
           </LetterTile>
@@ -539,7 +568,13 @@ const ChordPicker = (props) => {
             key={i}
             className="accidental"
             selected={l === noteAccidental}
-            onClick={() => setNoteAccidental(l)}
+            onClick={() => {
+              handleAccidental(l)
+              }
+            }
+            disabled={
+              ["C", "F"].includes(chordRoot) && l === "b" ? true : ["E", "B"].includes(chordRoot) && l === "#" ? true : false
+            }
           >
             {l}
           </LetterTile>
