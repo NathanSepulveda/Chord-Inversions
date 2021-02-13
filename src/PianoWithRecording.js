@@ -31,7 +31,7 @@ class PianoWithRecording extends React.Component {
   };
 
   recordNotes = (midiNumbers, duration) => {
-    if (this.props.recording.mode !== 'RECORDING') {
+    if (this.props.isPlaying) {
       return;
     }
     const newEvents = midiNumbers.map(midiNumber => {
@@ -56,9 +56,9 @@ class PianoWithRecording extends React.Component {
       ...pianoProps
     } = this.props;
 
-    const { mode, currentEvents } = this.props.recording;
+    const {currentEvents } = this.props.recording;
     const activeNotes =
-      mode === 'PLAYING' ? currentEvents.map(event => event.midiNumber) : null;
+      this.props.isPlaying ? currentEvents.map(event => event.midiNumber) : null;
     return (
       <div>
         <Piano

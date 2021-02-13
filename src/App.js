@@ -1,495 +1,9 @@
-// // import "./App.css";
-// import chordList from "./chord-info/chordList";
-// import React, { useState } from "react";
-// // import { Dropdown } from "semantic-ui-react";
-// import 'semantic-ui-css/semantic.min.css'
-// import styled from "styled-components";
-// import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano';
-// import 'react-piano/dist/styles.css';
-// import Dropdown from './dropdown';
 
-import Picker from "react-scrollable-picker";
+import styled from "styled-components";
 import SoundfontProvider from "./soundfontprovider";
-import PropTypes from "prop-types";
-// import Picker from 'react-mobile-picker';
-
-// let chordTypes = [
-//   {
-//     key: "major",
-//   },
-//   {
-//     key: "minor"
-//   }
-// ]
-// let chords =
-//   [
-//     {key: "C",
-//      modules: chordTypes
-//     },
-//     {
-//       key: "C#",
-//       modules: chordTypes
-//     }
-//   ]
-
-// class Module extends React.Component {
-//     constructor(props) {
-//       super(props);
-//       this.toggleHidden = this.toggleHidden.bind(this);
-//       this.state = {
-//         isHovered: false
-//       }
-//     }
-
-//     toggleHidden () {
-//       this.setState({
-//         isHovered: !this.state.isHovered
-//       })
-//     }
-
-//     render() {
-//       const styles = {
-//         'backgroundColor': this.props.lightColor,
-//       }
-//       if (this.state.isHovered) {
-//         styles['backgroundColor'] = this.props.color;
-//         styles['color'] = 'white';
-//       }
-
-//       return (
-//         <div className='singleModule'
-//              onMouseEnter={this.toggleHidden}
-//              onMouseLeave={this.toggleHidden}
-//              style={styles}>
-//           {this.props.id}
-//         </div>
-//       )
-//     }
-//   }
-
-//   class ModuleGroup extends React.Component {
-//     constructor(props) {
-//       super(props);
-//       this.toggleHidden = this.toggleHidden.bind(this);
-//       this.state = {
-//         isVisible: false
-//       }
-//     }
-
-//     toggleHidden () {
-//       this.setState({
-//         isVisible: !this.state.isVisible
-//       })
-//     }
-
-//     render() {
-//       // const lightBackgroundColor = ColorLuminance(this.props.color, 1.5);
-
-//       // Only make bg color if on hover
-//       const bgStyle = {
-//       }
-//       if (this.state.isVisible) {
-//         // bgStyle['backgroundColor'] = lightBackgroundColor;
-//         bgStyle['borderLeft'] = `5px solid ${this.props.color}`;
-//       }
-
-//       return (
-//         <div className='moduleGroup'
-//              onMouseEnter={this.toggleHidden}
-//              onMouseLeave={this.toggleHidden}
-//              style={bgStyle}>
-//           <i className={`fa `} style={{color: this.props.color}}></i>
-//           {this.props.id}
-
-//           <div className={`modulesSet ${this.state.isVisible ? 'visible': ''}`}>
-//             {this.props.modules.map(module => <Module
-//                 key={module.key}
-//                 id={module.key}
-//                 // lightColor={lightBackgroundColor}
-//                 // color={this.props.color}
-//               />)}
-//           </div>
-//         </div>
-//       )
-//     }
-//   }
-
-//   class ModuleGroupSelector extends React.Component {
-//     constructor(props) {
-//       super(props);
-//       this.toggleHidden = this.toggleHidden.bind(this);
-//       this.state = {
-//         isVisible: false
-//       }
-//     }
-
-//     toggleHidden () {
-//       this.setState({
-//         isVisible: !this.state.isVisible
-//       })
-//     }
-
-//     render() {
-//       const moduleGroups = this.props.moduleGroups;
-//       return (
-//         <div className='analytics' onMouseEnter={this.toggleHidden} onMouseLeave={this.toggleHidden}>
-
-//           <div className='topButton'>
-//             Analytics Modules
-//           </div>
-//           <div className={`analyticsDropDown ${this.state.isVisible ? 'visible': ''}`}>
-//             {moduleGroups.map(group => <ModuleGroup key={group.key} id={group.key} color={group.color} modules={group.modules} />)}
-//           </div>
-//         </div>
-//       )
-//     }
-//   }
-
-//   class Menu extends React.Component {
-//     render() {
-//       const availableModules = this.props.availableModules;
-//       return (
-//         <div className='navbar'>
-
-//           <div className='logo'>
-//             PlanningTool
-//           </div>
-
-//           <ModuleGroupSelector moduleGroups={chords} />
-//         </div>
-//       )
-//     }
-//   }
-
-// const MainHouse = styled.div`
-//   border-radius: 90px;
-//   border: 2px solid blue;
-//   width: 60px;
-//   margin: auto;
-//   text-align: center;
-//   line-height: 55px;
-//   height: 60px;
-//   font-size: 30px;
-//   animation-duration: 2s;
-
-//   &:hover {
-//     border: 2px solid green;
-//   }
-// `;
-
-// const KeyBoardContainer = styled.div`
-//   height: 200px;
-//   text-align: center;
-// `;
-
-// const House = styled.div`
-//   display: flex;
-// `;
-
-// // const DropdownExampleSelection = () => (
-// //   <Dropdown fluid selection options={chordList} />
-// // );
-
-// function App() {
-//   const [correctChords, setCorrectChords] = useState([]);
-
-//   function handleSettingChords(chordArray) {
-//     setCorrectChords(chordArray);
-//   }
-
-//   const firstNote = MidiNumbers.fromNote('f3');
-//   const lastNote = MidiNumbers.fromNote('f5');
-//   const keyboardShortcuts = KeyboardShortcuts.create({
-//     firstNote: firstNote,
-//     lastNote: lastNote,
-//     keyboardConfig: KeyboardShortcuts.HOME_ROW,
-//   });
-
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <p>Chord Inversion Calculator</p>
-//         {/* <Piano
-//       noteRange={{ first: firstNote, last: lastNote }}
-//       playNote={(midiNumber) => {
-//         return 64
-//       }}
-//       stopNote={(midiNumber) => {
-//         // Stop playing a given note - see notes below
-//       }}
-//       width={700}
-//       keyboardShortcuts={keyboardShortcuts}
-//     /> */}
-//         <Selector onChange={handleSettingChords} />
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-// function Selector(props) {
-//   const [show1, setState1] = useState(false);
-//   const [show2, setState2] = useState(false);
-//   const [show3, setState3] = useState(false);
-//   const [show4, setState4] = useState(false);
-//   const [chords, setTheArray] = useState(["", "", "", ""]);
-
-//   let handleSelectChange = (e, { value }) => {
-//     console.log(value);
-//     /* this.setState({stateValue:value}) */
-//   };
-
-//   let checkForCommonTones = (chord_1, chord_2) => {
-//     let commonTone = false;
-
-//     chord_1.asLetters.forEach(tone => {
-//       if (!commonTone) {
-//         if (chord_2.asLetters.includes(tone)) {
-//           commonTone = true;
-//         }
-//       }
-//       return commonTone;
-//     });
-//   };
-
-//   let transposeDown = chord => {
-//     let newChord = {};
-//     newChord.name = chord.name;
-//     newChord.position = chord.position;
-//     newChord.notes = chord.notes.map(nt => {
-//       return nt - 12;
-//     });
-//     return newChord;
-//   };
-
-//   let transposeUp = chord => {
-//     let newChord = {};
-//     newChord.name = chord.name;
-//     newChord.position = chord.position;
-//     newChord.notes = chord.notes.map(nt => {
-//       return nt + 12;
-//     });
-//     return newChord;
-//   };
-
-//   let getCommonTonesAndIndexes = (chord_1, chord_2) => {
-//     let firstCommonTone = "";
-//     let index;
-//     let chordName = chord_2.name;
-//     let transposeDownChord = transposeDown(chord_2);
-//     let transposeUpChord = transposeUp(chord_2);
-//     console.log(chord_1, chord_2);
-
-//     chord_1.notes.forEach(tone => {
-//       if (firstCommonTone === "") {
-//         if (chord_2.notes.includes(tone)) {
-//           firstCommonTone = tone;
-//           index = chord_1.notes.indexOf(tone);
-//         }
-//       }
-//     });
-//     chord_1.notes.forEach(tone => {
-//       if (firstCommonTone === "") {
-//         if (transposeDownChord.notes.includes(tone)) {
-//           firstCommonTone = tone;
-//           index = chord_1.notes.indexOf(tone);
-//         }
-//       }
-//     });
-
-//     chord_1.notes.forEach(tone => {
-//       if (firstCommonTone === "") {
-//         if (transposeUpChord.notes.includes(tone)) {
-//           firstCommonTone = tone;
-//           index = chord_1.notes.indexOf(tone);
-//         }
-//       }
-//     });
-
-//     return { firstCommonTone, index, chordName };
-//   };
-
-//   let findCorrectChord = (input, chordList) => {
-//     console.log(input);
-//     const result = chordList.find(chord => {
-//       let transposedChordDown = transposeDown(chord);
-//       // console.log(chord.notes[input.index]);
-//       let res =
-//         chord.name === input.chordName &&
-//         chord.notes[input.index] === input.firstCommonTone;
-
-//       if (!res) {
-//         res =
-//           transposedChordDown.name === input.chordName &&
-//           transposedChordDown.notes[input.index] === input.firstCommonTone;
-//         if (res) {
-//           return transposedChordDown;
-//         }
-//       }
-//       return res;
-//     });
-//     return result;
-//   };
-
-//   // let findCorrectChord = (input, chordList) => {
-//   //   console.log(input);
-//   //   const result = chordList.find(chord => {
-//   //     let transposedChordDown = transposeDown(chord)
-//   //     // console.log(chord.notes[input.index]);
-//   //     return (
-//   //       chord.name === input.chordName &&
-//   //       chord.notes[input.index] === input.firstCommonTone
-//   //     );
-//   //   });
-//   //   return result;
-
-//   // };
-
-//   function handleSet(e) {
-//     props.onChange(e);
-//   }
-
-//   let evaluate = () => {
-//     let correctChord = false;
-//     let finalChordArray = [chords[0]];
-
-//     for (let i = 0; i < chords.length - 1; i++) {
-//       // console.log(chords[i], chords[i + 1]);
-//       if (correctChord) {
-//         console.log("there");
-//         let check = checkForCommonTones(correctChord, chords[i + 1]);
-//         // if (!check) {
-//         //   check = checkForCommonTones(correctChord, transposeDown(chords[i+1]))
-//         // }
-//         if (check) {
-//           let res = getCommonTonesAndIndexes(correctChord, chords[i + 1]);
-//           console.log(res);
-//           correctChord = findCorrectChord(res, chordList);
-//           console.log(correctChord);
-//           finalChordArray.push(correctChord);
-//         }
-//       } else {
-//         let check = checkForCommonTones(chords[i], chords[i + 1]);
-//         console.log(check, chords[i], chords[i + 1]);
-//         // if (!check) {
-//         //   check = checkForCommonTones(correctChord, transposeDown(chords[i+1]))
-//         // }
-//         if (check) {
-//           let res = getCommonTonesAndIndexes(chords[i], chords[i + 1]);
-//           console.log(res);
-//           correctChord = findCorrectChord(res, chordList);
-//           console.log(correctChord, "YOOOO");
-//           // if (correctChord[0] >= finalChordArray[i].notes[0]) {
-//           //   correctChord = transposeDown(correctChord)
-//           // }
-//           // finalChordArray.push(correctChord)
-//         }
-//       }
-//     }
-//     console.log(finalChordArray);
-//     handleSet(finalChordArray);
-//   };
-
-//   return (
-//     <House>
-//       <MainHouse onClick={() => setState4(!show4)}>
-//         +
-//         {show4
-//           ? chordList.map(chord => {
-//               return (
-//                 <button
-//                   onClick={() => {
-//                     const newArray = Array.from(chords);
-//                     newArray[0] = chord;
-//                     setTheArray(newArray);
-//                   }}
-//                 >
-//                   {chord.name}
-//                 </button>
-//               );
-//             })
-//           : ""}
-//         {/* <button> Menu item 1 </button>
-//                 <button> Menu item 2 </button>
-//                 <button onClick={handleClick2}> Menu item 3 </button> */}
-//       </MainHouse>
-
-//       <MainHouse onClick={() => setState1(!show1)}>
-//         +
-//         {show1
-//           ? chordList.map(chord => {
-//               return (
-//                 <button
-//                   onClick={() => {
-//                     const newArray = Array.from(chords);
-//                     newArray[1] = chord;
-//                     setTheArray(newArray);
-//                   }}
-//                 >
-//                   {chord.name}
-//                 </button>
-//               );
-//             })
-//           : ""}
-//       </MainHouse>
-//       <MainHouse onClick={() => setState2(!show2)}>
-//         +
-//         {show2
-//           ? chordList.map(chord => {
-//               return (
-//                 <button
-//                   onClick={() => {
-//                     const newArray = Array.from(chords);
-//                     newArray[2] = chord;
-//                     setTheArray(newArray);
-//                   }}
-//                 >
-//                   {chord.name}
-//                 </button>
-//               );
-//             })
-//           : ""}
-//       </MainHouse>
-//       <MainHouse onClick={() => setState3(!show3)}>
-//         +
-//         {show3
-//           ? chordList.map(chord => {
-//               return (
-//                 <button
-//                   onClick={() => {
-//                     const newArray = Array.from(chords);
-//                     newArray[3] = chord;
-//                     setTheArray(newArray);
-//                   }}
-//                 >
-//                   {chord.name}
-//                 </button>
-
-//               );
-//             })
-//           : ""}
-//       </MainHouse>
-//       {/* <Dropdown/> */}
-//       <button onClick={evaluate}>evaluate</button>
-
-//     </House>
-//       // <Menu/>
-//     );
-// }
-
 import React, { useState } from "react";
-
 import _ from "lodash";
-import { Piano, KeyboardShortcuts, MidiNumbers } from "react-piano";
 import "react-piano/dist/styles.css";
-
 import PianoWithRecording from "./PianoWithRecording";
 
 // webkitAudioContext fallback needed to support Safari
@@ -631,17 +145,14 @@ let getDistanceInSemiTones = (note1, note2) => {
 };
 
 let getNextChord = (currentChordWithPosition, nextChord) => {
-  let currentChordRoot;
-  let currentChordQuality;
-  let currentChordPosition;
-  [
+
+  let [
     currentChordRoot,
     currentChordQuality,
     currentChordPosition,
   ] = currentChordWithPosition;
-  let nextChordRoot;
-  let nextChordQuality;
-  [nextChordRoot, nextChordQuality] = nextChord;
+
+  let [nextChordRoot, nextChordQuality] = nextChord;
 
   let distance = getDistanceInSemiTones(currentChordRoot, nextChordRoot);
 
@@ -729,40 +240,30 @@ let lowerAll = (chords) => {
 };
 
 let getStuff = (cChain) => {
-  let duration = 0.9;
+  let duration = 1.9;
   let current = 0;
   let neww = [];
   cChain.forEach((c) => {
     c.forEach((n) => {
       neww.push({ midiNumber: n, time: current, duration: duration });
     });
-    current += 1;
+    current += 2;
   });
   return neww;
 };
 
 class App extends React.Component {
   state = {
+    isPlaying: false,
     recording: {
-      mode: "RECORDING",
-      events: getStuff(
-        chordChain(
-          ["C", "M", 0],
-          [
-            ["A", "m"],
-            ["E", "M"],
-            ["F", "M"],
-            ["G", "M"]
-          ]
-        )
-      ),
+      events: [],
       currentEvents: [],
     },
+    chordList: [],
+    activeNode: undefined,
   };
 
   scheduledEvents = [];
-
-  
 
   getRecordingEndTime = () => {
     if (this.state.recording.events.length === 0) {
@@ -779,10 +280,16 @@ class App extends React.Component {
     });
   };
 
-  onClickPlay = () => {
+  onClickCalculate = () => {
+    console.log(this.state.chordList);
     this.setRecording({
-      mode: "PLAYING",
+      events: getStuff(
+        chordChain(this.state.chordList[0], this.state.chordList.slice(1))
+      ),
     });
+  };
+  onClickPlay = () => {
+    this.setState({ isPlaying: true });
     console.log(this.state);
     const startAndEndTimes = _.uniq(
       _.flatMap(this.state.recording.events, (event) => [
@@ -814,6 +321,7 @@ class App extends React.Component {
     this.scheduledEvents.forEach((scheduledEvent) => {
       clearTimeout(scheduledEvent);
     });
+    this.setState({ isPlaying: false });
     this.setRecording({
       mode: "RECORDING",
       currentEvents: [],
@@ -822,13 +330,39 @@ class App extends React.Component {
 
   onClickClear = () => {
     this.onClickStop();
+    this.setState({ chordList: [] });
     this.setRecording({
       events: [],
-      mode: "RECORDING",
       currentEvents: [],
     });
   };
 
+  onClickAddChordNode = () => {
+    this.setState({
+      chordList: [...this.state.chordList, undefined],
+    });
+    this.setState({ activeNode: this.state.chordList.length });
+  };
+
+  myChangeHandler = (event) => {
+    this.setState({ chordsAsString: event.target.value });
+  };
+
+  setChord = (index, chordValue) => {
+    console.log(index);
+    this.setState((prevState) => {
+      const newItems = [...prevState.chordList];
+      newItems[index] = chordValue;
+      console.log(newItems);
+      return { chordList: newItems };
+    });
+
+    console.log(this.state);
+  };
+
+  unsetActiveNode = () => {
+    this.setState({ activeNode: undefined });
+  };
   render() {
     return (
       <div style={{ overflow: "hidden" }}>
@@ -841,8 +375,9 @@ class App extends React.Component {
             render={({ isLoading, playNote, stopNote }) => (
               <PianoWithRecording
                 recording={this.state.recording}
+                isPlaying={this.state.isPlaying}
                 setRecording={this.setRecording}
-                noteRange={{ first: 59, last: 79 }}
+                noteRange={{ first: 53, last: 79 }}
                 width={900}
                 playNote={playNote}
                 stopNote={stopNote}
@@ -851,21 +386,216 @@ class App extends React.Component {
             )}
           />
         </div>
-        <div className="mt-5">
-          <button disabled={this.state.recording.mode === "PLAYING"} onClick={this.state.recording.mode !== "PLAYING" && this.onClickPlay}>Play</button>
-          {/* <button onClick={this.onClickStop}>Stop</button>
-          <button onClick={this.onClickClear}>Clear</button> */}
-        </div>
+        <AddNodes>
+          <ChordNodeContainer>
+            {this.state.chordList.map((c, i) => (
+              <ChordNode
+                onClick={() => {
+                  this.setState({ activeNode: i });
+                }}
+                active={this.state.activeNode === i}
+              >
+                {c === undefined ? "" : c[0] + c[1]}
+              </ChordNode>
+            ))}
+          </ChordNodeContainer>
+
+          <AddChordButton onClick={this.onClickAddChordNode}>+</AddChordButton>
+        </AddNodes>
+        {this.state.activeNode !== undefined ? (
+          <ChordPicker
+            activeNode={this.state.activeNode}
+            setChord={this.setChord}
+            unsetActiveNode={this.unsetActiveNode}
+          />
+        ) : (
+          ""
+        )}
 
         <div className="mt-5">
-          <strong>Recorded notes</strong>
-          <div>{JSON.stringify(this.state.recording.events)}</div>
+          <button
+            disabled={this.state.isPlaying}
+            onClick={!this.state.isPlaying ? this.onClickCalculate : undefined}
+          >
+            Calculate
+          </button>
+          <button
+            disabled={this.state.isPlaying}
+            onClick={!this.state.isPlaying ? this.onClickClear : undefined}
+          >
+            Clear
+          </button>
+          <button
+            disabled={this.state.isPlaying}
+            onClick={!this.state.isPlaying ? this.onClickPlay : undefined}
+          >
+            Play
+          </button>
+          <button onClick={this.onClickStop}>Stop</button>
+          {/* <button onClick={this.onClickClear}>Clear</button> */}
         </div>
       </div>
     );
   }
 }
 
+const AddChordButton = styled.button`
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  border: 1px solid black;
+  background-color: lightgreen;
+  line-height: 45px;
+  text-align: center;
+  font-size: 32px;
+  margin: 5px;
+`;
 
+const ChordNodeContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const AddNodes = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const ChordNode = styled.div`
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  border: 1px solid black;
+  background-color: lightblue;
+  line-height: 50px;
+  text-align: center;
+  font-size: 12px;
+  margin: 5px;
+  background-color: ${(props) => props.active && "green"};
+`;
+
+const LetterTile = styled.div`
+  width: 35px;
+  height: 35px;
+
+  /* background-color: ${(props) => props.selected && "blue"}; */
+  font-size: 20px;
+  border-radius: 7px;
+  text-align: center;
+  line-height: 35px;
+  margin: 5px;
+  cursor: pointer;
+
+  &.letter {
+    background-color: ${(props) => (props.selected ? "blue" : "#DCDCDC")};
+  }
+
+  &.accidental {
+    background-color: ${(props) => (props.selected ? "green" : "#C0C0C0")};
+  }
+  &.quality {
+    background-color: ${(props) => (props.selected ? "yellow" : "#808080")};
+  }
+
+  &.position {
+    background-color: ${(props) => (props.selected ? "purple" : "#778899")};
+  }
+`;
+
+const TileContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const ChordPicker = (props) => {
+  const [chordRoot, setChordRoot] = useState("C");
+  const [noteAccidental, setNoteAccidental] = useState("");
+  const [chordQuality, setChordQuality] = useState("M");
+  const [position, setPosition] = useState(0);
+
+  const letters = ["C", "D", "E", "F", "G", "A", "B"];
+  const accidentals = ["", "#", "b"];
+  const qualities = ["M", "m"];
+  const positions = [0, 1, 2];
+
+
+  return (
+    <React.Fragment>
+      <TileContainer>
+        {letters.map((l, i) => (
+          <LetterTile
+            key={i}
+            className="letter"
+            selected={l === chordRoot}
+            onClick={() => setChordRoot(l)}
+          >
+            {l}
+          </LetterTile>
+        ))}
+      </TileContainer>
+      <TileContainer>
+        {accidentals.map((l, i) => (
+          <LetterTile
+            key={i}
+            className="accidental"
+            selected={l === noteAccidental}
+            onClick={() => setNoteAccidental(l)}
+          >
+            {l}
+          </LetterTile>
+        ))}
+        <div style={{ background: "white", width: "35px" }}></div>
+        {qualities.map((l, i) => (
+          <LetterTile
+            key={i}
+            className="quality"
+            selected={l === chordQuality}
+            onClick={() => setChordQuality(l)}
+          >
+            {l}
+          </LetterTile>
+        ))}
+      </TileContainer>
+      {props.activeNode === 0 ? (
+        <TileContainer>
+          {positions.map((l, i) => (
+            <LetterTile
+              key={i}
+              className="position"
+              selected={l === position}
+              onClick={() => setPosition(l)}
+            >
+              {l}
+            </LetterTile>
+          ))}
+        </TileContainer>
+      ) : (
+        ""
+      )}
+
+      <p>
+        {chordRoot}
+        {noteAccidental}
+        {chordQuality}
+        <button
+        onClick={() => {
+          let root = chordRoot + noteAccidental;
+          props.setChord(
+            Number(props.activeNode),
+            props.activeNode == 0
+              ? [root, chordQuality, position]
+              : [root, chordQuality]
+          );
+          props.unsetActiveNode();
+        }}
+      >
+        Set Chord
+      </button>
+      </p>
+
+      {/* <button onClick={this.props.unsetActiveNode}></button> */}
+    </React.Fragment>
+  );
+};
 
 export default App;
