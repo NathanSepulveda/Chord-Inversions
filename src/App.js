@@ -1,7 +1,6 @@
-
 import styled from "styled-components";
 import SoundfontProvider from "./soundfontprovider";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import _ from "lodash";
 import "react-piano/dist/styles.css";
 import PianoWithRecording from "./PianoWithRecording";
@@ -145,7 +144,6 @@ let getDistanceInSemiTones = (note1, note2) => {
 };
 
 let getNextChord = (currentChordWithPosition, nextChord) => {
-
   let [
     currentChordRoot,
     currentChordQuality,
@@ -407,6 +405,7 @@ class App extends React.Component {
             activeNode={this.state.activeNode}
             setChord={this.setChord}
             unsetActiveNode={this.unsetActiveNode}
+            chordList={this.state.chordList}
           />
         ) : (
           ""
@@ -484,8 +483,8 @@ const LetterTile = styled.div`
   text-align: center;
   line-height: 35px;
   margin: 5px;
-  cursor: ${(props) => (!props.disabled && "pointer")};
-  opacity: ${(props) => (props.disabled && 0.2)};
+  cursor: ${(props) => !props.disabled && "pointer"};
+  opacity: ${(props) => props.disabled && 0.2};
 
   &.letter {
     background-color: ${(props) => (props.selected ? "blue" : "#DCDCDC")};
@@ -501,8 +500,6 @@ const LetterTile = styled.div`
   &.position {
     background-color: ${(props) => (props.selected ? "purple" : "#778899")};
   }
-
-
 `;
 
 const TileContainer = styled.div`
@@ -522,31 +519,46 @@ const ChordPicker = (props) => {
   const positions = [0, 1, 2];
 
   const handleAccidental = (v) => {
-    setNoteAccidental(prevState => {
-
+    setNoteAccidental((prevState) => {
       if (["C", "F"].includes(chordRoot) && v === "b") {
-        return
-      } else if (["E", "B"].includes(chordRoot) && v === "#"){
-        return
+        return;
+      } else if (["E", "B"].includes(chordRoot) && v === "#") {
+        return;
       }
 
       if (prevState === v) {
-        return ""
+        return "";
       } else {
-        return v
+        return v;
       }
-    })
-  }
+    });
+  };
 
-  const handleRoot = v => {
+  useEffect(() => {
+    let current = props.chordList[props.activeNode];
+
+    if (current !== undefined) {
+      if (current[0].includes("#") || current[0].includes("b")) {
+        let [r, acc] = current[0].split("");
+        setChordRoot(r);
+        setNoteAccidental(acc);
+        setChordQuality(current[1]);
+      } else {
+        setChordRoot(current[0]);
+        setNoteAccidental("");
+        setChordQuality(current[1]);
+      }
+    }
+  }, [props.activeNode]);
+  const handleRoot = (v) => {
     if (noteAccidental === "#" && ["E", "B"].includes(v)) {
-      setNoteAccidental("")
+      setNoteAccidental("");
     } else if (noteAccidental === "b" && ["C", "F"].includes(v)) {
-      setNoteAccidental("")
+      setNoteAccidental("");
     }
 
-    setChordRoot(v)
-  }
+    setChordRoot(v);
+  };
 
   return (
     <React.Fragment>
@@ -569,11 +581,14 @@ const ChordPicker = (props) => {
             className="accidental"
             selected={l === noteAccidental}
             onClick={() => {
-              handleAccidental(l)
-              }
-            }
+              handleAccidental(l);
+            }}
             disabled={
-              ["C", "F"].includes(chordRoot) && l === "b" ? true : ["E", "B"].includes(chordRoot) && l === "#" ? true : false
+              ["C", "F"].includes(chordRoot) && l === "b"
+                ? true
+                : ["E", "B"].includes(chordRoot) && l === "#"
+                ? true
+                : false
             }
           >
             {l}
@@ -613,19 +628,19 @@ const ChordPicker = (props) => {
         {noteAccidental}
         {chordQuality}
         <button
-        onClick={() => {
-          let root = chordRoot + noteAccidental;
-          props.setChord(
-            Number(props.activeNode),
-            props.activeNode == 0
-              ? [root, chordQuality, position]
-              : [root, chordQuality]
-          );
-          props.unsetActiveNode();
-        }}
-      >
-        Set Chord
-      </button>
+          onClick={() => {
+            let root = chordRoot + noteAccidental;
+            props.setChord(
+              Number(props.activeNode),
+              props.activeNode == 0
+                ? [root, chordQuality, position]
+                : [root, chordQuality]
+            );
+            props.unsetActiveNode();
+          }}
+        >
+          Set Chord
+        </button>
       </p>
 
       {/* <button onClick={this.props.unsetActiveNode}></button> */}
