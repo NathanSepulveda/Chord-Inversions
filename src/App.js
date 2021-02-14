@@ -59,13 +59,41 @@ let transformKeyMin = {
   "11-m": [0],
 };
 
+// let transformKeySus = {
+//   "1-M": [0],
+//   "1-m": [0],
+//   "2-M": [2],
+//   "2-m": [0, 2],
+//   "3-M": [2],
+//   "3-m": [2],
+//   "4-M": [2],
+//   "4-m": [2],
+//   "5-M": [2],
+//   "5-m": [2],
+//   "6-M": [1],
+//   "6-m": [1, 2],
+//   "7-M": [1],
+//   "7-m": [1],
+//   "8-M": [1],
+//   "8-m": [1],
+//   "9-M": [1],
+//   "9-m": [1],
+//   "10-M": [0],
+//   "10-m": [0, 1],
+//   "11-M": [0],
+//   "11-m": [0],
+// };
+
 let transFormKeyMajRoot = {
   "1-M": [0],
   "1-m": [0],
+  "1-dim" : [0],
   "2-M": [0, 2],
   "2-m": [0],
+  "2-dim": [0],
   "3-M": [2],
   "3-m": [2],
+  "3-dim": [2],
   "4-M": [2],
   "4-m": [2],
   "5-M": [2],
@@ -84,18 +112,11 @@ let transFormKeyMajRoot = {
   "11-m": [0],
 };
 
-let createMajorChord = (MIDINumber) => {
-  return [MIDINumber, MIDINumber + 4, MIDINumber + 7];
-};
-
-let createMinorChord = (MIDINumber) => {
-  return [MIDINumber, MIDINumber + 3, MIDINumber + 7];
-};
 
 let createChord = (MIDINumber, quality) => {
   if (quality === "M") {
     return [MIDINumber, MIDINumber + 4, MIDINumber + 7];
-  } else {
+  } else if (quality === "m") {
     return [MIDINumber, MIDINumber + 3, MIDINumber + 7];
   }
 };
@@ -214,6 +235,8 @@ let chordChain = (startingChord, listOfChords) => {
 
   let final = lowerAll(p);
 
+  console.log(final)
+
   return final;
 };
 
@@ -241,13 +264,16 @@ let getStuff = (cChain) => {
   let duration = 1.9;
   let current = 0;
   let neww = [];
+  let justNotes = []
   cChain.forEach((c) => {
+    console.log(c)
+    justNotes.push(c)
     c.forEach((n) => {
       neww.push({ midiNumber: n, time: current, duration: duration });
     });
     current += 2;
   });
-  return neww;
+  return [neww, justNotes];
 };
 
 class App extends React.Component {
@@ -259,6 +285,8 @@ class App extends React.Component {
     },
     chordList: [],
     activeNode: undefined,
+    recordingAsNotes: [],
+    isCalculated: false
   };
 
   scheduledEvents = [];
@@ -280,12 +308,15 @@ class App extends React.Component {
 
   onClickCalculate = () => {
     console.log(this.state.chordList);
+    let events = getStuff(chordChain(this.state.chordList[0], this.state.chordList.slice(1)))
     this.setRecording({
-      events: getStuff(
-        chordChain(this.state.chordList[0], this.state.chordList.slice(1))
-      ),
+      events: events[0],
     });
+    this.setState({recordingAsNotes: events[1]})
+    this.setState({isCalculated: true})
   };
+
+  
   onClickPlay = () => {
     this.setState({ isPlaying: true });
     console.log(this.state);
@@ -302,18 +333,46 @@ class App extends React.Component {
           const currentEvents = this.state.recording.events.filter((event) => {
             return event.time <= time && event.time + event.duration > time;
           });
+
           this.setRecording({
             currentEvents,
           });
         }, time * 1000)
       );
     });
+    
     // Stop at the end
     console.log(this.state);
     setTimeout(() => {
       this.onClickStop();
     }, this.getRecordingEndTime() * 1000);
   };
+
+  onPlayChord = index => {
+    if (this.state.isPlaying) {
+      return
+    }
+    this.setState({ isPlaying: true });
+
+
+    let chordIwant = this.state.recordingAsNotes[index]
+
+
+
+    let currentEvents = chordIwant.map(n => {
+
+      return  {midiNumber: n, time: "", duration: ""}
+    })
+
+    this.setRecording({
+      currentEvents,
+    });
+
+
+    setTimeout(() => {
+      this.onClickStop();
+    }, 1 * 2000);
+  }
 
   onClickStop = () => {
     this.scheduledEvents.forEach((scheduledEvent) => {
@@ -333,6 +392,7 @@ class App extends React.Component {
       events: [],
       currentEvents: [],
     });
+    this.setState({isCalculated: false})
   };
 
   onClickAddChordNode = () => {
@@ -340,6 +400,7 @@ class App extends React.Component {
       chordList: [...this.state.chordList, undefined],
     });
     this.setState({ activeNode: this.state.chordList.length });
+    this.setState({isCalculated: false})
   };
 
   myChangeHandler = (event) => {
@@ -353,13 +414,16 @@ class App extends React.Component {
       newItems[index] = chordValue;
       console.log(newItems);
       return { chordList: newItems };
+
     });
 
     console.log(this.state);
+    this.setState({isCalculated: false})
   };
 
   unsetActiveNode = () => {
     this.setState({ activeNode: undefined });
+    this.setState({isCalculated: false})
   };
   render() {
     return (
@@ -378,6 +442,7 @@ class App extends React.Component {
                 noteRange={{ first: 53, last: 79 }}
                 width={900}
                 playNote={playNote}
+                noteToPlay={60}
                 stopNote={stopNote}
                 disabled={isLoading}
               />
@@ -391,9 +456,12 @@ class App extends React.Component {
                 onClick={() => {
                   this.setState({ activeNode: i });
                 }}
+                onMouseOver={() => this.state.isCalculated ? this.onPlayChord(i) : ""}
                 active={this.state.activeNode === i}
+                key={i}
               >
                 {c === undefined ? "" : c[0] + c[1]}
+                
               </ChordNode>
             ))}
           </ChordNodeContainer>
