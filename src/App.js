@@ -308,6 +308,9 @@ class App extends React.Component {
 
   onClickCalculate = () => {
     console.log(this.state.chordList);
+    if (this.state.chordList.length < 2) {
+      return
+    }
     let events = getStuff(chordChain(this.state.chordList[0], this.state.chordList.slice(1)))
     this.setRecording({
       events: events[0],
@@ -316,7 +319,7 @@ class App extends React.Component {
     this.setState({isCalculated: true})
   };
 
-  
+
   onClickPlay = () => {
     this.setState({ isPlaying: true });
     console.log(this.state);
@@ -421,6 +424,20 @@ class App extends React.Component {
     this.setState({isCalculated: false})
   };
 
+  deleteChord = (index) => {
+    console.log(index);
+    this.setState((prevState) => {
+      const newItems = this.state.chordList.filter((c, i) => i !== index)
+
+      console.log(newItems);
+      return { chordList: newItems };
+
+    });
+
+    console.log(this.state);
+    this.setState({isCalculated: false})
+  };
+
   unsetActiveNode = () => {
     this.setState({ activeNode: undefined });
     this.setState({isCalculated: false})
@@ -455,6 +472,7 @@ class App extends React.Component {
               <ChordNode
                 onClick={() => {
                   this.setState({ activeNode: i });
+                  this.setState({isCalculated: false})
                 }}
                 onMouseOver={() => this.state.isCalculated ? this.onPlayChord(i) : ""}
                 active={this.state.activeNode === i}
@@ -474,6 +492,7 @@ class App extends React.Component {
             setChord={this.setChord}
             unsetActiveNode={this.unsetActiveNode}
             chordList={this.state.chordList}
+            deleteChord={this.deleteChord}
           />
         ) : (
           ""
@@ -481,7 +500,7 @@ class App extends React.Component {
 
         <div className="mt-5">
           <button
-            disabled={this.state.isPlaying}
+            disabled={this.state.isPlaying || this.state.chordList.length < 2 || this.state.chordList.includes(undefined)}
             onClick={!this.state.isPlaying ? this.onClickCalculate : undefined}
           >
             Calculate
@@ -493,7 +512,7 @@ class App extends React.Component {
             Clear
           </button>
           <button
-            disabled={this.state.isPlaying}
+            disabled={this.state.isPlaying || !this.state.isCalculated}
             onClick={!this.state.isPlaying ? this.onClickPlay : undefined}
           >
             Play
@@ -708,6 +727,19 @@ const ChordPicker = (props) => {
           }}
         >
           Set Chord
+        </button>
+        <button
+          onClick={() => {
+            if (props.activeNode !== 0) {
+              props.deleteChord(props.activeNode)
+              props.unsetActiveNode()
+            } 
+
+     
+
+          } }
+        >
+          delete
         </button>
       </p>
 
