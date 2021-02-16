@@ -1,15 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
+import styled from "styled-components";
+import chev from "./down-chevron.png";
+
+const Cont = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
 let Directions = () => {
-    return (
-      <div>
-        <p>
-          This app is designed to help you find the best chord inversions to use
-          for a chord progression on the piano. Your chord progressions will sound
-          smoother and will be easier to play compared to only using root position
-          chords.
-        </p>
+  const [isShowing, setIsShowing] = useState(false);
+  return (
+    <div>
+      <p>
+        This app is designed to help you find the best chord inversions to use
+        for a chord progression on the piano. Your chord progressions will sound
+        smoother and will be easier to play compared to only using root position
+        chords.
+      </p>
+      <Cont>
         <h2>Directions</h2>
-        <ol>
+        <img onClick={() => {setIsShowing(prev => !prev)}} style={{ height: "20px", margin: "8px 5px", cursor: "pointer" }} src={chev} />
+      </Cont>
+      {
+          isShowing ? <ol style={{marginTop: "-5px"}}>
           <li>
             Begin by adding a starting chord with the circular button with a "+"
             sign.
@@ -51,9 +64,11 @@ let Directions = () => {
             You can clear your chord progression at any time using the "clear"
             button.
           </li>
-        </ol>
-      </div>
-    );
-  };
+        </ol> : ""
+      }
+      
+    </div>
+  );
+};
 
-  export default Directions
+export default Directions;

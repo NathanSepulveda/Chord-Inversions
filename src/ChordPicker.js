@@ -51,10 +51,9 @@ const handleAccidental = (v) => {
   setNoteAccidental((prevState) => {
 
     if (["C", "F"].includes(chordRoot) && v === "b") {
-      return "#"
+      return prevState
     } else if (["E", "B"].includes(chordRoot) && v === "#") {
-
-      return "b"
+      return prevState
     } else if (prevState === v) {
       return ""
     } else {

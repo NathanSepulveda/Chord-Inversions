@@ -25,6 +25,7 @@ class App extends React.Component {
     recordingAsNotes: [],
     isCalculated: false,
     chordString: "",
+    activePlayingNode: undefined
   };
 
   scheduledEvents = [];
@@ -80,6 +81,7 @@ class App extends React.Component {
             (event) => {
               if (event.time <= time && event.time + event.duration > time) {
                 count = event.group;
+                this.setState({activePlayingNode: count})
                 return event.time <= time && event.time + event.duration > time;
               } 
             }
@@ -155,6 +157,7 @@ class App extends React.Component {
       clearTimeout(scheduledEvent);
     });
     this.setState({ isPlaying: false });
+    this.setState({activePlayingNode: undefined})
     this.setRecording({
       mode: "RECORDING",
       currentEvents: [],
@@ -243,9 +246,13 @@ class App extends React.Component {
       this.onPlayChord(index);
     }
   };
+  componentDidMount() {
+    document.body.style.backgroundColor = "rgb(233, 244, 233"
+}
+
   render() {
     return (
-      <div style={{background: "rgb(233, 244, 233", padding: "25px"}}>
+      <div style={{height: "100%", background: "rgb(233, 244, 233", padding: "25px"}}>
         <h1 className="h3">Chord Inversion Helper Demo</h1>
         <Directions></Directions>
         <div className="mt-5">
@@ -280,10 +287,12 @@ class App extends React.Component {
                 }}
                 onMouseOver={() => this.handleHover(i)}
                 active={this.state.activeNode === i}
+                playing={this.state.activePlayingNode === i}
                 key={i}
               >
                 {c === undefined ? "" : c.includes("m") ? c[0] + c[1] : c[0]}
               </ChordNode>
+
             ))}
           </ChordNodeContainer>
 
@@ -332,7 +341,7 @@ class App extends React.Component {
   }
 }
 
-const AddChordButton = styled.button`
+const AddChordButton = styled.div`
   width: 50px;
   height: 50px;
   border-radius: 100%;
@@ -342,6 +351,7 @@ const AddChordButton = styled.button`
   text-align: center;
   font-size: 32px;
   margin: 5px;
+  cursor: pointer;
 `;
 
 const ChordNodeContainer = styled.div`
@@ -358,13 +368,28 @@ const ChordNode = styled.div`
   width: 50px;
   height: 50px;
   border-radius: 100%;
-  border: 1px solid black;
+  border: 1px solid white;
   background-color: lightblue;
+  color: white;
   line-height: 50px;
   text-align: center;
-  font-size: 12px;
-  margin: 5px;
-  background-color: ${(props) => props.active && "green"};
+  font-size: 18px;
+  margin-right: 5px;
+  background-color: ${(props) => props.active && "#C0C0C0"};
+  background-color: ${(props) => props.playing && "yellow"};
+  color: ${(props) => props.playing && "black"};
+  
+  cursor: pointer;
+
+
+  /* &:after {
+    content: '';
+  flex: 1;
+  padding-left: 2rem;
+  height: 1px;
+  background-color: #000;
+  } */
+  
 `;
 
 
