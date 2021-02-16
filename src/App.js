@@ -130,12 +130,13 @@ class App extends React.Component {
 
   convertMIDIToChordLetters = (chordFromList, chordIwant) => {
     let accidental = "";
+    let quality = chordFromList[1]
     if (chordFromList[0].length > 1) {
       accidental = chordFromList[0].split("")[1];
     }
 
     let asNotes = chordIwant.map((n) => {
-      return this.getKeyByValue(notes, n, accidental);
+      return this.getKeyByValue(notes, n, quality, accidental);
     });
 
     console.log(asNotes);
@@ -194,7 +195,7 @@ class App extends React.Component {
     this.setState({ isCalculated: false });
   };
 
-  getKeyByValue = (object, value, accidental) => {
+  getKeyByValue = (object, value, quality, accidental) => {
     console.log(value);
     let found = Object.keys(object).filter((key) => object[key] === value);
     if (value > 71) {
@@ -202,12 +203,18 @@ class App extends React.Component {
     } else if (value < 60) {
       found = Object.keys(object).filter((key) => object[key] === value + 12);
     }
-    // if (accidental === "" && found.length > 1) {
-    //   found = found.find(n => n.includes("#"))
-    // }
-    if (found.length > 1) {
-      found = found.join("/");
+    if (accidental === "" && found.length > 1 && quality === "m") {
+      found = found.find(n => n.includes("b"))
+    } else if (accidental === "" && found.length > 1) {
+      found = found.find(n => n.includes("#"))
+    } else if (accidental === "#" && found.length > 1) {
+      found = found.find(n => n.includes("#"))
+    } else if (accidental === "b" && found.length > 1) {
+      found = found.find(n => n.includes("b"))
     }
+    // if (found.length > 1) {
+    //   found = found.join("/");
+    // }
 
     console.log(found);
     return found;
