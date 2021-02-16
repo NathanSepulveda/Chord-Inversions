@@ -649,18 +649,18 @@ const LetterTile = styled.div`
   opacity: ${(props) => props.disabled && 0.2};
 
   &.letter {
-    background-color: ${(props) => (props.selected ? "blue" : "#DCDCDC")};
+    background-color: ${(props) => (props.selected ? "rgb(29, 161, 242)" : "#DCDCDC")};
   }
 
   &.accidental {
-    background-color: ${(props) => (props.selected ? "green" : "#C0C0C0")};
+    background-color: ${(props) => (props.selected ? "rgb(29, 161, 242)"  : "#C0C0C0")};
   }
   &.quality {
-    background-color: ${(props) => (props.selected ? "yellow" : "#808080")};
+    background-color: ${(props) => (props.selected ? "rgb(29, 161, 242)"  : "#808080")};
   }
 
   &.position {
-    background-color: ${(props) => (props.selected ? "purple" : "#778899")};
+    background-color: ${(props) => (props.selected ? "rgb(29, 161, 242)"  : "#778899")};
   }
 `;
 
@@ -777,7 +777,7 @@ const ChordPicker = (props) => {
               selected={l === position}
               onClick={() => setPosition(l)}
             >
-              {l}
+              {l === 0 ? "R" : l}
             </LetterTile>
           ))}
         </TileContainer>
