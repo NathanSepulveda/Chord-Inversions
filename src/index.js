@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { Container, Header, List } from "semantic-ui-react";
 
 const styleLink = document.createElement("link");
 styleLink.rel = "stylesheet";
