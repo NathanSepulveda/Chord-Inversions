@@ -96,20 +96,28 @@ let transFormKeyMajRoot = {
   "3-dim": [2],
   "4-M": [2],
   "4-m": [2],
+  "4-dim": [2],
   "5-M": [2],
   "5-m": [2],
+  "5-dim": [2],
   "6-M": [1, 2],
   "6-m": [2],
+  "6-dim": [2],
   "7-M": [1],
   "7-m": [1],
+  "7-dim": [1],
   "8-M": [1],
   "8-m": [1],
+  "8-dim": [1],
   "9-M": [1],
   "9-m": [1],
+  "9-dim": [1],
   "10-M": [0, 1],
   "10-m": [1],
+  "10-dim": [1],
   "11-M": [0],
   "11-m": [0],
+  "11-dim": [0]
 };
 
 
@@ -118,6 +126,8 @@ let createChord = (MIDINumber, quality) => {
     return [MIDINumber, MIDINumber + 4, MIDINumber + 7];
   } else if (quality === "m") {
     return [MIDINumber, MIDINumber + 3, MIDINumber + 7];
+  } else if (quality === "dim") {
+    return [MIDINumber, MIDINumber + 3, MIDINumber + 6];
   }
 };
 
@@ -265,11 +275,11 @@ let getStuff = (cChain) => {
   let current = 0;
   let neww = [];
   let justNotes = []
-  cChain.forEach((c) => {
+  cChain.forEach((c, i) => {
     console.log(c)
     justNotes.push(c)
     c.forEach((n) => {
-      neww.push({ midiNumber: n, time: current, duration: duration });
+      neww.push({ midiNumber: n, time: current, duration: duration, group: i });
     });
     current += 2;
   });
@@ -286,7 +296,8 @@ class App extends React.Component {
     chordList: [],
     activeNode: undefined,
     recordingAsNotes: [],
-    isCalculated: false
+    isCalculated: false,
+    chordString: ""
   };
 
   scheduledEvents = [];
@@ -307,6 +318,7 @@ class App extends React.Component {
   };
 
   onClickCalculate = () => {
+    this.setState({chordString: ""})
     console.log(this.state.chordList);
     if (this.state.chordList.length < 2) {
       return
@@ -322,6 +334,7 @@ class App extends React.Component {
 
   onClickPlay = () => {
     this.setState({ isPlaying: true });
+
     console.log(this.state);
     const startAndEndTimes = _.uniq(
       _.flatMap(this.state.recording.events, (event) => [
@@ -329,17 +342,24 @@ class App extends React.Component {
         event.time + event.duration,
       ])
     );
+    
+    let count = 0
     console.log(startAndEndTimes);
     startAndEndTimes.forEach((time) => {
       this.scheduledEvents.push(
         setTimeout(() => {
-          const currentEvents = this.state.recording.events.filter((event) => {
-            return event.time <= time && event.time + event.duration > time;
+          const currentEvents = this.state.recording.events.filter((event, i) => {
+            if (event.time <= time && event.time + event.duration > time) {
+              count = event.group
+              return event.time <= time && event.time + event.duration > time;
+            }
+            
           });
 
           this.setRecording({
             currentEvents,
           });
+          this.convertMIDIToChordLetters(this.state.chordList[count], this.state.recordingAsNotes[count])
         }, time * 1000)
       );
     });
@@ -348,6 +368,7 @@ class App extends React.Component {
     console.log(this.state);
     setTimeout(() => {
       this.onClickStop();
+      this.setState({chordString: ""})
     }, this.getRecordingEndTime() * 1000);
   };
 
@@ -359,7 +380,7 @@ class App extends React.Component {
 
 
     let chordIwant = this.state.recordingAsNotes[index]
-
+    let chordName = this.state.chordList[index]
 
 
     let currentEvents = chordIwant.map(n => {
@@ -371,10 +392,32 @@ class App extends React.Component {
       currentEvents,
     });
 
+    this.convertMIDIToChordLetters(chordName, chordIwant)
 
     setTimeout(() => {
       this.onClickStop();
     }, 1 * 2000);
+  }
+
+  convertMIDIToChordLetters = (chordFromList, chordIwant) => {
+    let accidental = ""
+    if (chordFromList[0].length > 1) {
+      accidental = chordFromList[0].split("")[1]
+    }
+
+    let asNotes = chordIwant.map(n => {
+      return this.getKeyByValue(notes, n, accidental)
+    })
+
+    console.log(asNotes)
+    let str = asNotes.join(" - ")
+
+    let chordS = chordFromList[0] + chordFromList[1] + ": " + str
+    if (chordFromList.includes("M")) {
+      chordS = chordFromList[0] + ": " + str
+    }
+
+    this.setState({chordString: chordS})
   }
 
   onClickStop = () => {
@@ -390,6 +433,7 @@ class App extends React.Component {
 
   onClickClear = () => {
     this.onClickStop();
+    this.setState({chordString: ""})
     this.setState({ chordList: [] });
     this.setRecording({
       events: [],
@@ -416,6 +460,7 @@ class App extends React.Component {
       const newItems = [...prevState.chordList];
       newItems[index] = chordValue;
       console.log(newItems);
+
       return { chordList: newItems };
 
     });
@@ -423,6 +468,27 @@ class App extends React.Component {
     console.log(this.state);
     this.setState({isCalculated: false})
   };
+
+
+   getKeyByValue = (object, value, accidental) => {
+     console.log(value)
+    let found =  Object.keys(object).filter(key => (object[key] === value));
+    if (value > 71) {
+      found = Object.keys(object).filter(key => (object[key] === value - 12));
+    } else if (value < 60) {
+      found = Object.keys(object).filter(key => (object[key] === value + 12));
+    }
+    // if (accidental === "" && found.length > 1) {
+    //   found = found.find(n => n.includes("#"))
+    // } 
+    if (found.length > 1) {
+      found = found.join("/")
+    }
+
+ 
+    console.log(found)
+    return found
+  }
 
   deleteChord = (index) => {
     console.log(index);
@@ -442,10 +508,17 @@ class App extends React.Component {
     this.setState({ activeNode: undefined });
     this.setState({isCalculated: false})
   };
+
+  handleHover = index => {
+    if (this.state.isCalculated) {
+      this.onPlayChord(index)
+    }
+  }
   render() {
     return (
       <div style={{ overflow: "hidden" }}>
         <h1 className="h3">Chord Inversion Helper Demo</h1>
+        <Directions></Directions>
         <div className="mt-5">
           <SoundfontProvider
             instrumentName="acoustic_grand_piano"
@@ -466,6 +539,8 @@ class App extends React.Component {
             )}
           />
         </div>
+        <h4>{this.state.chordString}</h4> 
+        
         <AddNodes>
           <ChordNodeContainer>
             {this.state.chordList.map((c, i) => (
@@ -474,11 +549,11 @@ class App extends React.Component {
                   this.setState({ activeNode: i });
                   this.setState({isCalculated: false})
                 }}
-                onMouseOver={() => this.state.isCalculated ? this.onPlayChord(i) : ""}
+                onMouseOver={() => this.handleHover(i)}
                 active={this.state.activeNode === i}
                 key={i}
               >
-                {c === undefined ? "" : c[0] + c[1]}
+                {c === undefined ? "" : c.includes("m") ? c[0] + c[1] : c[0]}
                 
               </ChordNode>
             ))}
@@ -728,7 +803,8 @@ const ChordPicker = (props) => {
         >
           Set Chord
         </button>
-        <button
+        {
+          props.activeNode !== 0 ?         <button
           onClick={() => {
             if (props.activeNode !== 0) {
               props.deleteChord(props.activeNode)
@@ -740,12 +816,38 @@ const ChordPicker = (props) => {
           } }
         >
           delete
-        </button>
+        </button> : ""
+        }
+
       </p>
 
       {/* <button onClick={this.props.unsetActiveNode}></button> */}
     </React.Fragment>
   );
 };
+
+const Directions = () => {
+  return (
+    <div>
+      <p>This app is designed to help you find the best chord inversions to use for a chord progression on the piano. Your chord progressions will
+        sound smoother and will be easier to play compared to only using root position chords.
+      </p>
+    <h2>Directions</h2>
+    <ol>
+      <li>Begin by adding a starting chord with the circular button with a "+" sign.</li>
+      <li>Select the chord's root, if it's sharp or flat, quaility (major or minor for now), and position (root, first, or second inversion).</li>
+      <li>After this chord is added, you can the rest of the chord's in the progression one by one. You will only be selecting the root, if it's sharp or flat, and the qauilty of the chord for every chord except the first. </li>
+      <li>Once you have at least two chords set and no chord nodes are empty, you can click the calculate button.</li>
+      <li>If the chord inversions have been calculated, you will see the "play" button active. Press this button to play your chord progression with the best chord inversions!</li>
+      <li>With the calculated progression, you can also hover over a chord's node to have that indivicudal chord playback for you on the piano.</li>
+      <li>You can edit a chord node at any time, as well as delete all but the first chord by clicking the chord node and selecting the "delete" button.</li>
+      <li>Note that any changes to the chord progression will need to be recalulated before you can play back the progression or an individual chord.</li>
+      <li>You can clear your chord progression at any time using the "clear" button.</li>
+    </ol>
+
+    
+    </div>
+  )
+}
 
 export default App;
