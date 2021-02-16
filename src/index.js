@@ -14,9 +14,9 @@ document.head.appendChild(styleLink);
 // ReactDOM.render(<App />, document.getElementById('root'));
 
 ReactDOM.render(
-    <Container style={{ margin: 20 }}>
+
       <App />
-      </Container>
+
    ,
     document.getElementById("root")
   );

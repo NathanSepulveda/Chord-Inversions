@@ -513,7 +513,7 @@ class App extends React.Component {
   };
   render() {
     return (
-      <div>
+      <div style={{background: "rgb(233, 244, 233", padding: "25px"}}>
         <h1 className="h3">Chord Inversion Helper Demo</h1>
         <Directions></Directions>
         <div className="mt-5">
@@ -644,23 +644,24 @@ const LetterTile = styled.div`
   border-radius: 7px;
   text-align: center;
   line-height: 35px;
+  color: white;
   margin: 5px;
   cursor: ${(props) => !props.disabled && "pointer"};
   opacity: ${(props) => props.disabled && 0.2};
 
   &.letter {
-    background-color: ${(props) => (props.selected ? "rgb(29, 161, 242)" : "#DCDCDC")};
+    background-color: ${(props) => (props.selected ? "rgb(15, 99, 214)" : "#DCDCDC")};
   }
 
   &.accidental {
-    background-color: ${(props) => (props.selected ? "rgb(29, 161, 242)"  : "#C0C0C0")};
+    background-color: ${(props) => (props.selected ? "rgb(15, 99, 214)"  : "#C0C0C0")};
   }
   &.quality {
-    background-color: ${(props) => (props.selected ? "rgb(29, 161, 242)"  : "#808080")};
+    background-color: ${(props) => (props.selected ? "rgb(15, 99, 214)"  : "#808080")};
   }
 
   &.position {
-    background-color: ${(props) => (props.selected ? "rgb(29, 161, 242)"  : "#778899")};
+    background-color: ${(props) => (props.selected ? "rgb(15, 99, 214)"  : "#778899")};
   }
 `;
 
@@ -682,17 +683,23 @@ const ChordPicker = (props) => {
 
   const handleAccidental = (v) => {
     setNoteAccidental((prevState) => {
-      if (["C", "F"].includes(chordRoot) && v === "b") {
-        return;
-      } else if (["E", "B"].includes(chordRoot) && v === "#") {
-        return;
-      }
 
-      if (prevState === v) {
-        return "";
+      if (["C", "F"].includes(chordRoot) && v === "b") {
+        return "#"
+      } else if (["E", "B"].includes(chordRoot) && v === "#") {
+
+        return "b"
+      } else if (prevState === v) {
+        return ""
       } else {
         return v;
       }
+
+      // if (prevState === v) {
+      //   return "";
+      // } else {
+      //   return v;
+      // }
     });
   };
 
@@ -756,7 +763,7 @@ const ChordPicker = (props) => {
             {l}
           </LetterTile>
         ))}
-        <div style={{ background: "white", width: "35px" }}></div>
+        <div style={{ background: "rgb(233, 244, 233", width: "35px" }}></div>
         {qualities.map((l, i) => (
           <LetterTile
             key={i}
