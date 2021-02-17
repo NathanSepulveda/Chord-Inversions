@@ -248,7 +248,7 @@ class App extends React.Component {
     }
   };
   componentDidMount() {
-    document.body.style.backgroundColor = "rgb(233, 244, 233"
+    document.body.style.backgroundColor = "rgb(0, 244, 233"
 }
 
   render() {
