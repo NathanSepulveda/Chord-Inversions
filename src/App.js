@@ -25,7 +25,8 @@ class App extends React.Component {
     recordingAsNotes: [],
     isCalculated: false,
     chordString: "",
-    activePlayingNode: undefined
+    activePlayingNode: undefined,
+    isLooped: true
   };
 
   scheduledEvents = [];
@@ -252,7 +253,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div style={{height: "100%", background: "rgb(233, 244, 233", padding: "25px"}}>
+      <div style={{height: "100%", background: "rgb(0, 244, 233", padding: "25px"}}>
         <h1 className="h3">Chord Inversion Helper Demo</h1>
         <Directions></Directions>
         <div className="mt-5">
