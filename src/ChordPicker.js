@@ -36,11 +36,16 @@ display: flex;
 flex-direction: row;
 `;
 
+
+
+
+
 const ChordPicker = (props) => {
 const [chordRoot, setChordRoot] = useState("C");
 const [noteAccidental, setNoteAccidental] = useState("");
 const [chordQuality, setChordQuality] = useState("M");
 const [position, setPosition] = useState(0);
+
 
 const letters = ["C", "D", "E", "F", "G", "A", "B"];
 const accidentals = ["#", "b"];
@@ -69,8 +74,25 @@ const handleAccidental = (v) => {
 };
 
 useEffect(() => {
-  let current = props.chordList[props.activeNode];
 
+
+    let root = chordRoot + noteAccidental;
+    props.setChord(
+        Number(props.activeNode),
+        props.activeNode === 0
+          ? [root, chordQuality, position]
+          : [root, chordQuality]
+      );
+
+        console.log("here")
+
+
+
+}, [chordRoot, noteAccidental, chordQuality, position])
+
+useEffect(() => {
+  let current = props.chordList[props.activeNode];
+console.log(current)
   if (current !== undefined) {
     if (current[0].includes("#") || current[0].includes("b")) {
       let [r, acc] = current[0].split("");
@@ -82,8 +104,39 @@ useEffect(() => {
       setNoteAccidental("");
       setChordQuality(current[1]);
     }
+  } else {
+    setChordRoot("C");
+    setNoteAccidental("");
+    setChordQuality("M");
+    console.log("my dog")
+
+    let root = chordRoot + noteAccidental;
+    props.setChord(
+        Number(props.activeNode),
+        props.activeNode === 0
+          ? [root, chordQuality, position]
+          : [root, chordQuality]
+      );
+
   }
+
 }, [props.activeNode]);
+
+// // useEffect(() => {
+// //     let root = chordRoot + noteAccidental;
+// //     props.setChord(
+// //         Number(props.activeNode),
+// //         props.activeNode === 0
+// //           ? [root, chordQuality, position]
+// //           : [root, chordQuality]
+// //       );
+// // }, [])
+
+
+
+
+
+
 const handleRoot = (v) => {
   if (noteAccidental === "#" && ["E", "B"].includes(v)) {
     setNoteAccidental("");
@@ -161,7 +214,7 @@ return (
       {chordRoot}
       {noteAccidental}
       {chordQuality}
-      <button
+      {/* <button
       style={{marginLeft: "10px"}}
         onClick={() => {
           let root = chordRoot + noteAccidental;
@@ -175,7 +228,7 @@ return (
         }}
       >
         Set Chord
-      </button>
+      </button> */}
       {props.activeNode !== 0 ? (
         <button
           onClick={() => {
@@ -190,6 +243,9 @@ return (
       ) : (
         ""
       )}
+      <button onClick={props.unsetActiveNode}> 
+          Close
+      </button>
     </div>
 
     {/* <button onClick={this.props.unsetActiveNode}></button> */}
