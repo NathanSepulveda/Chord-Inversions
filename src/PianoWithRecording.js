@@ -1,5 +1,6 @@
-import React from 'react';
-import { Piano } from 'react-piano';
+import React from "react";
+import { Piano } from "react-piano";
+import DimensionsProvider from "./DimensionsProvider";
 
 const DURATION_UNIT = 2.0;
 const DEFAULT_NOTE_DURATION = DURATION_UNIT;
@@ -14,7 +15,7 @@ class PianoWithRecording extends React.Component {
     noteDuration: DEFAULT_NOTE_DURATION,
   };
 
-  onPlayNoteInput = midiNumber => {
+  onPlayNoteInput = (midiNumber) => {
     this.setState({
       notesRecorded: false,
     });
@@ -22,7 +23,7 @@ class PianoWithRecording extends React.Component {
 
   onStopNoteInput = (midiNumber, { prevActiveNotes }) => {
     if (this.state.notesRecorded === false) {
-    //   this.recordNotes(prevActiveNotes, this.state.noteDuration);
+      //   this.recordNotes(prevActiveNotes, this.state.noteDuration);
       this.setState({
         notesRecorded: true,
         noteDuration: DEFAULT_NOTE_DURATION,
@@ -34,7 +35,7 @@ class PianoWithRecording extends React.Component {
     if (this.props.isPlaying) {
       return;
     }
-    const newEvents = midiNumbers.map(midiNumber => {
+    const newEvents = midiNumbers.map((midiNumber) => {
       return {
         midiNumber,
         time: this.props.recording.currentTime,
@@ -56,19 +57,25 @@ class PianoWithRecording extends React.Component {
       ...pianoProps
     } = this.props;
 
-    const {currentEvents } = this.props.recording;
-    const activeNotes =
-      this.props.isPlaying ? currentEvents.map(event => event.midiNumber) : null;
+    const { currentEvents } = this.props.recording;
+    const activeNotes = this.props.isPlaying
+      ? currentEvents.map((event) => event.midiNumber)
+      : null;
     return (
       <div>
-        <Piano
-          playNote={this.props.playNote}
-          stopNote={this.props.stopNote}
-        //   onPlayNoteInput={this.onPlayNoteInput}
-        //   onStopNoteInput={this.onStopNoteInput}
-          activeNotes={activeNotes}
-          {...pianoProps}
-        />
+        <DimensionsProvider>
+          {({ containerWidth, containerHeight }) => (
+            <Piano
+              playNote={playNote}
+              stopNote={stopNote}
+              width={containerWidth}
+              //   onPlayNoteInput={this.onPlayNoteInput}
+              //   onStopNoteInput={this.onStopNoteInput}
+              activeNotes={activeNotes}
+              {...pianoProps}
+            />
+          )}
+        </DimensionsProvider>
       </div>
     );
   }

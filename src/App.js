@@ -347,6 +347,7 @@ const App = () => {
     // }
   };
 
+
   useEffect(() => {
     document.body.style.backgroundColor = "#afd275";
   }, []);
@@ -364,8 +365,8 @@ const App = () => {
               recording={recording}
               isPlaying={isPlaying}
               setRecording={setRecording}
-              noteRange={{ first: 53, last: 77 }}
-              width={1300}
+              noteRange={{ first: 53, last: 79 }}
+              // width={1300}
               playNote={playNote}
               noteToPlay={60}
               stopNote={stopNote}
