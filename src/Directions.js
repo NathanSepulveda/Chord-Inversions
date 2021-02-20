@@ -41,7 +41,7 @@ let Directions = () => {
               With your selected chord progression, press "play" to hear and see your chord progression with the best chord inversions!
           </li>
           <li>
-            If the chord selector is not open, you can also hover over a chord's
+            Double click/tap a chord
             node to have that individudal chord playback for you on the piano.
           </li>
           <li>

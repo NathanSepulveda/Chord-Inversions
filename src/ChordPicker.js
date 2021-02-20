@@ -23,8 +23,8 @@ const LetterTile = styled.div`
 
   background-image: ${(props) =>
     props.selected
-      ? "linear-gradient(135deg, rgba(0,0,0,0.27), rgba(255,255,255,0.25))"
-      : "background: linear-gradient(-45deg, rgba(0,0,0,0.28), rgba(255,255,255,0.25))"};
+      ? "linear-gradient(135deg, rgba(0,0,0,0.255), rgba(255,255,255,0.25))"
+      : ""};
 
   /* background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 59%, rgba(0, 0, 0, 0.65) 100%), url('https://cdn.sstatic.net/Sites/stackoverflow/company/img/logos/so/so-icon.png?v=c78bd457575a') */
 
@@ -114,6 +114,9 @@ const ChordPicker = (props) => {
         setChordRoot(current[0]);
         setNoteAccidental("");
         setChordQuality(current[1]);
+      }
+      if (current.length > 2) {
+        setPosition(current[2])
       }
     } else {
       setChordRoot("C");
