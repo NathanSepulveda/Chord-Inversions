@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import SoundfontProvider from "./soundfontprovider";
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import _ from "lodash";
 import "react-piano/dist/styles.css";
 import PianoWithRecording from "./PianoWithRecording";
-import processChordChain, {chordChain} from "./chord-info/ChordChain"
+import processChordChain, { chordChain } from "./chord-info/ChordChain";
 import { notes } from "./chord-info/ChordStepKeys";
-import Directions from "./Directions"
-import ChordPicker from "./ChordPicker"
+import Directions from "./Directions";
+import ChordPicker from "./ChordPicker";
 
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -84,7 +84,7 @@ const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
 //                 count = event.group;
 //                 this.setState({activePlayingNode: count})
 //                 return event.time <= time && event.time + event.duration > time;
-//               } 
+//               }
 //             }
 //           );
 
@@ -183,7 +183,6 @@ const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
 //     this.setState({ activeNode: this.state.chordList.length });
 //     this.setState({ isCalculated: false });
 //   };
-
 
 //   setChord = (index, chordValue) => {
 //     console.log(index);
@@ -352,13 +351,17 @@ const AddChordButton = styled.div`
   line-height: 45px;
   text-align: center;
   font-size: 32px;
-  margin: 5px;
-  cursor: pointer;
+  margin-right: 5px;
+  /* cursor: pointer; */
+
+  cursor: ${(props) => !props.disabled && "pointer"};
+  opacity: ${(props) => props.disabled && 0.2};
 `;
 
 const ChordNodeContainer = styled.div`
   display: flex;
   flex-direction: row;
+  margin-bottom: 20px;
 `;
 
 const AddNodes = styled.div`
@@ -376,13 +379,12 @@ const ChordNode = styled.div`
   line-height: 50px;
   text-align: center;
   font-size: 18px;
-  margin-right: 5px;
+  margin-right: 20px;
   background-color: ${(props) => props.active && "#C0C0C0"};
   background-color: ${(props) => props.playing && "yellow"};
   color: ${(props) => props.playing && "black"};
-  
-  cursor: pointer;
 
+  cursor: pointer;
 
   /* &:after {
     content: '';
@@ -391,7 +393,6 @@ const ChordNode = styled.div`
   height: 1px;
   background-color: #000;
   } */
-  
 `;
 
 // const ChordNodes = props => {
@@ -422,24 +423,20 @@ const ChordNode = styled.div`
 //   )
 // }
 
-
-
 const App2 = () => {
-
-
-  const [isPlaying, setIsPlaying] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false);
   const [recording, setRecording] = useState({
     events: [],
     currentEvents: [],
-  })
+  });
 
-  const [chordList, setChordList] = useState([])
-  const [activeNode, setActiveNode] = useState(undefined)
-  const [recordingAsNotes, setRecordingAsNotes] = useState([])
-  const [isCalculated, setIsCalculated] = useState(false)
-  const [chordString, setChordString] = useState("")
-  const [activePlayingNode, setActivePlayingNode] = useState(undefined)
-  const [isLooping, setIsLooping] = useState(false)
+  const [chordList, setChordList] = useState([]);
+  const [activeNode, setActiveNode] = useState(undefined);
+  const [recordingAsNotes, setRecordingAsNotes] = useState([]);
+  const [isCalculated, setIsCalculated] = useState(false);
+  const [chordString, setChordString] = useState("");
+  const [activePlayingNode, setActivePlayingNode] = useState(undefined);
+  const [isLooping, setIsLooping] = useState(false);
 
   let scheduledEvents = [];
 
@@ -452,25 +449,20 @@ const App2 = () => {
     );
   };
 
-
-
   const setRecordingHandler = (value) => {
-    let newR = Object.assign({}, recording, value)
-    setRecording(newR)
-  }
-
-
+    let newR = Object.assign({}, recording, value);
+    setRecording(newR);
+  };
 
   const onClickCalculate = () => {
-
-    setChordString("")
+    setChordString("");
 
     if (chordList.length < 2) {
       return;
     }
 
     if (chordList.includes(undefined)) {
-      return
+      return;
     }
     let events = processChordChain(
       chordChain(chordList[0], chordList.slice(1))
@@ -479,16 +471,14 @@ const App2 = () => {
       events: events[0],
     });
 
-    setRecordingAsNotes(events[1])
+    setRecordingAsNotes(events[1]);
 
-    setIsCalculated(true)
+    setIsCalculated(true);
   };
 
   const onClickPlay = () => {
-
-    setIsPlaying(true)
-    unsetActiveNode()
-
+    setIsPlaying(true);
+    unsetActiveNode();
 
     const startAndEndTimes = _.uniq(
       _.flatMap(recording.events, (event) => [
@@ -502,32 +492,24 @@ const App2 = () => {
     startAndEndTimes.forEach((time) => {
       scheduledEvents.push(
         setTimeout(() => {
-          const currentEvents = recording.events.filter(
-            (event) => {
-              if (event.time <= time && event.time + event.duration > time) {
-                count = event.group;
-                setActivePlayingNode(count)
+          const currentEvents = recording.events.filter((event) => {
+            if (event.time <= time && event.time + event.duration > time) {
+              count = event.group;
+              setActivePlayingNode(count);
 
-                return event.time <= time && event.time + event.duration > time;
-              } 
+              return event.time <= time && event.time + event.duration > time;
             }
-          );
+          });
 
-
-          setRecordingHandler({currentEvents})
-          convertMIDIToChordLetters(
-            chordList[count],
-            recordingAsNotes[count]
-          );
+          setRecordingHandler({ currentEvents });
+          convertMIDIToChordLetters(chordList[count], recordingAsNotes[count]);
         }, time * 1000)
       );
     });
 
-
     setTimeout(() => {
       onClickStop();
-      setChordString("")
-
+      setChordString("");
     }, getRecordingEndTime() * 1000);
   };
 
@@ -536,23 +518,21 @@ const App2 = () => {
       return;
     }
 
-
-    setIsPlaying(true)
+    setIsPlaying(true);
 
     let chordIwant = recordingAsNotes[index];
     let chordName = chordList[index];
 
     if (chordIwant === undefined || chordName === undefined) {
-      return
+      return;
     }
 
     let currentEvents = chordIwant.map((n) => {
       return { midiNumber: n, time: "", duration: "" };
     });
 
-
-    setRecordingHandler({currentEvents})
-    setActivePlayingNode(index)
+    setRecordingHandler({ currentEvents });
+    setActivePlayingNode(index);
     convertMIDIToChordLetters(chordName, chordIwant);
 
     setTimeout(() => {
@@ -562,7 +542,7 @@ const App2 = () => {
 
   const convertMIDIToChordLetters = (chordFromList, chordIwant) => {
     let accidental = "";
-    let quality = chordFromList[1]
+    let quality = chordFromList[1];
     if (chordFromList[0].length > 1) {
       accidental = chordFromList[0].split("")[1];
     }
@@ -578,72 +558,62 @@ const App2 = () => {
     if (chordFromList.includes("M")) {
       chordS = chordFromList[0] + ": " + str;
     }
-    setChordString(chordS)
-
-
+    setChordString(chordS);
   };
 
   const onClickStop = () => {
     scheduledEvents.forEach((scheduledEvent) => {
       clearTimeout(scheduledEvent);
     });
-    setIsPlaying(false)
+    setIsPlaying(false);
 
-    setActivePlayingNode(undefined)
+    setActivePlayingNode(undefined);
     setRecordingHandler({
       mode: "RECORDING",
       currentEvents: [],
-    })
-
+    });
   };
 
   const onClickClear = () => {
     onClickStop();
-
-    setChordString("")
-    setChordList([])
+    setActiveNode(undefined);
+    setChordString("");
+    setChordList([]);
     // setChordString([])
     setRecordingHandler({
       events: [],
       currentEvents: [],
-    })
+    });
 
-
-    setIsCalculated(false)
+    setIsCalculated(false);
   };
 
   const onClickAddChordNode = () => {
-
     if (!isPlaying) {
-      setChordList([...chordList, undefined])
-      setActiveNode(chordList.length)
-  
-      setIsCalculated(false)
+      setChordList([...chordList, undefined]);
+      setActiveNode(chordList.length);
+
+      setIsCalculated(false);
     }
-
-
   };
-
 
   const setChord = (index, chordValue) => {
     console.log(index);
 
-
-    setChordList(prevState => {
+    setChordList((prevState) => {
       const newItems = [...prevState];
       newItems[index] = chordValue;
       console.log(newItems);
 
-      return newItems
-    })
-
+      return newItems;
+    });
 
     // setIsCalculated(false)
   };
 
   useEffect(() => {
-    onClickCalculate()
-  }, [chordList])
+    onClickCalculate();
+  }, [chordList]);
 
   const getKeyByValue = (object, value, quality, accidental) => {
     console.log(value);
@@ -654,13 +624,13 @@ const App2 = () => {
       found = Object.keys(object).filter((key) => object[key] === value + 12);
     }
     if (accidental === "" && found.length > 1 && quality === "m") {
-      found = found.find(n => n.includes("b"))
+      found = found.find((n) => n.includes("b"));
     } else if (accidental === "" && found.length > 1) {
-      found = found.find(n => n.includes("#"))
+      found = found.find((n) => n.includes("#"));
     } else if (accidental === "#" && found.length > 1) {
-      found = found.find(n => n.includes("#"))
+      found = found.find((n) => n.includes("#"));
     } else if (accidental === "b" && found.length > 1) {
-      found = found.find(n => n.includes("b"))
+      found = found.find((n) => n.includes("b"));
     }
     // if (found.length > 1) {
     //   found = found.join("/");
@@ -679,71 +649,67 @@ const App2 = () => {
     //   return { chordList: newItems };
     // });
 
-    setChordList(prevState => {
+    setChordList((prevState) => {
       const newItems = chordList.filter((c, i) => i !== index);
 
       console.log(newItems);
-      return newItems
-    })
+      return newItems;
+    });
 
-    onClickCalculate()
-    setIsCalculated(false)
+    onClickCalculate();
+    setIsCalculated(false);
   };
 
   const unsetActiveNode = () => {
-    setActiveNode(undefined)
-    setIsCalculated(false)
-
+    setActiveNode(undefined);
+    setIsCalculated(false);
   };
 
   const handleHover = (index) => {
     // if (isCalculated) {
-      onPlayChord(index);
+    onPlayChord(index);
     // }
   };
 
-
   useEffect(() => {
-    document.body.style.backgroundColor = "rgb(233, 244, 233"
-  }, [])
-    return (
-      <div style={{height: "100%", background: "rgb(233, 244, 233", padding: "25px"}}>
-        <h1 className="h3">Chord Inversion Helper Demo</h1>
-        <Directions></Directions>
-        <div className="mt-5">
-          <SoundfontProvider
-            instrumentName="acoustic_grand_piano"
-            audioContext={audioContext}
-            hostname={soundfontHostname}
-            render={({ isLoading, playNote, stopNote }) => (
-              <PianoWithRecording
-                recording={recording}
-                isPlaying={isPlaying}
-                setRecording={setRecording}
-                noteRange={{ first: 53, last: 79 }}
-                width={900}
-                playNote={playNote}
-                noteToPlay={60}
-                stopNote={stopNote}
-                disabled={isLoading}
-              />
-            )}
-          />
-        </div>
-        <h4>{chordString}</h4>
-
+    document.body.style.backgroundColor = "#afd275";
+  }, []);
+  return (
+    <div style={{ height: "100%", background: "#afd275", padding: "25px" }}>
+      <h1 className="h3">Chord Inversion Helper Demo</h1>
+      <Directions></Directions>
+      <div className="mt-5">
+        <SoundfontProvider
+          instrumentName="acoustic_grand_piano"
+          audioContext={audioContext}
+          hostname={soundfontHostname}
+          render={({ isLoading, playNote, stopNote }) => (
+            <PianoWithRecording
+              recording={recording}
+              isPlaying={isPlaying}
+              setRecording={setRecording}
+              noteRange={{ first: 53, last: 77 }}
+              width={1400}
+              playNote={playNote}
+              noteToPlay={60}
+              stopNote={stopNote}
+              disabled={isLoading}
+            />
+          )}
+        />
+      </div>
+      <h4>{chordString === "" ? " " : chordString}</h4>
+      <div style={{ margin: "0 auto", width: "50%" }}>
         <AddNodes>
           <ChordNodeContainer>
             {chordList.map((c, i) => (
               <ChordNode
                 onClick={() => {
                   if (!isPlaying) {
-                    setActiveNode(i)
+                    setActiveNode(i);
 
-                    setIsCalculated(false)
+                    setIsCalculated(false);
                   }
-
-
                 }}
                 onMouseOver={() => handleHover(i)}
                 active={activeNode === i}
@@ -752,11 +718,15 @@ const App2 = () => {
               >
                 {c === undefined ? "" : c.includes("m") ? c[0] + c[1] : c[0]}
               </ChordNode>
-
             ))}
           </ChordNodeContainer>
 
-          <AddChordButton onClick={onClickAddChordNode}>+</AddChordButton>
+          <AddChordButton
+            disabled={chordList.length > 7}
+            onClick={chordList.length > 7 ? "" : onClickAddChordNode}
+          >
+            +
+          </AddChordButton>
         </AddNodes>
         {activeNode !== undefined ? (
           <ChordPicker
@@ -770,7 +740,7 @@ const App2 = () => {
           ""
         )}
 
-        <div className="mt-5" style={{marginTop: "20px"}}>
+        <div className="mt-5" style={{ marginTop: "20px" }}>
           {/* <button
             disabled={
               isPlaying ||
@@ -781,26 +751,17 @@ const App2 = () => {
           >
             Calculate
           </button> */}
-          <button
-            disabled={isPlaying || activeNode !== undefined}
-            onClick={onClickClear}
-          >
+          <button disabled={isPlaying} onClick={onClickClear}>
             Clear
           </button>
-          <button
-            disabled={isPlaying || activeNode !== undefined}
-            onClick={onClickPlay}
-          >
+          <button disabled={isPlaying} onClick={onClickPlay}>
             Play
           </button>
           <button onClick={onClickStop}>Stop</button>
-
         </div>
       </div>
-    );
-  
-}
-
-
+    </div>
+  );
+};
 
 export default App2;
