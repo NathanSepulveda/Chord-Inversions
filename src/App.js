@@ -25,10 +25,26 @@ const AddChordButton = styled.div`
   text-align: center;
   font-size: 32px;
   margin-right: 5px;
+
+
+  @media (max-width: 768px) {
+    font-size: 22px;
+
+  width: 45px;
+  height: 45px;
+  margin: 5px;
+  /* padding: 5px; */
+  line-height: 42px;
+
+  width: ${(props) => props.chordLength > 5 &&  "36px"};
+  height: ${(props) => props.chordLength > 5 &&  "36px"};
+  line-height: ${(props) => props.chordLength > 5 &&  "33px"};
+  font-size: ${(props) => props.chordLength > 5 &&  "15px"};
+  }
   /* cursor: pointer; */
 
   cursor: ${(props) => !props.disabled && "pointer"};
-  opacity: ${(props) => props.disabled && 0.2};
+  display: ${(props) => props.disabled && "none"};
 `;
 
 const ChordNodeContainer = styled.div`
@@ -45,6 +61,21 @@ const AddNodes = styled.div`
 const ChordNode = styled.div`
   width: 55px;
   height: 55px;
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+
+  width: 45px;
+  height: 45px;
+  margin: 5px;
+  /* padding: 5px; */
+  line-height: 45px;
+  width: ${(props) => props.chordLength > 5 &&  "36px"};
+  height: ${(props) => props.chordLength > 5 &&  "36px"};
+  line-height: ${(props) => props.chordLength > 5 &&  "36px"};
+  font-size: ${(props) => props.chordLength > 5 &&  "15px"};
+  }
+
   border-radius: 100%;
   border: 1px solid white;
   background-color: lightblue;
@@ -376,7 +407,7 @@ const App = () => {
         />
       </div>
       
-      <div style={{ margin: "0 auto", width: "50%" }}>
+      <div style={{ margin: "0 auto"}}>
       <h4 style={{marginTop: "25px"}} >{chordString === "" ? "Current Chord Notes: " : "Current Chord Notes: " + chordString}</h4>
         <AddNodes>
           <ChordNodeContainer>
@@ -389,6 +420,7 @@ const App = () => {
                     setIsCalculated(false);
                   }
                 }}
+                chordLength={chordList.length}
                 onClick={() => {
                   setActiveNode(i);
                 }}
@@ -404,6 +436,7 @@ const App = () => {
           <AddChordButton
             disabled={chordList.length > 7}
             onClick={chordList.length > 7 ? "" : onClickAddChordNode}
+            chordLength={chordList.length}
           >
             +
           </AddChordButton>

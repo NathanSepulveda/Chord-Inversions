@@ -8,10 +8,23 @@ const LetterTile = styled.div`
   /* background-color: ${(props) => props.selected && "blue"}; */
   font-size: 20px;
   border-radius: 7px;
-  text-align: center;
+  
   line-height: 45px;
-  color: ${(props) => (props.selected ? "black" : "white")};
+  text-align: center;
   margin: 7px;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+
+  width: 38px;
+  height: 38px;
+  margin: 5px;
+  /* padding: 5px; */
+  line-height: 38px;
+  }
+
+  color: ${(props) => (props.selected ? "black" : "white")};
+  
   cursor: ${(props) => !props.disabled && "pointer"};
   opacity: ${(props) => props.disabled && 0.2};
   background-color: ${(props) => (props.selected ? "yellow" : "#afd275")};
@@ -26,20 +39,6 @@ const LetterTile = styled.div`
       ? "linear-gradient(135deg, rgba(0,0,0,0.255), rgba(255,255,255,0.25))"
       : ""};
 
-  /* background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 59%, rgba(0, 0, 0, 0.65) 100%), url('https://cdn.sstatic.net/Sites/stackoverflow/company/img/logos/so/so-icon.png?v=c78bd457575a') */
-
-  /* linear-gradient(135deg, rgba(0,0,0,0.22), rgba(255,255,255,0.25)) */
-
-  /* &.letter {
-  background-color: ${(props) => (props.selected ? "yellow" : "#afd275")};
-}
-
-&.accidental {
-  background-color: ${(props) => (props.selected ? "yellow" : "#afd275")};
-}
-&.quality {
-  background-color: ${(props) => (props.selected ? "yellow" : "#afd275")};
-} */
 
 &.position {
     width: 65px;
