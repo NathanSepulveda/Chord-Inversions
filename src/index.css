@@ -15,8 +15,15 @@ code {
 
 .ReactPiano__Key--active.ReactPiano__Key--natural {
   background :yellow;
+  border: none  !important;
 }
 
+
+.ReactPiano__Key--natural{
+  border: none !important;
+  border-radius: 0 0 0 0 !important;
+}
 .ReactPiano__Key--active.ReactPiano__Key--accidental {
   background:yellow;
+  border: none !important;
 }

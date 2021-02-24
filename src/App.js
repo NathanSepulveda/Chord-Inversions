@@ -9,37 +9,40 @@ import { notes } from "./chord-info/ChordStepKeys";
 import Directions from "./Directions";
 import ChordPicker from "./ChordPicker";
 
-
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
 
+const NodeAndChordContainter = styled.div`
+  margin-left: auto;
+  margin-right: auto;
+  width: 400px;
+`;
 
 const AddChordButton = styled.div`
-  width: 55px;
-  height: 55px;
+  width: 65px;
+  height: 65px;
   border-radius: 100%;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   background-color: lightgreen;
-  line-height: 50px;
+  line-height: 60px;
   text-align: center;
   font-size: 32px;
   margin-right: 5px;
 
-
   @media (max-width: 768px) {
-    font-size: 22px;
+    font-size: 38px;
 
-  width: 45px;
-  height: 45px;
-  margin: 5px;
-  /* padding: 5px; */
-  line-height: 42px;
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    /* padding: 5px; */
+    line-height: 50px;
 
-  width: ${(props) => props.chordLength > 5 &&  "36px"};
-  height: ${(props) => props.chordLength > 5 &&  "36px"};
-  line-height: ${(props) => props.chordLength > 5 &&  "33px"};
-  font-size: ${(props) => props.chordLength > 5 &&  "15px"};
+    /* width: ${(props) => props.chordLength > 5 && "36px"};
+    height: ${(props) => props.chordLength > 5 && "36px"};
+    line-height: ${(props) => props.chordLength > 5 && "33px"};
+    font-size: ${(props) => props.chordLength > 5 && "15px"}; */
   }
   /* cursor: pointer; */
 
@@ -48,9 +51,12 @@ const AddChordButton = styled.div`
 `;
 
 const ChordNodeContainer = styled.div`
-  display: flex;
-  flex-direction: row;
+  /* display: flex; */
+  display: grid;
+  /* flex-direction: row; */
+  grid-template-columns: repeat(4, 1fr);
   margin-bottom: 20px;
+  grid-gap: 15px;
 `;
 
 const AddNodes = styled.div`
@@ -59,28 +65,14 @@ const AddNodes = styled.div`
 `;
 
 const ChordNode = styled.div`
-  width: 55px;
-  height: 55px;
-
-  @media (max-width: 768px) {
-    font-size: 18px;
-
-  width: 45px;
-  height: 45px;
-  margin: 5px;
-  /* padding: 5px; */
-  line-height: 45px;
-  width: ${(props) => props.chordLength > 5 &&  "36px"};
-  height: ${(props) => props.chordLength > 5 &&  "36px"};
-  line-height: ${(props) => props.chordLength > 5 &&  "36px"};
-  font-size: ${(props) => props.chordLength > 5 &&  "15px"};
-  }
+  width: 65px;
+  height: 65px;
 
   border-radius: 100%;
-  border: 1px solid white;
-  background-color: lightblue;
+  /* border: 1px solid white; */
+  background-color: #add8e6;
   color: white;
-  line-height: 55px;
+  line-height: 65px;
   text-align: center;
   font-size: 18px;
   margin-right: 20px;
@@ -92,6 +84,34 @@ const ChordNode = styled.div`
   cursor: pointer;
   z-index: 1;
 
+
+  /* background-color: ${(props) => (props.selected ? "yellow" : "#add8e6")}; */
+
+box-shadow: ${(props) =>
+  props.active || props.playing
+    ? "2px 2px 5px 0 rgba(255, 255, 255, 0.3), -0.5px -1px 4px 0 rgba(0, 0, 0, 0.25)"
+    : "2px 2px 5px 0 rgba(0, 0, 0, 0.25), -2px -2px 5px 0 rgba(255, 255, 255, 0.3)"};
+
+background-image: ${(props) =>
+  props.active || props.playing
+    ? "linear-gradient(135deg, rgba(0,0,0,0.255), rgba(255,255,255,0.25))"
+    : ""};
+
+
+  @media (max-width: 768px) {
+    font-size: 22px;
+
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    /* padding: 5px; */
+    line-height: 50px;
+/* 
+    width: ${(props) => props.chordLength > 5 && "36px"};
+    height: ${(props) => props.chordLength > 5 && "36px"};
+    line-height: ${(props) => props.chordLength > 5 && "33px"};
+    font-size: ${(props) => props.chordLength > 5 && "15px"}; */
+  }
   /* &:after {
     content: '';
   flex: 1;
@@ -101,32 +121,6 @@ const ChordNode = styled.div`
   } */
 `;
 
-// const ChordNodes = props => {
-//   return (
-//     <AddNodes>
-//     <ChordNodeContainer>
-//       {chordList.map((c, i) => (
-//         <ChordNode
-//           onClick={() => {
-//             setActiveNode(i)
-
-//             setIsCalculated(false)
-
-//           }}
-//           onMouseOver={() => handleHover(i)}
-//           active={activeNode === i}
-//           playing={activePlayingNode === i}
-//           key={i}
-//         >
-//           {c === undefined ? "" : c.includes("m") ? c[0] + c[1] : c[0]}
-//         </ChordNode>
-
-//       ))}
-//     </ChordNodeContainer>
-
-//     <AddChordButton onClick={onClickAddChordNode}>+</AddChordButton>
-//   </AddNodes>
-//   )
 // }
 
 const App = () => {
@@ -161,7 +155,7 @@ const App = () => {
   };
 
   const onClickCalculate = () => {
-    setChordString("");
+    // setChordString("");
 
     if (chordList.length < 2) {
       return;
@@ -220,9 +214,11 @@ const App = () => {
   };
 
   const onPlayChord = (index) => {
-    if (isPlaying) {
-      return;
-    }
+    // if (isPlaying) {
+    onClickStop();
+    // unsetActiveNode();
+
+    // }
 
     setIsPlaying(true);
 
@@ -268,7 +264,14 @@ const App = () => {
   };
 
   const onClickStop = () => {
+    var id = window.setTimeout(function () {}, 0);
+
+    while (id--) {
+      window.clearTimeout(id); // will do nothing if no timeout with id is present
+    }
+
     scheduledEvents.forEach((scheduledEvent) => {
+      console.log(scheduledEvent);
       clearTimeout(scheduledEvent);
     });
     setIsPlaying(false);
@@ -338,9 +341,6 @@ const App = () => {
     } else if (accidental === "b" && found.length > 1) {
       found = found.find((n) => n.includes("b"));
     }
-    // if (found.length > 1) {
-    //   found = found.join("/");
-    // }
 
     console.log(found);
     return found;
@@ -348,12 +348,6 @@ const App = () => {
 
   const deleteChord = (index) => {
     console.log(index);
-    // this.setState((prevState) => {
-    //   const newItems = this.state.chordList.filter((c, i) => i !== index);
-
-    //   console.log(newItems);
-    //   return { chordList: newItems };
-    // });
 
     setChordList((prevState) => {
       const newItems = chordList.filter((c, i) => i !== index);
@@ -363,6 +357,7 @@ const App = () => {
     });
 
     onClickCalculate();
+    setActiveNode(index - 1)
     setIsCalculated(false);
   };
 
@@ -371,20 +366,12 @@ const App = () => {
     setIsCalculated(false);
   };
 
-  const handleHover = (index) => {
-    // if (isCalculated) {
-      // setActiveNode(undefined)
-    onPlayChord(index);
-    // }
-  };
-
-
   useEffect(() => {
-    document.body.style.backgroundColor = "#afd275";
+    document.body.style.backgroundColor = "#add8e6";
   }, []);
   return (
-    <div style={{ height: "100%", background: "#afd275", padding: "25px" }}>
-      <h1 className="h3">Chord Inversion Helper Demo</h1>
+    <div style={{ height: "100%", padding: "25px" }}>
+      <h1 className="h3">Chord Calculator</h1>
       <Directions></Directions>
       <div className="mt-5">
         <SoundfontProvider
@@ -397,7 +384,6 @@ const App = () => {
               isPlaying={isPlaying}
               setRecording={setRecording}
               noteRange={{ first: 53, last: 79 }}
-              // width={1300}
               playNote={playNote}
               noteToPlay={60}
               stopNote={stopNote}
@@ -406,54 +392,65 @@ const App = () => {
           )}
         />
       </div>
-      
-      <div style={{ margin: "0 auto"}}>
-      <h4 style={{marginTop: "25px"}} >{chordString === "" ? "Current Chord Notes: " : "Current Chord Notes: " + chordString}</h4>
-        <AddNodes>
-          <ChordNodeContainer>
-            {chordList.map((c, i) => (
-              <ChordNode
-              onDoubleClick={() => {
-                  if (!isPlaying) {
-                    // setActiveNode(i);
-                    onPlayChord(i)
-                    setIsCalculated(false);
-                  }
-                }}
-                chordLength={chordList.length}
-                onClick={() => {
-                  setActiveNode(i);
-                }}
-                active={activeNode === i}
-                playing={activePlayingNode === i}
-                key={i}
-              >
-                {c === undefined ? "" : c.includes("m") ? c[0] + c[1] : c[0]}
-              </ChordNode>
-            ))}
-          </ChordNodeContainer>
 
-          <AddChordButton
+      <div style={{ margin: "0 auto" }}>
+        <NodeAndChordContainter>
+        <h4 style={{ marginTop: "25px" }}>
+          {chordString === ""
+            ? "Current Chord Notes: "
+            : "Current Chord Notes: " + chordString}
+        </h4>
+          <AddNodes>
+            <ChordNodeContainer>
+              {chordList.map((c, i) => (
+                <ChordNode
+                  onDoubleClick={() => {
+                    // if (!isPlaying) {
+                    // setActiveNode(i);
+                    onPlayChord(i);
+                    setIsCalculated(false);
+                    // }
+                  }}
+                  chordLength={chordList.length}
+                  onClick={() => {
+                    setActiveNode(i);
+                  }}
+                  active={activeNode === i}
+                  playing={activePlayingNode === i}
+                  key={i}
+                >
+                  {c === undefined ? "" : c.includes("m") ? c[0] + c[1] : c[0]}
+                </ChordNode>
+              ))}
+              <AddChordButton
+                disabled={chordList.length > 7}
+                onClick={chordList.length > 7 ? null : onClickAddChordNode}
+                chordLength={chordList.length}
+              >
+                +
+              </AddChordButton>
+            </ChordNodeContainer>
+
+            {/* <AddChordButton
             disabled={chordList.length > 7}
             onClick={chordList.length > 7 ? "" : onClickAddChordNode}
             chordLength={chordList.length}
           >
             +
-          </AddChordButton>
-        </AddNodes>
-        {activeNode !== undefined ? (
-          <ChordPicker
-            activeNode={activeNode}
-            setChord={setChord}
-            unsetActiveNode={unsetActiveNode}
-            chordList={chordList}
-            deleteChord={deleteChord}
-          />
-        ) : (
-          ""
-        )}
-
-        <div className="mt-5" style={{ marginTop: "20px" }}>
+          </AddChordButton> */}
+          </AddNodes>
+          {activeNode !== undefined ? (
+            <ChordPicker
+              activeNode={activeNode}
+              setChord={setChord}
+              unsetActiveNode={unsetActiveNode}
+              chordList={chordList}
+              deleteChord={deleteChord}
+            />
+          ) : (
+            ""
+          )}
+                  <div className="mt-5" style={{ marginTop: "20px" }}>
           {/* <button
             disabled={
               isPlaying ||
@@ -472,6 +469,9 @@ const App = () => {
           </button>
           <button onClick={onClickStop}>Stop</button>
         </div>
+        </NodeAndChordContainter>
+
+
       </div>
     </div>
   );

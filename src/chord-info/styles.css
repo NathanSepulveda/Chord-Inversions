@@ -1,0 +1,31 @@
+body {
+    /* font-family: avenir; */
+
+    @font-face {
+        font-family: "CustomFont";
+        src: url("https://yoursite.com/css/fonts/CustomFont.eot");
+        src: url("https://yoursite.com/css/fonts/CustomFont.woff") format("woff"),
+        url("https://yoursite.com/css/fonts/CustomFont.otf") format("opentype"),
+        url("https://yoursite.com/css/fonts/CustomFont.svg#filename") format("svg");
+        }
+}
+
+#searchBar button {
+    background: linear-gradient(
+        90deg
+        , rgb(230, 55, 168) 0%, rgb(103, 31, 175) 100%);
+
+        border-radius: 0px 99px 99px 0px;
+}
+
+#searchBar .search-query {
+    border-radius: 20px;
+}
+
+#mainNav {
+    background: linear-gradient(236deg, rgb(20, 210, 223), rgb(129, 73, 232), rgb(41, 13, 93), rgb(219, 0, 112), rgb(129, 73, 232), rgb(16, 215, 223)) 0% 0% / 1200% 1200%;
+}
+
+
+
+

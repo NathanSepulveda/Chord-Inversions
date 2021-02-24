@@ -14,20 +14,20 @@ const LetterTile = styled.div`
   margin: 7px;
 
   @media (max-width: 768px) {
-    font-size: 14px;
+    font-size: 16px;
 
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   margin: 5px;
   /* padding: 5px; */
-  line-height: 38px;
+  line-height: 40px;
   }
 
   color: ${(props) => (props.selected ? "black" : "white")};
   
   cursor: ${(props) => !props.disabled && "pointer"};
   opacity: ${(props) => props.disabled && 0.2};
-  background-color: ${(props) => (props.selected ? "yellow" : "#afd275")};
+  background-color: ${(props) => (props.selected ? "yellow" : "#add8e6")};
 
   box-shadow: ${(props) =>
     props.selected
@@ -51,10 +51,59 @@ const LetterTile = styled.div`
 
 `;
 
+
+const DeleteButton = styled.button`
+width: 68px;
+  height: 45px;
+
+  /* background-color: ${(props) => props.selected && "blue"}; */
+  font-size: 20px;
+  border-radius: 7px;
+  
+  line-height: 45px;
+  text-align: center;
+  margin: 7px;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+
+  width: 55px;
+  height: 40px;
+  margin: 5px;
+  /* padding: 5px; */
+  line-height: 40px;
+  }
+
+  border: none;
+    outline:none;
+  color: ${(props) => (props.selected ? "black" : "white")};
+  
+  cursor: ${(props) => !props.disabled && "pointer"};
+  opacity: ${(props) => props.disabled && 0.2};
+  background-color: red;
+
+  box-shadow: ${(props) =>
+    props.selected
+      ? "2px 2px 5px 0 rgba(255, 255, 255, 0.3), -0.5px -1px 4px 0 rgba(0, 0, 0, 0.25)"
+      : "2px 2px 5px 0 rgba(0, 0, 0, 0.25), -2px -2px 5px 0 rgba(255, 255, 255, 0.3)"};
+
+  background-image: linear-gradient(-45deg, rgba(0,0,0,0.22), rgba(255,255,255,0.25));
+
+
+
+
+
+
+`
+
+
+
+
 const TileContainer = styled.div`
   display: flex;
   flex-direction: row;
-  background-color: #afd275;
+  margin-bottom: 12px;
+  /* background-color: white; */
 `;
 
 const ChordPicker = (props) => {
@@ -155,6 +204,9 @@ const ChordPicker = (props) => {
 
   return (
     <React.Fragment>
+      <div>
+
+      
       <TileContainer>
         {letters.map((l, i) => (
           <LetterTile
@@ -187,7 +239,7 @@ const ChordPicker = (props) => {
             {l}
           </LetterTile>
         ))}
-        <div style={{ background: "#afd275", width: "35px" }}></div>
+        <div style={{width: "35px" }}></div>
         {qualities.map((l, i) => (
           <LetterTile
             key={i}
@@ -197,7 +249,22 @@ const ChordPicker = (props) => {
           >
             {l === "M" ? "maj" : "min"}
           </LetterTile>
+          
         ))}
+                {props.activeNode !== 0 ? (
+          <DeleteButton
+            onClick={() => {
+              if (props.activeNode !== 0) {
+                props.deleteChord(props.activeNode);
+                props.unsetActiveNode();
+              }
+            }}
+          >
+            del
+          </DeleteButton>
+        ) : (
+          ""
+        )}
       </TileContainer>
       {props.activeNode === 0 ? (
         <TileContainer>
@@ -235,26 +302,13 @@ const ChordPicker = (props) => {
       >
         Set Chord
       </button> */}
-        {props.activeNode !== 0 ? (
-          <button
-            onClick={() => {
-              if (props.activeNode !== 0) {
-                props.deleteChord(props.activeNode);
-                props.unsetActiveNode();
-              }
-            }}
-          >
-            delete
-          </button>
-        ) : (
-          ""
-        )}
         {/* <button onClick={props.unsetActiveNode}> 
           Close
       </button> */}
       </div>
 
       {/* <button onClick={this.props.unsetActiveNode}></button> */}
+      </div>
     </React.Fragment>
   );
 };
