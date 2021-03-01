@@ -13,9 +13,7 @@ let Directions = () => {
     <div>
       <p>
         This app is designed to help you find the best chord inversions to use
-        for a chord progression on the piano. Your chord progressions will sound
-        smoother and will be easier to play compared to only using root position
-        chords.
+        for a chord progression on the piano.
       </p>
       <Cont>
         <h2>Directions</h2>

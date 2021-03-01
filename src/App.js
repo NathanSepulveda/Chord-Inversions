@@ -8,6 +8,9 @@ import processChordChain, { chordChain } from "./chord-info/ChordChain";
 import { notes } from "./chord-info/ChordStepKeys";
 import Directions from "./Directions";
 import ChordPicker from "./ChordPicker";
+import Footer from "./footer";
+import TempoBox from "./Tempo";
+import PlayButton from "./playbutton";
 
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -84,19 +87,17 @@ const ChordNode = styled.div`
   cursor: pointer;
   z-index: 1;
 
-
   /* background-color: ${(props) => (props.selected ? "yellow" : "#add8e6")}; */
 
-box-shadow: ${(props) =>
-  props.active || props.playing
-    ? "2px 2px 5px 0 rgba(255, 255, 255, 0.3), -0.5px -1px 4px 0 rgba(0, 0, 0, 0.25)"
-    : "2px 2px 5px 0 rgba(0, 0, 0, 0.25), -2px -2px 5px 0 rgba(255, 255, 255, 0.3)"};
+  box-shadow: ${(props) =>
+    props.active || props.playing
+      ? "2px 2px 5px 0 rgba(255, 255, 255, 0.3), -0.5px -1px 4px 0 rgba(0, 0, 0, 0.25)"
+      : "2px 2px 5px 0 rgba(0, 0, 0, 0.25), -2px -2px 5px 0 rgba(255, 255, 255, 0.3)"};
 
-background-image: ${(props) =>
-  props.active || props.playing
-    ? "linear-gradient(135deg, rgba(0,0,0,0.255), rgba(255,255,255,0.25))"
-    : ""};
-
+  background-image: ${(props) =>
+    props.active || props.playing
+      ? "linear-gradient(135deg, rgba(0,0,0,0.255), rgba(255,255,255,0.25))"
+      : ""};
 
   @media (max-width: 768px) {
     font-size: 22px;
@@ -106,7 +107,7 @@ background-image: ${(props) =>
     margin: 5px;
     /* padding: 5px; */
     line-height: 50px;
-/* 
+    /* 
     width: ${(props) => props.chordLength > 5 && "36px"};
     height: ${(props) => props.chordLength > 5 && "36px"};
     line-height: ${(props) => props.chordLength > 5 && "33px"};
@@ -137,8 +138,28 @@ const App = () => {
   const [chordString, setChordString] = useState("");
   const [activePlayingNode, setActivePlayingNode] = useState(undefined);
   const [isLooping, setIsLooping] = useState(false);
+  const [speedIndex, setSpeedIndex] = useState(1);
+
+  const speeds = [
+    { label: "🐢", time: 3.0 },
+    { label: "🐇", time: 1.7 },
+    { label: "🐆", time: 1.0 },
+  ];
+
+  const handleSetSpeeds = () => {
+    console.log("hi");
+    if (speedIndex !== 2) {
+      setSpeedIndex((prevState) => prevState + 1);
+    } else {
+      setSpeedIndex(0);
+    }
+  };
 
   let scheduledEvents = [];
+
+  useEffect(() => {
+    onClickCalculate();
+  }, [speedIndex]);
 
   const getRecordingEndTime = () => {
     if (recording.events.length === 0) {
@@ -165,7 +186,8 @@ const App = () => {
       return;
     }
     let events = processChordChain(
-      chordChain(chordList[0], chordList.slice(1))
+      chordChain(chordList[0], chordList.slice(1)),
+      speeds[speedIndex].time
     );
     setRecordingHandler({
       events: events[0],
@@ -357,7 +379,7 @@ const App = () => {
     });
 
     onClickCalculate();
-    setActiveNode(index - 1)
+    setActiveNode(index - 1);
     setIsCalculated(false);
   };
 
@@ -370,111 +392,148 @@ const App = () => {
     document.body.style.backgroundColor = "#add8e6";
   }, []);
   return (
-    <div style={{ height: "100%", padding: "25px" }}>
-      <h1 className="h3">Chord Calculator</h1>
-      <Directions></Directions>
-      <div className="mt-5">
-        <SoundfontProvider
-          instrumentName="acoustic_grand_piano"
-          audioContext={audioContext}
-          hostname={soundfontHostname}
-          render={({ isLoading, playNote, stopNote }) => (
-            <PianoWithRecording
-              recording={recording}
-              isPlaying={isPlaying}
-              setRecording={setRecording}
-              noteRange={{ first: 53, last: 79 }}
-              playNote={playNote}
-              noteToPlay={60}
-              stopNote={stopNote}
-              disabled={isLoading}
-            />
-          )}
-        />
-      </div>
+    <React.Fragment>
+      <div
+        style={{ height: "100%", padding: "10px 10px 0 10px" }}
+        className="content"
+      >
+        <h1 className="h3">Chord Calculator</h1>
+        <Directions></Directions>
+        <div className="mt-5">
+          <SoundfontProvider
+            instrumentName="acoustic_grand_piano"
+            audioContext={audioContext}
+            hostname={soundfontHostname}
+            render={({ isLoading, playNote, stopNote }) => (
+              <PianoWithRecording
+                recording={recording}
+                isPlaying={isPlaying}
+                setRecording={setRecording}
+                noteRange={{ first: 53, last: 79 }}
+                playNote={playNote}
+                noteToPlay={60}
+                stopNote={stopNote}
+                disabled={isLoading}
+              />
+            )}
+          />
+        </div>
 
-      <div style={{ margin: "0 auto" }}>
-        <NodeAndChordContainter>
-        <h4 style={{ marginTop: "25px" }}>
-          {chordString === ""
-            ? "Current Chord Notes: "
-            : "Current Chord Notes: " + chordString}
-        </h4>
-          <AddNodes>
-            <ChordNodeContainer>
-              {chordList.map((c, i) => (
-                <ChordNode
-                  onDoubleClick={() => {
-                    // if (!isPlaying) {
-                    // setActiveNode(i);
-                    onPlayChord(i);
-                    setIsCalculated(false);
-                    // }
-                  }}
+        <div style={{ margin: "0 auto" }}>
+          <NodeAndChordContainter>
+            <h4 style={{ marginTop: "25px" }}>
+              {chordString === ""
+                ? "Current Chord Notes: "
+                : "Current Chord Notes: " + chordString}
+            </h4>
+            <AddNodes>
+              <ChordNodeContainer>
+                {chordList.map((c, i) => (
+                  <ChordNode
+                    onDoubleClick={() => {
+                      // if (!isPlaying) {
+                      // setActiveNode(i);
+                      onPlayChord(i);
+                      setIsCalculated(false);
+                      // }
+                    }}
+                    chordLength={chordList.length}
+                    onClick={() => {
+                      setActiveNode(i);
+                    }}
+                    active={activeNode === i}
+                    playing={activePlayingNode === i}
+                    key={i}
+                  >
+                    {c === undefined
+                      ? ""
+                      : c.includes("m")
+                      ? c[0] + c[1]
+                      : c[0]}
+                  </ChordNode>
+                ))}
+                <AddChordButton
+                  disabled={chordList.length > 7}
+                  onClick={chordList.length > 7 ? null : onClickAddChordNode}
                   chordLength={chordList.length}
-                  onClick={() => {
-                    setActiveNode(i);
-                  }}
-                  active={activeNode === i}
-                  playing={activePlayingNode === i}
-                  key={i}
                 >
-                  {c === undefined ? "" : c.includes("m") ? c[0] + c[1] : c[0]}
-                </ChordNode>
-              ))}
-              <AddChordButton
-                disabled={chordList.length > 7}
-                onClick={chordList.length > 7 ? null : onClickAddChordNode}
-                chordLength={chordList.length}
-              >
-                +
-              </AddChordButton>
-            </ChordNodeContainer>
+                  +
+                </AddChordButton>
+              </ChordNodeContainer>
 
-            {/* <AddChordButton
+              {/* <AddChordButton
             disabled={chordList.length > 7}
             onClick={chordList.length > 7 ? "" : onClickAddChordNode}
             chordLength={chordList.length}
           >
             +
           </AddChordButton> */}
-          </AddNodes>
-          {activeNode !== undefined ? (
-            <ChordPicker
-              activeNode={activeNode}
-              setChord={setChord}
-              unsetActiveNode={unsetActiveNode}
-              chordList={chordList}
-              deleteChord={deleteChord}
-            />
-          ) : (
-            ""
-          )}
-                  <div className="mt-5" style={{ marginTop: "20px" }}>
-          {/* <button
-            disabled={
-              isPlaying ||
-              chordList.length < 2 ||
-              chordList.includes(undefined)
-            }
-            onClick={!isPlaying ? onClickCalculate : undefined}
-          >
-            Calculate
-          </button> */}
-          <button disabled={isPlaying} onClick={onClickClear}>
-            Clear
-          </button>
-          <button disabled={isPlaying} onClick={onClickPlay}>
-            Play
-          </button>
-          <button onClick={onClickStop}>Stop</button>
+            </AddNodes>
+            {activeNode !== undefined ? (
+              <ChordPicker
+                activeNode={activeNode}
+                setChord={setChord}
+                unsetActiveNode={unsetActiveNode}
+                chordList={chordList}
+                deleteChord={deleteChord}
+              />
+            ) : (
+              ""
+            )}
+          </NodeAndChordContainter>
         </div>
-        </NodeAndChordContainter>
-
-
       </div>
-    </div>
+      <Footer>
+        <div
+          className="mt-5"
+          style={{ display: "flex", justifyContent: "space-around" }}
+        >
+          <TempoBox
+            speedIndex={speedIndex}
+            speeds={speeds}
+            handleSetSpeeds={handleSetSpeeds}
+            disabled={isPlaying}
+          ></TempoBox>
+          <PlayButton
+            onClick={isPlaying ? onClickStop : onClickPlay}
+            playing={isPlaying}
+          />
+          <DeleteButton disabled={isPlaying} onClick={onClickClear}>
+            CLEAR
+          </DeleteButton>
+
+          {/* {isPlaying ? (
+            <button onClick={onClickStop}>Stop</button>
+          ) : (
+            <button disabled={isPlaying} onClick={onClickPlay}>
+              Play
+            </button>
+          )} */}
+        </div>
+      </Footer>
+    </React.Fragment>
   );
 };
+
+const DeleteButton = styled.button`
+  width: 60px;
+  height: 40px;
+
+  /* background-color: ${(props) => props.selected && "blue"}; */
+  font-size: 11px;
+  border-radius: 7px;
+
+  line-height: 40px;
+  text-align: center;
+  /* margin: 7px; */
+
+  border: none;
+  outline: none;
+  color: ${(props) => (props.selected ? "black" : "white")};
+
+  cursor: ${(props) => !props.disabled && "pointer"};
+  opacity: ${(props) => props.disabled && 0.2};
+  background-color: red;
+`;
 
 export default App;

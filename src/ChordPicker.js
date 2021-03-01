@@ -52,7 +52,7 @@ const LetterTile = styled.div`
 `;
 
 
-const DeleteButton = styled.button`
+export const DeleteButton = styled.button`
 width: 68px;
   height: 45px;
 
@@ -251,20 +251,7 @@ const ChordPicker = (props) => {
           </LetterTile>
           
         ))}
-                {props.activeNode !== 0 ? (
-          <DeleteButton
-            onClick={() => {
-              if (props.activeNode !== 0) {
-                props.deleteChord(props.activeNode);
-                props.unsetActiveNode();
-              }
-            }}
-          >
-            del
-          </DeleteButton>
-        ) : (
-          ""
-        )}
+                
       </TileContainer>
       {props.activeNode === 0 ? (
         <TileContainer>
@@ -282,6 +269,20 @@ const ChordPicker = (props) => {
       ) : (
         ""
       )}
+      {props.activeNode !== 0 ? (
+          <DeleteButton
+            onClick={() => {
+              if (props.activeNode !== 0) {
+                props.deleteChord(props.activeNode);
+                props.unsetActiveNode();
+              }
+            }}
+          >
+            del
+          </DeleteButton>
+        ) : (
+          ""
+        )}
 
       <div>
         {/* {chordRoot}

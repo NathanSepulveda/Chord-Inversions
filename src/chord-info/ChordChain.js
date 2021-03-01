@@ -155,8 +155,8 @@ let getTransform = (prev, destination) => {
   };
 
 
-   let processChordChain = (cChain) => {
-    let duration = 1.9;
+   let processChordChain = (cChain, speed) => {
+    let duration = speed - 0.1;
     let current = 0;
     let neww = [];
     let justNotes = [];
@@ -166,7 +166,7 @@ let getTransform = (prev, destination) => {
       c.forEach((n) => {
         neww.push({ midiNumber: n, time: current, duration: duration, group: i });
       });
-      current += 2;
+      current += speed;
     });
     return [neww, justNotes];
   };
