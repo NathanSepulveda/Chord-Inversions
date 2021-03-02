@@ -8,9 +8,8 @@ import processChordChain, { chordChain } from "./chord-info/ChordChain";
 import { notes } from "./chord-info/ChordStepKeys";
 import Directions from "./Directions";
 import ChordPicker from "./ChordPicker";
-import Footer from "./footer";
-import TempoBox from "./Tempo";
-import PlayButton from "./playbutton";
+import BottomControlls from "./footer";
+
 
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -124,6 +123,14 @@ const ChordNode = styled.div`
 
 // }
 
+const colors = ["#add8e6", "#ffb6c1", "#afd275", "#957DAD"];
+
+const speeds = [
+  { label: "🐢", time: 3.0 },
+  { label: "🐇", time: 1.7 },
+  { label: "🐆", time: 1.0 },
+];
+
 const App = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [recording, setRecording] = useState({
@@ -141,16 +148,9 @@ const App = () => {
   const [speedIndex, setSpeedIndex] = useState(1);
   const [currentColor, setColor] = useState("#add8e6");
 
-  const colors = ["#add8e6", "#ffb6c1", "#afd275", "#957DAD"];
 
-  const speeds = [
-    { label: "🐢", time: 3.0 },
-    { label: "🐇", time: 1.7 },
-    { label: "🐆", time: 1.0 },
-  ];
 
   const handleSetSpeeds = () => {
-    console.log("hi");
     if (speedIndex !== 2) {
       setSpeedIndex((prevState) => prevState + 1);
     } else {
@@ -342,14 +342,12 @@ const App = () => {
       return newItems;
     });
 
-
     // setIsCalculated(false)
   };
 
   useEffect(() => {
     onClickCalculate();
   }, [chordList]);
-
 
   const getKeyByValue = (object, value, quality, accidental) => {
     console.log(value);
@@ -478,14 +476,6 @@ const App = () => {
                   +
                 </AddChordButton>
               </ChordNodeContainer>
-
-              {/* <AddChordButton
-            disabled={chordList.length > 7}
-            onClick={chordList.length > 7 ? "" : onClickAddChordNode}
-            chordLength={chordList.length}
-          >
-            +
-          </AddChordButton> */}
             </AddNodes>
             {activeNode !== undefined ? (
               <ChordPicker
@@ -502,60 +492,20 @@ const App = () => {
           </NodeAndChordContainter>
         </div>
       </div>
-      <Footer style={{zIndex: 1000}}>
-        <div
-          className="mt-5"
-          style={{ display: "flex", justifyContent: "space-around" }}
-        >
-          <TempoBox
-            speedIndex={speedIndex}
-            speeds={speeds}
-            handleSetSpeeds={handleSetSpeeds}
-            disabled={isPlaying}
-            color={currentColor}
-          ></TempoBox>
-          <PlayButton
-            onClick={isPlaying ? onClickStop : onClickPlay}
-            playing={isPlaying}
-            currentColor={currentColor}
-          />
-          <DeleteButton disabled={isPlaying} onClick={onClickClear}>
-            CLEAR
-          </DeleteButton>
-
-          {/* {isPlaying ? (
-            <button onClick={onClickStop}>Stop</button>
-          ) : (
-            <button disabled={isPlaying} onClick={onClickPlay}>
-              Play
-            </button>
-          )} */}
-        </div>
-      </Footer>
+      <BottomControlls
+        style={{ zIndex: 1000 }}
+        speedIndex={speedIndex}
+        speeds={speeds}
+        handleSetSpeeds={handleSetSpeeds}
+        isPlaying={isPlaying}
+        currentColor={currentColor}
+        onClickClear={onClickClear}
+        onClickPlay={onClickPlay}
+        onClickStop={onClickStop}
+      ></BottomControlls>
     </React.Fragment>
   );
 };
-
-const DeleteButton = styled.button`
-  width: 60px;
-  height: 40px;
-
-  /* background-color: ${(props) => props.selected && "blue"}; */
-  font-size: 11px;
-  border-radius: 7px;
-
-  line-height: 40px;
-  text-align: center;
-  /* margin: 7px; */
-
-  border: none;
-  outline: none;
-  color: ${(props) => (props.selected ? "black" : "white")};
-
-  cursor: ${(props) => !props.disabled && "pointer"};
-  opacity: ${(props) => props.disabled && 0.2};
-  background-color: red;
-`;
 
 const ColorDot = styled.span`
   height: 25px;
@@ -564,8 +514,6 @@ const ColorDot = styled.span`
   background-color: ${(props) => props.color};
   opacity: ${(props) => props.color};
   border: ${(props) => props.currentColor === props.color && "1px solid white"};
-  /* border-color: ${(props) =>
-    props.currentColor === props.color && "white"}; */
   border-radius: 50%;
   display: inline-block;
 `;

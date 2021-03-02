@@ -17,7 +17,7 @@ const NumberBox = styled.div`
   color: black;
   text-align: center;
   line-height: 40px;
-  font-size: 24px;
+  font-size: 28px;
   cursor: ${(props) => !props.disabled && "pointer"};
 
 
@@ -29,7 +29,7 @@ const TempoBox = (props) => {
       <NumberBox onClick={() => !props.disabled ? props.handleSetSpeeds() : ""} disabled={props.disabled} color={props.color}>
         {props.speeds[props.speedIndex].label}
       </NumberBox>
-      <label style={{position: "relative", left: "-18px", color: "white"}}>Playback Speed</label>
+      <label style={{position: "relative", left: "-18px", color: "white", fontSize: "11px"}}>PLAYBACK SPEED</label>
     </div>
   );
 };
