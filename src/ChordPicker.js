@@ -27,7 +27,7 @@ const LetterTile = styled.div`
   
   cursor: ${(props) => !props.disabled && "pointer"};
   opacity: ${(props) => props.disabled && 0.2};
-  background-color: ${(props) => (props.selected ? "yellow" : "#add8e6")};
+  background-color: ${(props) => (props.selected ? "yellow" : props.currentColor)};
 
   box-shadow: ${(props) =>
     props.selected
@@ -103,7 +103,7 @@ const TileContainer = styled.div`
   display: flex;
   flex-direction: row;
   margin-bottom: 12px;
-  /* background-color: white; */
+  background-color: ${(props) => props.currentColor};
 `;
 
 const ChordPicker = (props) => {
@@ -207,7 +207,7 @@ const ChordPicker = (props) => {
       <div>
 
       
-      <TileContainer>
+      <TileContainer currentColor={props.currentColor}>
         {letters.map((l, i) => (
           <LetterTile
             key={i}
@@ -225,6 +225,7 @@ const ChordPicker = (props) => {
             key={i}
             className="accidental"
             selected={l === noteAccidental}
+            currentColor={props.currentColor}
             onClick={() => {
               handleAccidental(l);
             }}
@@ -246,6 +247,7 @@ const ChordPicker = (props) => {
             className="quality"
             selected={l === chordQuality}
             onClick={() => setChordQuality(l)}
+            currentColor={props.currentColor}
           >
             {l === "M" ? "maj" : "min"}
           </LetterTile>
@@ -261,6 +263,7 @@ const ChordPicker = (props) => {
               className="position"
               selected={l === position}
               onClick={() => setPosition(l)}
+              currentColor={props.currentColor}
             >
               {l === 0 ? "root" : l === 1 ? "1st" : "2nd"}
             </LetterTile>

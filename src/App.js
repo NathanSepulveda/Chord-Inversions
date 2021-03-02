@@ -73,7 +73,7 @@ const ChordNode = styled.div`
 
   border-radius: 100%;
   /* border: 1px solid white; */
-  background-color: #add8e6;
+  background-color: ${(props) => props.currentColor};
   color: white;
   line-height: 65px;
   text-align: center;
@@ -139,6 +139,9 @@ const App = () => {
   const [activePlayingNode, setActivePlayingNode] = useState(undefined);
   const [isLooping, setIsLooping] = useState(false);
   const [speedIndex, setSpeedIndex] = useState(1);
+  const [currentColor, setColor] = useState("#add8e6");
+
+  const colors = ["#add8e6", "#ffb6c1", "#afd275", "#957DAD"];
 
   const speeds = [
     { label: "🐢", time: 3.0 },
@@ -278,9 +281,9 @@ const App = () => {
     console.log(asNotes);
     let str = asNotes.join(" - ");
 
-    let chordS = chordFromList[0] + chordFromList[1] + ": " + str;
+    let chordS = str;
     if (chordFromList.includes("M")) {
-      chordS = chordFromList[0] + ": " + str;
+      chordS = str;
     }
     setChordString(chordS);
   };
@@ -339,12 +342,14 @@ const App = () => {
       return newItems;
     });
 
+
     // setIsCalculated(false)
   };
 
   useEffect(() => {
     onClickCalculate();
   }, [chordList]);
+
 
   const getKeyByValue = (object, value, quality, accidental) => {
     console.log(value);
@@ -389,15 +394,27 @@ const App = () => {
   };
 
   useEffect(() => {
-    document.body.style.backgroundColor = "#add8e6";
-  }, []);
+    document.body.style.backgroundColor = currentColor;
+  }, [currentColor]);
   return (
     <React.Fragment>
       <div
         style={{ height: "100%", padding: "10px 10px 0 10px" }}
         className="content"
       >
-        <h1 className="h3">Chord Calculator</h1>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <h1 className="h3">Chord Calculator</h1>
+          <div>
+            {colors.map((c) => (
+              <ColorDot
+                color={c}
+                currentColor={currentColor}
+                onClick={() => setColor(c)}
+              ></ColorDot>
+            ))}
+          </div>
+        </div>
+        {/* <h1 className="h3">Chord Calculator</h1> */}
         <Directions></Directions>
         <div className="mt-5">
           <SoundfontProvider
@@ -430,6 +447,7 @@ const App = () => {
               <ChordNodeContainer>
                 {chordList.map((c, i) => (
                   <ChordNode
+                    currentColor={currentColor}
                     onDoubleClick={() => {
                       // if (!isPlaying) {
                       // setActiveNode(i);
@@ -476,6 +494,7 @@ const App = () => {
                 unsetActiveNode={unsetActiveNode}
                 chordList={chordList}
                 deleteChord={deleteChord}
+                currentColor={currentColor}
               />
             ) : (
               ""
@@ -483,7 +502,7 @@ const App = () => {
           </NodeAndChordContainter>
         </div>
       </div>
-      <Footer>
+      <Footer style={{zIndex: 1000}}>
         <div
           className="mt-5"
           style={{ display: "flex", justifyContent: "space-around" }}
@@ -493,10 +512,12 @@ const App = () => {
             speeds={speeds}
             handleSetSpeeds={handleSetSpeeds}
             disabled={isPlaying}
+            color={currentColor}
           ></TempoBox>
           <PlayButton
             onClick={isPlaying ? onClickStop : onClickPlay}
             playing={isPlaying}
+            currentColor={currentColor}
           />
           <DeleteButton disabled={isPlaying} onClick={onClickClear}>
             CLEAR
@@ -534,6 +555,19 @@ const DeleteButton = styled.button`
   cursor: ${(props) => !props.disabled && "pointer"};
   opacity: ${(props) => props.disabled && 0.2};
   background-color: red;
+`;
+
+const ColorDot = styled.span`
+  height: 25px;
+  width: 25px;
+  margin: 7px 2px 0 0;
+  background-color: ${(props) => props.color};
+  opacity: ${(props) => props.color};
+  border: ${(props) => props.currentColor === props.color && "1px solid white"};
+  /* border-color: ${(props) =>
+    props.currentColor === props.color && "white"}; */
+  border-radius: 50%;
+  display: inline-block;
 `;
 
 export default App;

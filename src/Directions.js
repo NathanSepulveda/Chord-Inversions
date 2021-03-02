@@ -7,6 +7,15 @@ const Cont = styled.div`
   flex-direction: row;
 `;
 
+
+const Arrow = styled.div`
+background-image: url(${chev});
+height: 20px;
+width: 20px;
+margin: 8px 5px;
+cursor: pointer;
+
+`
 let Directions = () => {
   const [isShowing, setIsShowing] = useState(false);
   return (
@@ -18,6 +27,7 @@ let Directions = () => {
       <Cont>
         <h2>Directions</h2>
         <img onClick={() => {setIsShowing(prev => !prev)}} style={{ height: "20px", margin: "8px 5px", cursor: "pointer" }} src={chev} />
+        {/* <Arrow></Arrow> */}
       </Cont>
       {
           isShowing ? <ol style={{marginTop: "-5px"}}>

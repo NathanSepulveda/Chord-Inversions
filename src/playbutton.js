@@ -31,7 +31,8 @@ const S = {
     }
 
     // gradient background white symbol
-    background: #add8e6;
+    /* background: #add8e6; */
+    background-color: ${(props) => props.currentColor};
     color: white;
 
     &:hover {
@@ -99,6 +100,7 @@ const PlayButton = (props) => {
     <S.Button
       className={`play-button ${props.className || ""}`}
       onClick={onClick}
+      currentColor={props.currentColor}
       style={props.style}
     >
       {props.children || renderSymbol()}
