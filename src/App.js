@@ -9,7 +9,7 @@ import { notes } from "./chord-info/ChordStepKeys";
 import Directions from "./Directions";
 import ChordPicker from "./ChordPicker";
 import BottomControlls from "./footer";
-
+import { useCookies } from 'react-cookie';
 
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -147,6 +147,8 @@ const App = () => {
   const [isLooping, setIsLooping] = useState(false);
   const [speedIndex, setSpeedIndex] = useState(1);
   const [currentColor, setColor] = useState("#add8e6");
+  const [cookies, setCookie] = useCookies();
+
 
 
 
@@ -392,7 +394,16 @@ const App = () => {
   };
 
   useEffect(() => {
-    document.body.style.backgroundColor = currentColor;
+    if (cookies.color) {
+      document.body.style.backgroundColor = cookies.color
+      setColor(cookies.color)
+    } else {
+      document.body.style.backgroundColor = currentColor;
+    }
+    
+    let current = cookies.test
+    console.log(current)
+    setCookie('test', 1, { path: '/' });
   }, [currentColor]);
   return (
     <React.Fragment>
@@ -407,7 +418,13 @@ const App = () => {
               <ColorDot
                 color={c}
                 currentColor={currentColor}
-                onClick={() => setColor(c)}
+                // onClick={() => (
+                //   setCookie('color', c, { path: '/' });
+                // )}
+                onClick={() => {
+                  setCookie('color', c, { path: '/' })
+                  setColor(c)
+                }}
               ></ColorDot>
             ))}
           </div>

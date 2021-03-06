@@ -18,6 +18,7 @@ const NumberBox = styled.div`
   text-align: center;
   line-height: 40px;
   font-size: 28px;
+  transform: scale(-1, 1);
   cursor: ${(props) => !props.disabled && "pointer"};
 
 

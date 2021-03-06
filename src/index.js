@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { CookiesProvider } from 'react-cookie';
 
 const styleLink = document.createElement("link");
 styleLink.rel = "stylesheet";
@@ -13,9 +14,9 @@ document.head.appendChild(styleLink);
 // ReactDOM.render(<App />, document.getElementById('root'));
 
 ReactDOM.render(
-
+<CookiesProvider>
       <App />
-
+      </CookiesProvider>
    ,
     document.getElementById("root")
   );
