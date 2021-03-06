@@ -146,6 +146,7 @@ const ChordPicker = (props) => {
         : [root, chordQuality]
     );
 
+
     console.log("here");
   }, [chordRoot, noteAccidental, chordQuality, position]);
 

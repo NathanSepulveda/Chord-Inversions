@@ -78,6 +78,8 @@ let getTransform = (prev, destination) => {
       currentChordPosition
     );
   
+
+    console.log(prevChord, "wow")
     let newChord = createChord(notes[nextChordRoot], nextChordQuality);
   
     let invertedChord = invertUp(newChord, transform);
@@ -94,11 +96,23 @@ let getTransform = (prev, destination) => {
   export let chordChain = (startingChord, listOfChords) => {
     let next;
     let chords = [];
+
+    if (listOfChords.length < 1) {
+      let prevChord = invertUp(
+        createChord(notes[startingChord[0]], startingChord[1]),
+        startingChord[2]
+      );
+
+      console.log(createChord(notes[startingChord[0]], startingChord[1]))
+      return [prevChord]
+    }
+
     listOfChords.forEach((chord, i) => {
       if (i === 0) {
         let p = getNextChord(startingChord, chord);
         // console.log(p)
         chords.push(p[0]);
+        console.log(p[0], "wow")
         chords.push(p[1]);
         next = p[2];
       } else {
@@ -129,7 +143,7 @@ let getTransform = (prev, destination) => {
   
     let final = lowerAll(p);
   
-    console.log(final);
+    console.log(final, p);
   
     return final;
   };
@@ -160,6 +174,7 @@ let getTransform = (prev, destination) => {
     let current = 0;
     let neww = [];
     let justNotes = [];
+    console.log(cChain)
     cChain.forEach((c, i) => {
       console.log(c);
       justNotes.push(c);
@@ -168,6 +183,7 @@ let getTransform = (prev, destination) => {
       });
       current += speed;
     });
+    console.log(neww, justNotes)
     return [neww, justNotes];
   };
 

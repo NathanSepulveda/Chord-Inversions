@@ -49,16 +49,16 @@ let Directions = () => {
               With your selected chord progression, press "play" to hear and see your chord progression with the best chord inversions!
           </li>
           <li>
-            Double click/tap a chord
+            Click/tap a chord
             node to have that individudal chord playback for you on the piano.
           </li>
           <li>
-            You can edit a chord node at any time, as well as delete all but the
+            You can edit a chord node,as well as delete all but the
             first chord by clicking the chord node and selecting the "delete"
             button.
           </li>
           <li>
-            You can clear your chord progression at any time using the "clear"
+            You can clear your chord progression using the "clear"
             button.
           </li>
         </ol> : ""

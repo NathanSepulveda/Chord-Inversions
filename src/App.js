@@ -183,11 +183,12 @@ const App = () => {
   const onClickCalculate = () => {
     // setChordString("");
 
-    if (chordList.length < 2) {
+    if (chordList.length < 1) {
       return;
     }
+    console.log(chordList)
 
-    if (chordList.includes(undefined)) {
+    if (chordList.includes(undefined) || chordList == []) {
       return;
     }
     let events = processChordChain(
@@ -252,7 +253,10 @@ const App = () => {
     let chordIwant = recordingAsNotes[index];
     let chordName = chordList[index];
 
+    console.log(recordingAsNotes, chordList)
+
     if (chordIwant === undefined || chordName === undefined) {
+      setIsPlaying(false);
       return;
     }
 
@@ -325,6 +329,7 @@ const App = () => {
   };
 
   const onClickAddChordNode = () => {
+    onClickStop()
     if (!isPlaying) {
       setChordList([...chordList, undefined]);
       setActiveNode(chordList.length);
@@ -349,6 +354,7 @@ const App = () => {
 
   useEffect(() => {
     onClickCalculate();
+    
   }, [chordList]);
 
   const getKeyByValue = (object, value, quality, accidental) => {
@@ -375,6 +381,7 @@ const App = () => {
 
   const deleteChord = (index) => {
     console.log(index);
+    onClickStop()
 
     setChordList((prevState) => {
       const newItems = chordList.filter((c, i) => i !== index);
@@ -405,6 +412,17 @@ const App = () => {
     console.log(current)
     setCookie('test', 1, { path: '/' });
   }, [currentColor]);
+
+
+  // useEffect(() => {
+  //   if (activeNode && chordList.length > 1) {
+  //     onPlayChord(activeNode)
+  //   }
+    
+  // }, [chordList[activeNode]])
+
+
+
   return (
     <React.Fragment>
       <div
@@ -455,8 +473,8 @@ const App = () => {
           <NodeAndChordContainter>
             <h4 style={{ marginTop: "25px" }}>
               {chordString === ""
-                ? "Current Chord Notes: "
-                : "Current Chord Notes: " + chordString}
+                ? "Active Chord Notes: "
+                : "Active Chord Notes: " + chordString}
             </h4>
             <AddNodes>
               <ChordNodeContainer>
@@ -473,6 +491,8 @@ const App = () => {
                     chordLength={chordList.length}
                     onClick={() => {
                       setActiveNode(i);
+                      onPlayChord(i);
+                      setIsCalculated(false);
                     }}
                     active={activeNode === i}
                     playing={activePlayingNode === i}
@@ -502,6 +522,7 @@ const App = () => {
                 chordList={chordList}
                 deleteChord={deleteChord}
                 currentColor={currentColor}
+                onPlayChord={onPlayChord}
               />
             ) : (
               ""
