@@ -430,7 +430,7 @@ const App = () => {
         className="content"
       >
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <h1 className="h3">Chord Calculator</h1>
+          <h1 className="h3">Chord Inversion Calculator</h1>
           <div>
             {colors.map((c) => (
               <ColorDot
