@@ -27,7 +27,7 @@ const LetterTile = styled.div`
   
   cursor: ${(props) => !props.disabled && "pointer"};
   opacity: ${(props) => props.disabled && 0.2};
-  background-color: ${(props) => (props.selected ? "yellow" : props.currentColor)};
+  background-color: ${(props) => (props.selected ? "#e0b0ff" : props.currentColor)};
 
   box-shadow: ${(props) =>
     props.selected

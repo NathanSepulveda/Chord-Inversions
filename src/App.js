@@ -78,7 +78,7 @@ const ChordNode = styled.div`
   text-align: center;
   font-size: 18px;
   margin-right: 20px;
-  background-color: ${(props) => props.active && "#C0C0C0"};
+  background-color: ${(props) => props.active && "#e0b0ff"};
   background-color: ${(props) => props.playing && "yellow"};
   color: ${(props) => props.playing && "black"};
   user-select: none;
@@ -126,7 +126,7 @@ const ChordNode = styled.div`
 const colors = ["#add8e6", "#ffb6c1", "#afd275", "#957DAD"];
 
 const speeds = [
-  { label: "🐢", time: 3.0 },
+  { label: "🐢", time: 3.3 },
   { label: "🐇", time: 1.7 },
   { label: "🐆", time: 1.0 },
 ];
@@ -241,11 +241,25 @@ const App = () => {
     }, getRecordingEndTime() * 1000);
   };
 
+
+  function sleep(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+  }
+
   const onPlayChord = (index) => {
     // if (isPlaying) {
-    onClickStop();
-    // unsetActiveNode();
-
+    //   setIsPlaying(false);
+    //   sleep(100)
+    //   setRecordingHandler({currentEvents: []});
+    // onClickStop();
+    // // sleep(200)
+    
+    // // unsetActiveNode();
+    //   // return
     // }
 
     setIsPlaying(true);
@@ -268,9 +282,9 @@ const App = () => {
     setActivePlayingNode(index);
     convertMIDIToChordLetters(chordName, chordIwant);
 
-    setTimeout(() => {
-      onClickStop();
-    }, 1 * 2000);
+    // setTimeout(() => {
+    //   onClickStop();
+    // }, 1 * 2000);
   };
 
   const convertMIDIToChordLetters = (chordFromList, chordIwant) => {
@@ -330,17 +344,17 @@ const App = () => {
 
   const onClickAddChordNode = () => {
     onClickStop()
-    if (!isPlaying) {
+    // if (!isPlaying) {
       setChordList([...chordList, undefined]);
       setActiveNode(chordList.length);
 
       setIsCalculated(false);
-    }
+    // }
   };
 
   const setChord = (index, chordValue) => {
     console.log(index);
-
+    onClickStop()
     setChordList((prevState) => {
       const newItems = [...prevState];
       newItems[index] = chordValue;
@@ -429,16 +443,13 @@ const App = () => {
         style={{ height: "100%", padding: "10px 10px 0 10px" }}
         className="content"
       >
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <h1 className="h3">Chord Inversion Calculator</h1>
-          <div>
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <h1>Chord Inversion Calculator</h1>
+          <div style={{marginTop: "-18px"}}>
             {colors.map((c) => (
               <ColorDot
                 color={c}
                 currentColor={currentColor}
-                // onClick={() => (
-                //   setCookie('color', c, { path: '/' });
-                // )}
                 onClick={() => {
                   setCookie('color', c, { path: '/' })
                   setColor(c)
@@ -484,14 +495,18 @@ const App = () => {
                     onDoubleClick={() => {
                       // if (!isPlaying) {
                       // setActiveNode(i);
+
                       onPlayChord(i);
                       setIsCalculated(false);
                       // }
                     }}
                     chordLength={chordList.length}
                     onClick={() => {
+
+                      setIsPlaying(false);
+                      sleep(10)
                       setActiveNode(i);
-                      onPlayChord(i);
+                      // onPlayChord(i);
                       setIsCalculated(false);
                     }}
                     active={activeNode === i}
@@ -546,13 +561,24 @@ const App = () => {
 };
 
 const ColorDot = styled.span`
-  height: 25px;
-  width: 25px;
-  margin: 7px 2px 0 0;
+  height: 22px;
+  width: 22px;
+  margin: 7px 5px 0 0;
   background-color: ${(props) => props.color};
   opacity: ${(props) => props.color};
-  border: ${(props) => props.currentColor === props.color && "1px solid white"};
+  /* border: ${(props) => props.currentColor === props.color && "1px solid white"}; */
   border-radius: 50%;
+
+  box-shadow: ${(props) =>
+    props.currentColor === props.color
+      ? "2px 2px 5px 0 rgba(255, 255, 255, 0.3), -0.5px -1px 4px 0 rgba(0, 0, 0, 0.25)"
+      : ""};
+
+background-image: ${(props) =>
+    props.currentColor === props.color
+      ? "linear-gradient(135deg, rgba(0,0,0,0.255), rgba(255,255,255,.2))"
+      : ""};
+
   display: inline-block;
 `;
 
