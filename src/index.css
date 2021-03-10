@@ -28,6 +28,20 @@ code {
   border: none !important;
 }
 
+.ReactModalPortal {
+  z-index: 9;
+}
+
+
+
+@supports(padding: max(0px)) {
+  .content {
+      padding-left: max(12px, env(safe-area-inset-left));
+      padding-right: max(12px, env(safe-area-inset-right));
+      padding-top: 18px;
+  }
+}
+
 
 html, body {
   height: 100%;

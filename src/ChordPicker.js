@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import useSound from "use-sound";
 
+import click from "./button.mp3";
 const LetterTile = styled.div`
   width: 45px;
   height: 45px;
@@ -8,7 +10,7 @@ const LetterTile = styled.div`
   /* background-color: ${(props) => props.selected && "blue"}; */
   font-size: 20px;
   border-radius: 7px;
-  
+
   line-height: 45px;
   text-align: center;
   margin: 7px;
@@ -16,18 +18,19 @@ const LetterTile = styled.div`
   @media (max-width: 768px) {
     font-size: 16px;
 
-  width: 40px;
-  height: 40px;
-  margin: 5px;
-  /* padding: 5px; */
-  line-height: 40px;
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    /* padding: 5px; */
+    line-height: 40px;
   }
 
   color: ${(props) => (props.selected ? "black" : "white")};
-  
+
   cursor: ${(props) => !props.disabled && "pointer"};
   opacity: ${(props) => props.disabled && 0.2};
-  background-color: ${(props) => (props.selected ? "#e0b0ff" : props.currentColor)};
+  background-color: ${(props) =>
+    props.selected ? "#e0b0ff" : props.currentColor};
 
   box-shadow: ${(props) =>
     props.selected
@@ -39,45 +42,41 @@ const LetterTile = styled.div`
       ? "linear-gradient(135deg, rgba(0,0,0,0.255), rgba(255,255,255,0.25))"
       : ""};
 
-
-&.position {
+  &.position {
     width: 65px;
-} 
+  }
 
-&.quality {
+  &.quality {
     width: 55px;
-} 
-
-
+  }
 `;
 
-
 export const DeleteButton = styled.button`
-width: 68px;
+  width: 78px;
   height: 45px;
 
   /* background-color: ${(props) => props.selected && "blue"}; */
-  font-size: 20px;
+  font-size: 16px;
   border-radius: 7px;
-  
+
   line-height: 45px;
   text-align: center;
   margin: 7px;
 
   @media (max-width: 768px) {
-    font-size: 16px;
+    font-size: 12px;
 
-  width: 55px;
-  height: 40px;
-  margin: 5px;
-  /* padding: 5px; */
-  line-height: 40px;
+    width: 75px;
+    height: 40px;
+    margin: 5px;
+    /* padding: 5px; */
+    line-height: 40px;
   }
 
   border: none;
-    outline:none;
+  outline: none;
   color: ${(props) => (props.selected ? "black" : "white")};
-  
+
   cursor: ${(props) => !props.disabled && "pointer"};
   opacity: ${(props) => props.disabled && 0.2};
   background-color: red;
@@ -87,17 +86,12 @@ width: 68px;
       ? "2px 2px 5px 0 rgba(255, 255, 255, 0.3), -0.5px -1px 4px 0 rgba(0, 0, 0, 0.25)"
       : "2px 2px 5px 0 rgba(0, 0, 0, 0.25), -2px -2px 5px 0 rgba(255, 255, 255, 0.3)"};
 
-  background-image: linear-gradient(-45deg, rgba(0,0,0,0.22), rgba(255,255,255,0.25));
-
-
-
-
-
-
-`
-
-
-
+  background-image: linear-gradient(
+    -45deg,
+    rgba(0, 0, 0, 0.22),
+    rgba(255, 255, 255, 0.25)
+  );
+`;
 
 const TileContainer = styled.div`
   display: flex;
@@ -116,8 +110,20 @@ const ChordPicker = (props) => {
   const accidentals = ["#", "b"];
   const qualities = ["M", "m"];
   const positions = [0, 1, 2];
+  const [increment, setIncrement] = useState("plus");
+
+  const [playbackRate, setPlaybackRate] = React.useState(1.0);
+
+  const [play] = useSound(click, {
+    playbackRate,
+    volume: .9,
+  });
 
   const handleAccidental = (v) => {
+    if (props.allowSound) {
+      play();
+    }
+    
     setNoteAccidental((prevState) => {
       if (["C", "F"].includes(chordRoot) && v === "b") {
         return prevState;
@@ -146,7 +152,6 @@ const ChordPicker = (props) => {
         : [root, chordQuality]
     );
 
-
     console.log("here");
   }, [chordRoot, noteAccidental, chordQuality, position]);
 
@@ -165,7 +170,7 @@ const ChordPicker = (props) => {
         setChordQuality(current[1]);
       }
       if (current.length > 2) {
-        setPosition(current[2])
+        setPosition(current[2]);
       }
     } else {
       setChordRoot("C");
@@ -193,6 +198,18 @@ const ChordPicker = (props) => {
   // //       );
   // // }, [])
 
+  const handleSound = () => {
+    if (increment === "plus") {
+      setPlaybackRate(playbackRate + (Math.random() * 20) / 100);
+      play();
+    } else {
+      setPlaybackRate(playbackRate - (Math.random() * 20) / 100);
+      play();
+    }
+
+    setInterval((prev) => (prev === "minus" ? "plus" : "minus"));
+  };
+
   const handleRoot = (v) => {
     if (noteAccidental === "#" && ["E", "B"].includes(v)) {
       setNoteAccidental("");
@@ -206,74 +223,95 @@ const ChordPicker = (props) => {
   return (
     <React.Fragment>
       <div>
-
-      
-      <TileContainer currentColor={props.currentColor}>
-        {letters.map((l, i) => (
-          <LetterTile
-            key={i}
-            className="letter"
-            selected={l === chordRoot}
-            onClick={() => handleRoot(l)}
-          >
-            {l}
-          </LetterTile>
-        ))}
-      </TileContainer>
-      <TileContainer>
-        {accidentals.map((l, i) => (
-          <LetterTile
-            key={i}
-            className="accidental"
-            selected={l === noteAccidental}
-            currentColor={props.currentColor}
-            onClick={() => {
-              handleAccidental(l);
-            }}
-            disabled={
-              ["C", "F"].includes(chordRoot) && l === "b"
-                ? true
-                : ["E", "B"].includes(chordRoot) && l === "#"
-                ? true
-                : false
-            }
-          >
-            {l}
-          </LetterTile>
-        ))}
-        <div style={{width: "35px" }}></div>
-        {qualities.map((l, i) => (
-          <LetterTile
-            key={i}
-            className="quality"
-            selected={l === chordQuality}
-            onClick={() => setChordQuality(l)}
-            currentColor={props.currentColor}
-          >
-            {l === "M" ? "maj" : "min"}
-          </LetterTile>
-          
-        ))}
-                
-      </TileContainer>
-      {props.activeNode === 0 ? (
-        <TileContainer>
-          {positions.map((l, i) => (
+        <TileContainer currentColor={props.currentColor}>
+          {letters.map((l, i) => (
             <LetterTile
               key={i}
-              className="position"
-              selected={l === position}
-              onClick={() => setPosition(l)}
-              currentColor={props.currentColor}
+              className="letter"
+              selected={l === chordRoot}
+              // onClick={() => handleRoot(l)}
+              onClick={() => {
+                if (props.allowSound) {
+                  play();
+                }
+                handleRoot(l);
+              }}
             >
-              {l === 0 ? "root" : l === 1 ? "1st" : "2nd"}
+              {l}
             </LetterTile>
           ))}
         </TileContainer>
-      ) : (
-        ""
-      )}
-      {props.activeNode !== 0 ? (
+        <TileContainer>
+          {accidentals.map((l, i) => (
+            <LetterTile
+              key={i}
+              className="accidental"
+              selected={l === noteAccidental}
+              currentColor={props.currentColor}
+              // onClick={() => {
+              //   handleAccidental(l);
+              // }}
+              onClick={() => {
+
+
+                handleAccidental(l);
+              }}
+              disabled={
+                ["C", "F"].includes(chordRoot) && l === "b"
+                  ? true
+                  : ["E", "B"].includes(chordRoot) && l === "#"
+                  ? true
+                  : false
+              }
+            >
+              {l}
+            </LetterTile>
+          ))}
+          <div style={{ width: "35px" }}></div>
+          {qualities.map((l, i) => (
+            <LetterTile
+              key={i}
+              className="quality"
+              selected={l === chordQuality}
+              // onClick={() => setChordQuality(l)}
+              onClick={() => {
+                //  setPlaybackRate((playbackRate + (Math.random() * 20)/100))
+                if (props.allowSound) {
+                  play();
+                }
+                // handleSound()
+                setChordQuality(l);
+              }}
+              currentColor={props.currentColor}
+            >
+              {l === "M" ? "maj" : "min"}
+            </LetterTile>
+          ))}
+        </TileContainer>
+        {props.activeNode === 0 ? (
+          <TileContainer>
+            {positions.map((l, i) => (
+              <LetterTile
+                key={i}
+                className="position"
+                selected={l === position}
+                // onClick={() => setPosition(l)}
+                onClick={()=> {
+                  if (props.allowSound) {
+                    play();
+                  }
+                  setPosition(l)
+                }}
+                currentColor={props.currentColor}
+              >
+                {l === 0 ? "root" : l === 1 ? "1st" : "2nd"}
+              </LetterTile>
+            ))}
+          </TileContainer>
+        ) : (
+          ""
+        )}
+        {props.activeNode !== 0 ? (
           <DeleteButton
             onClick={() => {
               if (props.activeNode !== 0) {
@@ -282,17 +320,17 @@ const ChordPicker = (props) => {
               }
             }}
           >
-            del
+            DELETE
           </DeleteButton>
         ) : (
           ""
         )}
 
-      <div>
-        {/* {chordRoot}
+        <div>
+          {/* {chordRoot}
         {noteAccidental}
         {chordQuality} */}
-        {/* <button
+          {/* <button
       style={{marginLeft: "10px"}}
         onClick={() => {
           let root = chordRoot + noteAccidental;
@@ -307,12 +345,12 @@ const ChordPicker = (props) => {
       >
         Set Chord
       </button> */}
-        {/* <button onClick={props.unsetActiveNode}> 
+          {/* <button onClick={props.unsetActiveNode}> 
           Close
       </button> */}
-      </div>
+        </div>
 
-      {/* <button onClick={this.props.unsetActiveNode}></button> */}
+        {/* <button onClick={this.props.unsetActiveNode}></button> */}
       </div>
     </React.Fragment>
   );

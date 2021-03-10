@@ -30,7 +30,9 @@ let Directions = () => {
         {/* <Arrow></Arrow> */}
       </Cont>
       {
-          isShowing ? <ol style={{marginTop: "-5px"}}>
+          isShowing ? 
+        <div style={{marginBottom: "5px"}}>
+          <ol style={{marginTop: "-10px"}}>
           <li>
             Begin by adding a starting chord with the circular button with a "+"
             sign.
@@ -49,7 +51,7 @@ let Directions = () => {
               With your selected chord progression, press "play" to hear and see your chord progression with the best chord inversions!
           </li>
           <li>
-            Click/tap a chord
+            Double click/tap a chord
             node to have that individudal chord playback for you on the piano.
           </li>
           <li>
@@ -61,11 +63,39 @@ let Directions = () => {
             You can clear your chord progression using the "clear"
             button.
           </li>
-        </ol> : ""
+        </ol> 
+        <p>Built by <Link href="https://twitter.com/nateysepy" newTab={true}>Nathan Sepulveda</Link></p> 
+        </div>:
+        
+         ""
+        
       }
+      
       
     </div>
   );
 };
+
+
+const Link = ({ newTab, children, href, isUnderlined }) => (
+  <A
+      href={href}
+      isUnderlined={isUnderlined}
+      rel={newTab ? 'noopener noreferrer' : undefined}
+      target={newTab ? '_blank' : undefined}
+  >
+      {children}
+  </A>
+);
+
+const A = styled.a`
+  ${props => props.isUnderlined ? `text-decoration: underline;` : null}
+  color: white;
+
+  &:hover {
+      text-decoration: underline;
+  }
+`;
+
 
 export default Directions;

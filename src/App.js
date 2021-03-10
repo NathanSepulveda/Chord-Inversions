@@ -9,16 +9,64 @@ import { notes } from "./chord-info/ChordStepKeys";
 import Directions from "./Directions";
 import ChordPicker from "./ChordPicker";
 import BottomControlls from "./footer";
-import { useCookies } from 'react-cookie';
+import { useCookies } from "react-cookie";
+import useSound from "use-sound";
+import Modal from 'react-modal';
 
+import click from "./soft_button.mp3";
+import colorClick from "./color_button.mp3";
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
+
+
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)',
+    zIndex: "100"
+  }
+};
+
+
+Modal.setAppElement('#root')
+
 
 const NodeAndChordContainter = styled.div`
   margin-left: auto;
   margin-right: auto;
   width: 400px;
+`;
+
+const Speaker = styled.div`
+  position: relative;
+  /* opacity: ${(props) => !props.disabled && ".3"}; */
+  margin-top: 10px;
+  user-select: none;
+
+  &:after {
+    left: 0;
+
+    height: 23px;
+    background: ${(props) => !props.allowSound && "#c00"};
+    /* background: #c00; */
+
+    display: block;
+
+    position: absolute;
+    top: 1px;
+    left: 7px;
+
+    content: "";
+    width: 1.5px;
+    transform: rotate(40deg);
+    display: block;
+  }
 `;
 
 const AddChordButton = styled.div`
@@ -137,7 +185,8 @@ const App = () => {
     events: [],
     currentEvents: [],
   });
-
+  const [play] = useSound(click);
+  const [playColor] = useSound(colorClick)
   const [chordList, setChordList] = useState([]);
   const [activeNode, setActiveNode] = useState(undefined);
   const [recordingAsNotes, setRecordingAsNotes] = useState([]);
@@ -148,8 +197,22 @@ const App = () => {
   const [speedIndex, setSpeedIndex] = useState(1);
   const [currentColor, setColor] = useState("#add8e6");
   const [cookies, setCookie] = useCookies();
+  const [allowSound, setAllowSound] = useState(false);
 
 
+  const [modalIsOpen,setIsOpen] = React.useState(false);
+  function openModal() {
+    setIsOpen(true);
+  }
+ 
+  function afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    // subtitle.style.color = '#f00';
+  }
+ 
+  function closeModal(){
+    setIsOpen(false);
+  }
 
 
   const handleSetSpeeds = () => {
@@ -186,7 +249,7 @@ const App = () => {
     if (chordList.length < 1) {
       return;
     }
-    console.log(chordList)
+    console.log(chordList);
 
     if (chordList.includes(undefined) || chordList == []) {
       return;
@@ -241,7 +304,6 @@ const App = () => {
     }, getRecordingEndTime() * 1000);
   };
 
-
   function sleep(milliseconds) {
     const date = Date.now();
     let currentDate = null;
@@ -257,7 +319,7 @@ const App = () => {
     //   setRecordingHandler({currentEvents: []});
     // onClickStop();
     // // sleep(200)
-    
+
     // // unsetActiveNode();
     //   // return
     // }
@@ -267,7 +329,7 @@ const App = () => {
     let chordIwant = recordingAsNotes[index];
     let chordName = chordList[index];
 
-    console.log(recordingAsNotes, chordList)
+    console.log(recordingAsNotes, chordList);
 
     if (chordIwant === undefined || chordName === undefined) {
       setIsPlaying(false);
@@ -343,18 +405,18 @@ const App = () => {
   };
 
   const onClickAddChordNode = () => {
-    onClickStop()
+    onClickStop();
     // if (!isPlaying) {
-      setChordList([...chordList, undefined]);
-      setActiveNode(chordList.length);
+    setChordList([...chordList, undefined]);
+    setActiveNode(chordList.length);
 
-      setIsCalculated(false);
+    setIsCalculated(false);
     // }
   };
 
   const setChord = (index, chordValue) => {
     console.log(index);
-    onClickStop()
+    onClickStop();
     setChordList((prevState) => {
       const newItems = [...prevState];
       newItems[index] = chordValue;
@@ -368,7 +430,6 @@ const App = () => {
 
   useEffect(() => {
     onClickCalculate();
-    
   }, [chordList]);
 
   const getKeyByValue = (object, value, quality, accidental) => {
@@ -395,7 +456,7 @@ const App = () => {
 
   const deleteChord = (index) => {
     console.log(index);
-    onClickStop()
+    onClickStop();
 
     setChordList((prevState) => {
       const newItems = chordList.filter((c, i) => i !== index);
@@ -416,48 +477,70 @@ const App = () => {
 
   useEffect(() => {
     if (cookies.color) {
-      document.body.style.backgroundColor = cookies.color
-      setColor(cookies.color)
+      document.body.style.backgroundColor = cookies.color;
+      setColor(cookies.color);
     } else {
       document.body.style.backgroundColor = currentColor;
     }
-    
-    let current = cookies.test
-    console.log(current)
-    setCookie('test', 1, { path: '/' });
-  }, [currentColor]);
 
+    let current = cookies.test;
+    console.log(current);
+    setCookie("test", 1, { path: "/" });
+  }, [currentColor]);
 
   // useEffect(() => {
   //   if (activeNode && chordList.length > 1) {
   //     onPlayChord(activeNode)
   //   }
-    
+
   // }, [chordList[activeNode]])
-
-
 
   return (
     <React.Fragment>
       <div
-        style={{ height: "100%", padding: "10px 10px 0 10px" }}
+        // style={{ height: "100%", padding: "10px 10px 0 10px" }}
         className="content"
       >
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          <h1>Chord Inversion Calculator</h1>
-          <div style={{marginTop: "-18px"}}>
-            {colors.map((c) => (
-              <ColorDot
-                color={c}
-                currentColor={currentColor}
-                onClick={() => {
-                  setCookie('color', c, { path: '/' })
-                  setColor(c)
-                }}
-              ></ColorDot>
-            ))}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+          >
+            <h1>Chord Inversion Calculator</h1>
+            <div style={{ marginTop: "-18px" }}>
+              {colors.map((c) => (
+                <ColorDot
+                  color={c}
+                  currentColor={currentColor}
+                  onClick={() => {
+                    setCookie("color", c, { path: "/" });
+                    setColor(c);
+                    if (allowSound) {
+                      playColor()
+                    }
+                  }}
+                ></ColorDot>
+              ))}
+            </div>
           </div>
+          <Speaker
+            allowSound={allowSound}
+            onClick={() =>
+              setAllowSound((prevState) => (prevState ? false : true))
+            }
+          >
+            🔊
+          </Speaker>
         </div>
+
         {/* <h1 className="h3">Chord Calculator</h1> */}
         <Directions></Directions>
         <div className="mt-5">
@@ -490,39 +573,56 @@ const App = () => {
             <AddNodes>
               <ChordNodeContainer>
                 {chordList.map((c, i) => (
-                  <ChordNode
-                    currentColor={currentColor}
-                    onDoubleClick={() => {
-                      // if (!isPlaying) {
-                      // setActiveNode(i);
+                  <div>
+                    <ChordNode
+                      currentColor={currentColor}
+                      onDoubleClick={() => {
+                        // if (!isPlaying) {
+                        // setActiveNode(i);
 
-                      onPlayChord(i);
-                      setIsCalculated(false);
-                      // }
-                    }}
-                    chordLength={chordList.length}
-                    onClick={() => {
-
-                      setIsPlaying(false);
-                      sleep(10)
-                      setActiveNode(i);
-                      // onPlayChord(i);
-                      setIsCalculated(false);
-                    }}
-                    active={activeNode === i}
-                    playing={activePlayingNode === i}
-                    key={i}
-                  >
-                    {c === undefined
-                      ? ""
-                      : c.includes("m")
-                      ? c[0] + c[1]
-                      : c[0]}
-                  </ChordNode>
+                        onPlayChord(i);
+                        setIsCalculated(false);
+                        // }
+                      }}
+                      chordLength={chordList.length}
+                      onClick={() => {
+                        setIsPlaying(false);
+                        // sleep(10);
+                        setActiveNode(i);
+                        // onPlayChord(i);
+                        setIsCalculated(false);
+                      }}
+                      active={activeNode === i}
+                      playing={activePlayingNode === i}
+                      key={i}
+                    >
+                      {c === undefined
+                        ? ""
+                        : c.includes("m")
+                        ? c[0] + c[1]
+                        : c[0]}
+                    </ChordNode>
+                    {/* {activeNode === i ? (
+                      <button
+                        style={{ zIndex: 10, position: "absolute" }}
+                        onClick={() => deleteChord(i)}
+                      >
+                        x
+                      </button>
+                    ) : (
+                      ""
+                    )} */}
+                  </div>
                 ))}
                 <AddChordButton
                   disabled={chordList.length > 7}
-                  onClick={chordList.length > 7 ? null : onClickAddChordNode}
+                  // onClick={chordList.length > 7 ? null : onClickAddChordNode}
+                  onClick={() => {
+                    onClickAddChordNode();
+                    if (allowSound) {
+                      play();
+                    }
+                  }}
                   chordLength={chordList.length}
                 >
                   +
@@ -538,13 +638,35 @@ const App = () => {
                 deleteChord={deleteChord}
                 currentColor={currentColor}
                 onPlayChord={onPlayChord}
+                allowSound={allowSound}
               />
             ) : (
               ""
             )}
           </NodeAndChordContainter>
         </div>
+        {/* <button onClick={openModal}>Open Modal</button>
+        <Modal
+          isOpen={modalIsOpen}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+ 
+          <h2 >Hello</h2>
+          <button onClick={closeModal}>close</button>
+          <div>I am a modal</div>
+          <form>
+            <input />
+            <button>tab navigation</button>
+            <button>stays</button>
+            <button>inside</button>
+            <button>the modal</button>
+          </form>
+        </Modal> */}
       </div>
+
       <BottomControlls
         style={{ zIndex: 1000 }}
         speedIndex={speedIndex}
@@ -566,7 +688,8 @@ const ColorDot = styled.span`
   margin: 7px 5px 0 0;
   background-color: ${(props) => props.color};
   opacity: ${(props) => props.color};
-  /* border: ${(props) => props.currentColor === props.color && "1px solid white"}; */
+  /* border: ${(props) =>
+    props.currentColor === props.color && "1px solid white"}; */
   border-radius: 50%;
 
   box-shadow: ${(props) =>
@@ -574,7 +697,7 @@ const ColorDot = styled.span`
       ? "2px 2px 5px 0 rgba(255, 255, 255, 0.3), -0.5px -1px 4px 0 rgba(0, 0, 0, 0.25)"
       : ""};
 
-background-image: ${(props) =>
+  background-image: ${(props) =>
     props.currentColor === props.color
       ? "linear-gradient(135deg, rgba(0,0,0,0.255), rgba(255,255,255,.2))"
       : ""};

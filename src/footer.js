@@ -10,6 +10,7 @@ const F = styled.div`
   padding: 15px;
   position: fixed;
   left: 0;
+  /* right: 0; */
   bottom: 0;
   height: 76px;
   width: 100%;
