@@ -69,6 +69,7 @@ class PianoWithRecording extends React.Component {
               playNote={playNote}
               stopNote={stopNote}
               width={containerWidth}
+              height={"90px"}
               //   onPlayNoteInput={this.onPlayNoteInput}
                 onStopNoteInput={this.onStopNoteInput}
               activeNotes={activeNotes}

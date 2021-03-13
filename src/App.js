@@ -11,31 +11,27 @@ import ChordPicker from "./ChordPicker";
 import BottomControlls from "./footer";
 import { useCookies } from "react-cookie";
 import useSound from "use-sound";
-import Modal from 'react-modal';
-
+import Modal from "react-modal";
 import click from "./soft_button.mp3";
 import colorClick from "./color_button.mp3";
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
 
-
-
 const customStyles = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)',
-    zIndex: "100"
-  }
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-90px",
+    transform: "translate(-50%, -50%)",
+    zIndex: "100",
+    backgroundColor: "pink",
+  },
 };
 
-
-Modal.setAppElement('#root')
-
+Modal.setAppElement("#root");
 
 const NodeAndChordContainter = styled.div`
   margin-left: auto;
@@ -186,7 +182,7 @@ const App = () => {
     currentEvents: [],
   });
   const [play] = useSound(click);
-  const [playColor] = useSound(colorClick)
+  const [playColor] = useSound(colorClick);
   const [chordList, setChordList] = useState([]);
   const [activeNode, setActiveNode] = useState(undefined);
   const [recordingAsNotes, setRecordingAsNotes] = useState([]);
@@ -199,21 +195,34 @@ const App = () => {
   const [cookies, setCookie] = useCookies();
   const [allowSound, setAllowSound] = useState(false);
 
-
-  const [modalIsOpen,setIsOpen] = React.useState(false);
+  const [modalIsOpen, setIsOpen] = React.useState(false);
   function openModal() {
     setIsOpen(true);
   }
- 
+
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
     // subtitle.style.color = '#f00';
   }
- 
-  function closeModal(){
+
+  function closeModal() {
     setIsOpen(false);
   }
 
+  const handleSubmit = (e) => {
+    const fields = {
+      email: "nathans.composer+101@gmail.com",
+    };
+
+    fetch("../.netlify/functions", {
+      method: "POST",
+      body: JSON.stringify(fields),
+    })
+      .then(() => alert("Form Sent!"))
+      .catch((error) => alert(error));
+
+    // e.preventDefault();
+  };
 
   const handleSetSpeeds = () => {
     if (speedIndex !== 2) {
@@ -488,6 +497,28 @@ const App = () => {
     setCookie("test", 1, { path: "/" });
   }, [currentColor]);
 
+  useEffect(() => {
+    if (!cookies.pageVisit) {
+      setCookie("pageVisit", 1, { path: "/" });
+    } else {
+      let current = Number(cookies.pageVisit);
+      setCookie("pageVisit", current + 1, { path: "/" });
+    }
+
+    if (Number(cookies.pageVisit) === 5) {
+      setIsOpen(true);
+    }
+  }, []);
+
+  // useEffect(() => {
+
+  //   // document.getElementById('mod').onclick = function() {
+  //     // document.getElementById('mod').click()
+  //     // window.open(url);
+  //     window.open('https://witty-motivator-5457.ck.page/8935ca41bb','_blank')
+  //   // }
+  // }, [currentColor]);
+
   // useEffect(() => {
   //   if (activeNode && chordList.length > 1) {
   //     onPlayChord(activeNode)
@@ -524,7 +555,7 @@ const App = () => {
                     setCookie("color", c, { path: "/" });
                     setColor(c);
                     if (allowSound) {
-                      playColor()
+                      playColor();
                     }
                   }}
                 ></ColorDot>
@@ -645,26 +676,36 @@ const App = () => {
             )}
           </NodeAndChordContainter>
         </div>
-        {/* <button onClick={openModal}>Open Modal</button>
+        <button onClick={() => openModal()}>Open Modal</button>
         <Modal
           isOpen={modalIsOpen}
           onAfterOpen={afterOpenModal}
           onRequestClose={closeModal}
           style={customStyles}
-          contentLabel="Example Modal"
+          // style={{margin: "0 25%"}}
+          contentLabel="Learn More"
         >
- 
-          <h2 >Hello</h2>
-          <button onClick={closeModal}>close</button>
-          <div>I am a modal</div>
+          <h2>Want to learn more? 🧠</h2>
+          <p>
+            Inversions can be hard, even with the help of the app! I am working
+            on a short <b>video course</b> going over the ins and outs of using{" "}
+            <b>chord inversions on the piano</b>. Sign up below if you want to
+            stay in the loop! ➰
+          </p>
           <form>
-            <input />
-            <button>tab navigation</button>
-            <button>stays</button>
-            <button>inside</button>
-            <button>the modal</button>
+            <fieldset>
+              <label>
+                <p>Name</p>
+                <input name="name" />
+              </label>
+              <label>
+                <p>Email</p>
+                <input name="email" />
+              </label>
+            </fieldset>
+            <button type="submit">Submit</button>
           </form>
-        </Modal> */}
+        </Modal>
       </div>
 
       <BottomControlls
