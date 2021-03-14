@@ -12,15 +12,25 @@ const F = styled.div`
   left: 0;
   /* right: 0; */
   bottom: 0;
-  height: 76px;
+  height: 74px;
+  align-items: center;
   width: 100%;
+
+
+   @media (min-height: 810px) {
+    height: initial;
+    padding: 35px;
+  } 
+
 `;
 
 const Phantom = styled.div`
   display: block;
   padding: 15px;
-  height: 76px;
-  width: 100%;
+  height: 74px;
+  /* width: 100%; */
+  max-width: 400px;
+
 `;
 
 const DeleteButton = styled.button`

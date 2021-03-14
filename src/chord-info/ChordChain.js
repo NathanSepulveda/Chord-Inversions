@@ -104,7 +104,7 @@ let getTransform = (prev, destination) => {
       );
 
       console.log(createChord(notes[startingChord[0]], startingChord[1]))
-      return [prevChord]
+      return lowerAll([prevChord])
     }
 
     listOfChords.forEach((chord, i) => {

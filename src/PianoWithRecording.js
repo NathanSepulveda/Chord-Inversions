@@ -73,6 +73,7 @@ class PianoWithRecording extends React.Component {
               //   onPlayNoteInput={this.onPlayNoteInput}
                 onStopNoteInput={this.onStopNoteInput}
               activeNotes={activeNotes}
+              // noteRange={{ first: 53, last: 81 }}
               {...pianoProps}
             />
           )}

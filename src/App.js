@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import SoundfontProvider from "./soundfontprovider";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import _ from "lodash";
 import "react-piano/dist/styles.css";
 import PianoWithRecording from "./PianoWithRecording";
@@ -18,17 +18,11 @@ import colorClick from "./color_button.mp3";
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
 
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-90px",
-    transform: "translate(-50%, -50%)",
-    zIndex: "100",
-    backgroundColor: "pink",
-  },
+const formReducer = (state, event) => {
+  return {
+    ...state,
+    [event.name]: event.value,
+  };
 };
 
 Modal.setAppElement("#root");
@@ -42,15 +36,16 @@ const NodeAndChordContainter = styled.div`
 const Speaker = styled.div`
   position: relative;
   /* opacity: ${(props) => !props.disabled && ".3"}; */
+  font-size: 18px;
   margin-top: 10px;
   user-select: none;
 
-  &:after {
+  /* &:after {
     left: 0;
 
     height: 23px;
     background: ${(props) => !props.allowSound && "#c00"};
-    /* background: #c00; */
+
 
     display: block;
 
@@ -62,16 +57,16 @@ const Speaker = styled.div`
     width: 1.5px;
     transform: rotate(40deg);
     display: block;
-  }
+  } */
 `;
 
 const AddChordButton = styled.div`
-  width: 65px;
-  height: 65px;
+  width: 62px;
+  height: 62px;
   border-radius: 100%;
   /* border: 1px solid black; */
   background-color: lightgreen;
-  line-height: 60px;
+  line-height: 58px;
   text-align: center;
   font-size: 32px;
   margin-right: 5px;
@@ -111,14 +106,14 @@ const AddNodes = styled.div`
 `;
 
 const ChordNode = styled.div`
-  width: 65px;
-  height: 65px;
+  width: 62px;
+  height: 62px;
 
   border-radius: 100%;
   /* border: 1px solid white; */
   background-color: ${(props) => props.currentColor};
   color: white;
-  line-height: 65px;
+  line-height: 62px;
   text-align: center;
   font-size: 18px;
   margin-right: 20px;
@@ -195,7 +190,18 @@ const App = () => {
   const [cookies, setCookie] = useCookies();
   const [allowSound, setAllowSound] = useState(false);
 
+  const [formIsSent, setFormIsSent] = useState(false);
+
+  const [formData, setFormData] = useReducer(formReducer, {});
+
   const [modalIsOpen, setIsOpen] = React.useState(false);
+
+  const [popUpHasBeenSeen, setPopUpHasBeenSeen] = useState(false);
+
+  const [hasBeenPlayed, setHasBeenPlayed] = useState(false);
+
+  const [isValidEmail, setIsValidEmail] = useState(true);
+
   function openModal() {
     setIsOpen(true);
   }
@@ -210,18 +216,43 @@ const App = () => {
   }
 
   const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!validateEmail(formData.email)) {
+      setIsValidEmail(false);
+      return;
+    }
+
     const fields = {
-      email: "nathans.composer+101@gmail.com",
+      email: formData.email,
+      first_name: formData.first_name,
     };
 
-    fetch("../.netlify/functions", {
+    setFormIsSent(true);
+
+    fetch("../.netlify/functions/functions", {
       method: "POST",
       body: JSON.stringify(fields),
     })
-      .then(() => alert("Form Sent!"))
+      .then(() => {
+        setFormIsSent(true);
+        setCookie("hasSubscribed", true, { path: "/" });
+      })
       .catch((error) => alert(error));
 
     // e.preventDefault();
+  };
+
+  function validateEmail(email) {
+    const regexp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return regexp.test(email);
+  }
+
+  const handleChange = (event) => {
+    setFormData({
+      name: event.target.name,
+      value: event.target.value,
+    });
   };
 
   const handleSetSpeeds = () => {
@@ -309,30 +340,12 @@ const App = () => {
 
     setTimeout(() => {
       onClickStop();
+      setHasBeenPlayed(true);
       setChordString("");
     }, getRecordingEndTime() * 1000);
   };
 
-  function sleep(milliseconds) {
-    const date = Date.now();
-    let currentDate = null;
-    do {
-      currentDate = Date.now();
-    } while (currentDate - date < milliseconds);
-  }
-
   const onPlayChord = (index) => {
-    // if (isPlaying) {
-    //   setIsPlaying(false);
-    //   sleep(100)
-    //   setRecordingHandler({currentEvents: []});
-    // onClickStop();
-    // // sleep(200)
-
-    // // unsetActiveNode();
-    //   // return
-    // }
-
     setIsPlaying(true);
 
     let chordIwant = recordingAsNotes[index];
@@ -352,10 +365,6 @@ const App = () => {
     setRecordingHandler({ currentEvents });
     setActivePlayingNode(index);
     convertMIDIToChordLetters(chordName, chordIwant);
-
-    // setTimeout(() => {
-    //   onClickStop();
-    // }, 1 * 2000);
   };
 
   const convertMIDIToChordLetters = (chordFromList, chordIwant) => {
@@ -504,32 +513,39 @@ const App = () => {
       let current = Number(cookies.pageVisit);
       setCookie("pageVisit", current + 1, { path: "/" });
     }
-
-    if (Number(cookies.pageVisit) === 5) {
-      setIsOpen(true);
-    }
   }, []);
 
-  // useEffect(() => {
+  useEffect(() => {
+    if (!isPlaying && hasBeenPlayed) {
+      let pageVisits = Number(cookies.pageVisit);
 
-  //   // document.getElementById('mod').onclick = function() {
-  //     // document.getElementById('mod').click()
-  //     // window.open(url);
-  //     window.open('https://witty-motivator-5457.ck.page/8935ca41bb','_blank')
-  //   // }
-  // }, [currentColor]);
+      if (pageVisits % 5 == 0) {
+        if (cookies.hasSubscribed == "false") {
+          setTimeout(() => {
+            setIsOpen(true);
+          }, 1200);
+        }
+      }
+    }
+  }, [hasBeenPlayed]);
 
-  // useEffect(() => {
-  //   if (activeNode && chordList.length > 1) {
-  //     onPlayChord(activeNode)
-  //   }
-
-  // }, [chordList[activeNode]])
-
+  const customStyles = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      padding: "0 !important",
+      marginRight: "-90px",
+      transform: "translate(-50%, -50%)",
+      zIndex: "100",
+      backgroundColor: currentColor,
+    },
+  };
   return (
     <React.Fragment>
       <div
-        // style={{ height: "100%", padding: "10px 10px 0 10px" }}
+        style={{ maxWidth: "1200px", backgroundColor: currentColor, margin: "0 auto"}}
         className="content"
       >
         <div
@@ -568,7 +584,7 @@ const App = () => {
               setAllowSound((prevState) => (prevState ? false : true))
             }
           >
-            🔊
+            {allowSound ? "🔊" : "🔇"}
           </Speaker>
         </div>
 
@@ -676,7 +692,7 @@ const App = () => {
             )}
           </NodeAndChordContainter>
         </div>
-        <button onClick={() => openModal()}>Open Modal</button>
+        {/* <button onClick={() => openModal()}>Open Modal</button> */}
         <Modal
           isOpen={modalIsOpen}
           onAfterOpen={afterOpenModal}
@@ -685,26 +701,85 @@ const App = () => {
           // style={{margin: "0 25%"}}
           contentLabel="Learn More"
         >
-          <h2>Want to learn more? 🧠</h2>
-          <p>
-            Inversions can be hard, even with the help of the app! I am working
-            on a short <b>video course</b> going over the ins and outs of using{" "}
-            <b>chord inversions on the piano</b>. Sign up below if you want to
-            stay in the loop! ➰
-          </p>
-          <form>
-            <fieldset>
-              <label>
-                <p>Name</p>
-                <input name="name" />
-              </label>
-              <label>
-                <p>Email</p>
-                <input name="email" />
-              </label>
-            </fieldset>
-            <button type="submit">Submit</button>
-          </form>
+          <ModalTopBar>
+            {" "}
+            <h2>Want to learn more? 🧠</h2>{" "}
+          </ModalTopBar>
+          {!formIsSent ? (
+            <div style={{ padding: "8px", alignItems: "center" }}>
+              <p style={{ textAlign: "center", fontSize: "18px" }}>
+                Inversions can be hard, even with the help of the app! I am
+                working on a <b>interactive video course</b> that teaches the
+                ins and outs of using <b>chord inversions on the piano</b> (as
+                well as an iOS version of this app). Sign up below if you want
+                to stay in the loop! ➰
+              </p>
+              <form onSubmit={handleSubmit} style={{ textAlign: "center" }}>
+                <label>
+                  <div style={{ margin: "10px 0 10px" }}>
+                    <EmailInput
+                      color={currentColor}
+                      // style={{ width: "250px", height: "35px", padding: "5px", boxShadow: "2px 2px 5px 0 rgba(255, 255, 255, 0.3), -0.5px -1px 4px 0 rgba(0, 0, 0, 0.25)" }}
+                      name="email"
+                      placeholder="futuremusicgenius@mail.com"
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  {!isValidEmail ? (
+                    <p
+                      style={{
+                        marginTop: "-6px",
+                      }}
+                    >
+                      🚨 Please use a valid email address 🚨
+                    </p>
+                  ) : (
+                    ""
+                  )}
+                </label>
+
+                <input
+                  type="submit"
+                  value="Send it!"
+                  disabled={!formData.email}
+                  style={
+                    !formData.email || formData.email === ""
+                      ? { opacity: ".25" }
+                      : { opacity: "1.0" }
+                  }
+                />
+                {Number(cookies.pageVisit) > 6 ? (
+                  <p
+                    style={{
+                      fontSize: "8px",
+                      textDecoration: "underline",
+                      marginTop: "5px",
+                    }}
+                    onClick={() => {
+                      setCookie("hasSubscribed", true, { path: "/" });
+                      setIsOpen(false);
+                    }}
+                  >
+                    Do not show again.
+                  </p>
+                ) : (
+                  ""
+                )}
+              </form>
+            </div>
+          ) : (
+            <div
+              style={{
+                width: "340px",
+                padding: "25px",
+                textAlign: "center",
+                fontSize: "18px",
+              }}
+            >
+              <p>Thank you so much! 🤘 I'll be in touch soon. 💌 </p>
+            </div>
+          )}
         </Modal>
       </div>
 
@@ -744,6 +819,27 @@ const ColorDot = styled.span`
       : ""};
 
   display: inline-block;
+`;
+
+const EmailInput = styled.input`
+  /* background-color: ${(props) => props.color}; */
+  box-shadow: 2px 2px 5px 0 rgba(255, 255, 255, 0.3),
+    -0.5px -1px 4px 0 rgba(0, 0, 0, 0.25);
+  border: none;
+  width: 250px;
+  height: 35px;
+  padding: 5px;
+  color: black;
+  border-radius: 10px;
+  outline: none;
+`;
+
+const ModalTopBar = styled.div`
+  background-color: white;
+  height: 45px;
+  color: black;
+  text-align: center;
+  padding-top: 8px;
 `;
 
 export default App;

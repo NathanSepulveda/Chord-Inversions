@@ -57,3 +57,22 @@ body {
   flex-shrink: 0;
   color:red;
 }
+
+
+input[type=submit] {
+  background: #222326;
+  width: 100%;
+  max-width: 250px;
+  padding: 2vh;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px 4px;
+  margin-top: 10px;
+  color: white;
+}
+
+.ReactPiano__Keyboard {
+  max-height: 170px !important;
+  max-width: 1250px;
+  margin: 0 auto;
+}

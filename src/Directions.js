@@ -25,8 +25,8 @@ let Directions = () => {
         for a chord progression on the piano.
       </p>
       <Cont>
-        <h2>Directions</h2>
-        <img onClick={() => {setIsShowing(prev => !prev)}} style={{ height: "20px", margin: "8px 5px", cursor: "pointer" }} src={chev} />
+        <h3>Directions</h3>
+        <img onClick={() => {setIsShowing(prev => !prev)}} style={{ height: "16px", margin: "6px 5px", cursor: "pointer" }} src={chev} />
         {/* <Arrow></Arrow> */}
       </Cont>
       {

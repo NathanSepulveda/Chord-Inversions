@@ -4,25 +4,25 @@ import useSound from "use-sound";
 
 import click from "./button.mp3";
 const LetterTile = styled.div`
-  width: 45px;
-  height: 45px;
+  width: 42px;
+  height: 42px;
 
   /* background-color: ${(props) => props.selected && "blue"}; */
   font-size: 20px;
   border-radius: 7px;
 
-  line-height: 45px;
+  line-height: 42px;
   text-align: center;
   margin: 7px;
 
   @media (max-width: 768px) {
     font-size: 16px;
 
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     margin: 5px;
     /* padding: 5px; */
-    line-height: 40px;
+    line-height: 42px;
   }
 
   color: ${(props) => (props.selected ? "black" : "white")};
@@ -67,10 +67,10 @@ export const DeleteButton = styled.button`
     font-size: 12px;
 
     width: 75px;
-    height: 40px;
+    height: 42px;
     margin: 5px;
     /* padding: 5px; */
-    line-height: 40px;
+    line-height: 42px;
   }
 
   border: none;
