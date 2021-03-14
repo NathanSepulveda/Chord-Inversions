@@ -201,6 +201,7 @@ const App = () => {
   const [hasBeenPlayed, setHasBeenPlayed] = useState(false);
 
   const [isValidEmail, setIsValidEmail] = useState(true);
+  const [hasSubscribed, setHasSubscribed] = useState(false)
 
   function openModal() {
     setIsOpen(true);
@@ -237,6 +238,7 @@ const App = () => {
       .then(() => {
         setFormIsSent(true);
         setCookie("hasSubscribed", true, { path: "/" });
+        setHasSubscribed(true)
       })
       .catch((error) => alert(error));
 
@@ -507,6 +509,14 @@ const App = () => {
   }, [currentColor]);
 
   useEffect(() => {
+
+    if (cookies.hasSubscribed) {
+      setHasSubscribed(cookies.hasSubscribed)
+    } else {
+      setCookie("hasSubscribed", false, { path: "/" })
+    }
+
+    
     if (!cookies.pageVisit) {
       setCookie("pageVisit", 1, { path: "/" });
     } else {
@@ -516,10 +526,12 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    console.log(cookies)
+    // setCookie("hasSubscribed", false, { path: "/" });
     if (!isPlaying && hasBeenPlayed) {
       let pageVisits = Number(cookies.pageVisit);
 
-      if (pageVisits % 5 == 0) {
+      if (pageVisits % 4 == 0 || pageVisits == 2) {
         if (cookies.hasSubscribed == "false") {
           setTimeout(() => {
             setIsOpen(true);
@@ -758,6 +770,7 @@ const App = () => {
                     }}
                     onClick={() => {
                       setCookie("hasSubscribed", true, { path: "/" });
+                      setHasSubscribed(true)
                       setIsOpen(false);
                     }}
                   >
