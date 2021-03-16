@@ -8,26 +8,17 @@ const Cont = styled.div`
 `;
 
 
-const Arrow = styled.div`
-background-image: url(${chev});
-height: 20px;
-width: 20px;
-margin: 8px 5px;
-cursor: pointer;
-
-`
 let Directions = () => {
   const [isShowing, setIsShowing] = useState(false);
   return (
     <div>
-      <p>
+      <p style={{margin: "12px 0"}}>
         This app is designed to help you find the best chord inversions to use
         for a chord progression on the piano.
       </p>
       <Cont>
         <h3>Directions</h3>
         <img onClick={() => {setIsShowing(prev => !prev)}} style={{ height: "16px", margin: "6px 5px", cursor: "pointer" }} src={chev} />
-        {/* <Arrow></Arrow> */}
       </Cont>
       {
           isShowing ? 
@@ -77,7 +68,7 @@ let Directions = () => {
 };
 
 
-const Link = ({ newTab, children, href, isUnderlined }) => (
+export const Link = ({ newTab, children, href, isUnderlined }) => (
   <A
       href={href}
       isUnderlined={isUnderlined}

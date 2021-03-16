@@ -6,7 +6,7 @@ import "react-piano/dist/styles.css";
 import PianoWithRecording from "./PianoWithRecording";
 import processChordChain, { chordChain } from "./chord-info/ChordChain";
 import { notes } from "./chord-info/ChordStepKeys";
-import Directions from "./Directions";
+import Directions, { Link } from "./Directions";
 import ChordPicker from "./ChordPicker";
 import BottomControlls from "./footer";
 import { useCookies } from "react-cookie";
@@ -14,6 +14,7 @@ import useSound from "use-sound";
 import Modal from "react-modal";
 import click from "./soft_button.mp3";
 import colorClick from "./color_button.mp3";
+import Emoji from "./emoji";
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
@@ -61,14 +62,14 @@ const Speaker = styled.div`
 `;
 
 const AddChordButton = styled.div`
-  width: 62px;
-  height: 62px;
+  width: 58px;
+  height: 58px;
   border-radius: 100%;
   /* border: 1px solid black; */
   background-color: lightgreen;
-  line-height: 58px;
+  line-height: 56px;
   text-align: center;
-  font-size: 32px;
+  font-size: 30px;
   margin-right: 5px;
 
   @media (max-width: 768px) {
@@ -106,14 +107,14 @@ const AddNodes = styled.div`
 `;
 
 const ChordNode = styled.div`
-  width: 62px;
-  height: 62px;
+  width: 58px;
+  height: 58px;
 
   border-radius: 100%;
   /* border: 1px solid white; */
   background-color: ${(props) => props.currentColor};
   color: white;
-  line-height: 62px;
+  line-height: 58px;
   text-align: center;
   font-size: 18px;
   margin-right: 20px;
@@ -201,7 +202,7 @@ const App = () => {
   const [hasBeenPlayed, setHasBeenPlayed] = useState(false);
 
   const [isValidEmail, setIsValidEmail] = useState(true);
-  const [hasSubscribed, setHasSubscribed] = useState(false)
+  const [hasSubscribed, setHasSubscribed] = useState(false);
 
   function openModal() {
     setIsOpen(true);
@@ -238,7 +239,7 @@ const App = () => {
       .then(() => {
         setFormIsSent(true);
         setCookie("hasSubscribed", true, { path: "/" });
-        setHasSubscribed(true)
+        setHasSubscribed(true);
       })
       .catch((error) => alert(error));
 
@@ -509,14 +510,12 @@ const App = () => {
   }, [currentColor]);
 
   useEffect(() => {
-
     if (cookies.hasSubscribed) {
-      setHasSubscribed(cookies.hasSubscribed)
+      setHasSubscribed(cookies.hasSubscribed);
     } else {
-      setCookie("hasSubscribed", false, { path: "/" })
+      setCookie("hasSubscribed", false, { path: "/" });
     }
 
-    
     if (!cookies.pageVisit) {
       setCookie("pageVisit", 1, { path: "/" });
     } else {
@@ -526,7 +525,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    console.log(cookies)
+    console.log(cookies);
     // setCookie("hasSubscribed", false, { path: "/" });
     if (!isPlaying && hasBeenPlayed) {
       let pageVisits = Number(cookies.pageVisit);
@@ -551,13 +550,21 @@ const App = () => {
       marginRight: "-90px",
       transform: "translate(-50%, -50%)",
       zIndex: "100",
+      maxWidth: "600px",
       backgroundColor: currentColor,
     },
   };
+
+
+
   return (
     <React.Fragment>
       <div
-        style={{ maxWidth: "1200px", backgroundColor: currentColor, margin: "0 auto"}}
+        style={{
+          maxWidth: "1000px",
+          backgroundColor: currentColor,
+          margin: "0 auto",
+        }}
         className="content"
       >
         <div
@@ -573,21 +580,28 @@ const App = () => {
               justifyContent: "space-between",
             }}
           >
-            <h1>Chord Inversion Calculator</h1>
-            <div style={{ marginTop: "-18px" }}>
-              {colors.map((c) => (
-                <ColorDot
-                  color={c}
-                  currentColor={currentColor}
-                  onClick={() => {
-                    setCookie("color", c, { path: "/" });
-                    setColor(c);
-                    if (allowSound) {
-                      playColor();
-                    }
-                  }}
-                ></ColorDot>
-              ))}
+            <h1 style={{ fontStyle: "bold" }}>Chord Inversion Calculator</h1>
+            {/* <Second>Chord Inversion Calculator</Second>
+            <Third>Chord Inversion Calculator</Third> */}
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div style={{ marginTop: "-18px" }}>
+                {colors.map((c) => (
+                  <ColorDot
+                    color={c}
+                    currentColor={currentColor}
+                    onClick={() => {
+                      setCookie("color", c, { path: "/" });
+                      setColor(c);
+                      if (allowSound) {
+                        playColor();
+                      }
+                    }}
+                  ></ColorDot>
+                ))}
+              </div>
+              <p style={{ margin: "-3px 0 0 0 ", fontSize: "10px", display: "flex" }}>
+                created by:<p onClick={openModal} style={{textDecoration: "underline", color: "white", marginLeft: "2px", cursor: "pointer"}}>Nathan Sepulveda</p>
+              </p>
             </div>
           </div>
           <Speaker
@@ -596,7 +610,7 @@ const App = () => {
               setAllowSound((prevState) => (prevState ? false : true))
             }
           >
-            {allowSound ? "🔊" : "🔇"}
+            {allowSound ? <Emoji emoji={"🔊"} description={"sound on"}></Emoji> : <Emoji emoji={"🔇"} description={"sound off"}></Emoji>}
           </Speaker>
         </div>
 
@@ -651,6 +665,10 @@ const App = () => {
                         // onPlayChord(i);
                         setIsCalculated(false);
                       }}
+                      // onPointerDown={() => {
+                      //   pressingDown
+
+                      // }}
                       active={activeNode === i}
                       playing={activePlayingNode === i}
                       key={i}
@@ -715,7 +733,7 @@ const App = () => {
         >
           <ModalTopBar>
             {" "}
-            <h2>Want to learn more? 🧠</h2>{" "}
+            <h2>Want to learn more? <Emoji emoji={"🧠 "} description={"brain"}></Emoji></h2>
           </ModalTopBar>
           {!formIsSent ? (
             <div style={{ padding: "8px", alignItems: "center" }}>
@@ -724,7 +742,13 @@ const App = () => {
                 working on a <b>interactive video course</b> that teaches the
                 ins and outs of using <b>chord inversions on the piano</b> (as
                 well as an iOS version of this app). Sign up below if you want
-                to stay in the loop! ➰
+                to stay in the loop! <Emoji emoji={"➰ "} description={"loop "}></Emoji>
+              </p>
+              <p style={{ textAlign: "center", fontSize: "10px" }}>
+                Follow me on Twitter{" "}
+                <Link href="https://twitter.com/nateysepy" newTab={true}>
+                  @nateysepy
+                </Link>
               </p>
               <form onSubmit={handleSubmit} style={{ textAlign: "center" }}>
                 <label>
@@ -744,7 +768,8 @@ const App = () => {
                         marginTop: "-6px",
                       }}
                     >
-                      🚨 Please use a valid email address 🚨
+                      
+                      <Emoji emoji={"🚨"} description={"alert"}></Emoji>Please use a valid email address <Emoji emoji={"🚨"} description={"alert"}></Emoji>
                     </p>
                   ) : (
                     ""
@@ -770,7 +795,7 @@ const App = () => {
                     }}
                     onClick={() => {
                       setCookie("hasSubscribed", true, { path: "/" });
-                      setHasSubscribed(true)
+                      setHasSubscribed(true);
                       setIsOpen(false);
                     }}
                   >
@@ -790,7 +815,7 @@ const App = () => {
                 fontSize: "18px",
               }}
             >
-              <p>Thank you so much! 🤘 I'll be in touch soon. 💌 </p>
+              <p>Thank you so much! <span role="img" aria-label="rock on emoji">🤘</span>  I'll be in touch soon. 💌 </p>
             </div>
           )}
         </Modal>
@@ -854,5 +879,6 @@ const ModalTopBar = styled.div`
   text-align: center;
   padding-top: 8px;
 `;
+
 
 export default App;

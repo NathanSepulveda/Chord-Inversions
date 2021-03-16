@@ -220,6 +220,9 @@ const ChordPicker = (props) => {
     setChordRoot(v);
   };
 
+
+
+
   return (
     <React.Fragment>
       <div>

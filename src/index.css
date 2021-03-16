@@ -15,17 +15,25 @@ code {
 
 .ReactPiano__Key--active.ReactPiano__Key--natural {
   background :yellow;
-  border: none  !important;
+  /* border: none  !important; */
 }
 
 
 .ReactPiano__Key--natural{
   border: none !important;
-  border-radius: 0 0 0 0 !important;
+  border-radius: 0 0 5px 5px  !important;
+  /* border-radius: 0 5px 5px 0 ; */
 }
+
+.ReactPiano__Key--accidental{
+  border: none !important;
+  border-radius: 0 0 5px 5px  !important;
+  /* border-radius: 0 5px 5px 0 ; */
+}
+
 .ReactPiano__Key--active.ReactPiano__Key--accidental {
   background:yellow;
-  border: none !important;
+  /* border: none !important; */
 }
 
 .ReactModalPortal {
