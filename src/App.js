@@ -555,8 +555,6 @@ const App = () => {
     },
   };
 
-
-
   return (
     <React.Fragment>
       <div
@@ -599,8 +597,25 @@ const App = () => {
                   ></ColorDot>
                 ))}
               </div>
-              <p style={{ margin: "-3px 0 0 0 ", fontSize: "10px", display: "flex" }}>
-                created by:<p onClick={openModal} style={{textDecoration: "underline", color: "white", marginLeft: "2px", cursor: "pointer"}}>Nathan Sepulveda</p>
+              <p
+                style={{
+                  margin: "-3px 0 0 0 ",
+                  fontSize: "10px",
+                  display: "flex",
+                }}
+              >
+                created by:
+                <p
+                  onClick={openModal}
+                  style={{
+                    textDecoration: "underline",
+                    color: "white",
+                    marginLeft: "2px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Nathan Sepulveda
+                </p>
               </p>
             </div>
           </div>
@@ -610,7 +625,11 @@ const App = () => {
               setAllowSound((prevState) => (prevState ? false : true))
             }
           >
-            {allowSound ? <Emoji emoji={"🔊"} description={"sound on"}></Emoji> : <Emoji emoji={"🔇"} description={"sound off"}></Emoji>}
+            {allowSound ? (
+              <Emoji emoji={"🔊"} description={"sound on"}></Emoji>
+            ) : (
+              <Emoji emoji={"🔇"} description={"sound off"}></Emoji>
+            )}
           </Speaker>
         </div>
 
@@ -646,7 +665,7 @@ const App = () => {
             <AddNodes>
               <ChordNodeContainer>
                 {chordList.map((c, i) => (
-                  <div>
+                  <div style={{height: "60px"}}>
                     <ChordNode
                       currentColor={currentColor}
                       onDoubleClick={() => {
@@ -679,16 +698,30 @@ const App = () => {
                         ? c[0] + c[1]
                         : c[0]}
                     </ChordNode>
-                    {/* {activeNode === i ? (
-                      <button
-                        style={{ zIndex: 10, position: "absolute" }}
+                    {activeNode === i && i !== 0 ? (
+                      <div
+                      className="buddy"
+                        style={{
+                          zIndex: 10,
+                          position: "relative",
+                          bottom: "60px",
+                          left: "40px",
+                          borderRadius: "100%",
+                          backgroundColor: "red",
+                          width: "22px",
+                          height: "22px",
+                          fontSize: "1em",
+                          textAlign: "center",
+                          color: "white",
+                          cursor: "pointer",
+                        }}
                         onClick={() => deleteChord(i)}
                       >
                         x
-                      </button>
+                      </div>
                     ) : (
                       ""
-                    )} */}
+                    )}
                   </div>
                 ))}
                 <AddChordButton
@@ -733,7 +766,10 @@ const App = () => {
         >
           <ModalTopBar>
             {" "}
-            <h2>Want to learn more? <Emoji emoji={"🧠 "} description={"brain"}></Emoji></h2>
+            <h2>
+              Want to learn more?{" "}
+              <Emoji emoji={"🧠 "} description={"brain"}></Emoji>
+            </h2>
           </ModalTopBar>
           {!formIsSent ? (
             <div style={{ padding: "8px", alignItems: "center" }}>
@@ -742,7 +778,8 @@ const App = () => {
                 working on a <b>interactive video course</b> that teaches the
                 ins and outs of using <b>chord inversions on the piano</b> (as
                 well as an iOS version of this app). Sign up below if you want
-                to stay in the loop! <Emoji emoji={"➰ "} description={"loop "}></Emoji>
+                to stay in the loop!{" "}
+                <Emoji emoji={"➰ "} description={"loop "}></Emoji>
               </p>
               <p style={{ textAlign: "center", fontSize: "10px" }}>
                 Follow me on Twitter{" "}
@@ -768,8 +805,9 @@ const App = () => {
                         marginTop: "-6px",
                       }}
                     >
-                      
-                      <Emoji emoji={"🚨"} description={"alert"}></Emoji>Please use a valid email address <Emoji emoji={"🚨"} description={"alert"}></Emoji>
+                      <Emoji emoji={"🚨"} description={"alert"}></Emoji>Please
+                      use a valid email address{" "}
+                      <Emoji emoji={"🚨"} description={"alert"}></Emoji>
                     </p>
                   ) : (
                     ""
@@ -815,7 +853,13 @@ const App = () => {
                 fontSize: "18px",
               }}
             >
-              <p>Thank you so much! <span role="img" aria-label="rock on emoji">🤘</span>  I'll be in touch soon. 💌 </p>
+              <p>
+                Thank you so much!{" "}
+                <span role="img" aria-label="rock on emoji">
+                  🤘
+                </span>{" "}
+                I'll be in touch soon. 💌{" "}
+              </p>
             </div>
           )}
         </Modal>
@@ -879,6 +923,5 @@ const ModalTopBar = styled.div`
   text-align: center;
   padding-top: 8px;
 `;
-
 
 export default App;

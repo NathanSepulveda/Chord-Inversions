@@ -29,26 +29,25 @@ let Directions = () => {
             sign.
           </li>
           <li>
-            Select the chord's root, if it's sharp or flat, quaility (major or
+            Select the chord's root, if it's sharp or flat, quality (major or
             minor for now), and position (root, first, or second inversion).
           </li>
           <li>
             After this chord is added, you can add the rest of the chords in the
             progression one by one. You will only be selecting the root, if it's
-            sharp or flat, and the qauilty of the chord for every chord except the
+            sharp or flat, and the quality of the chord for every chord except the
             first.
           </li>
           <li>
-              With your selected chord progression, press "play" to hear and see your chord progression with the best chord inversions!
+              With your selected chord progression, press the "play" button at the bottom to hear and see your chord progression with the best chord inversions!
           </li>
           <li>
             Double click/tap a chord
             node to have that individudal chord playback for you on the piano.
           </li>
           <li>
-            You can edit a chord node,as well as delete all but the
-            first chord by clicking the chord node and selecting the "delete"
-            button.
+            You can delete all but the
+            first chord by clicking the red x in the top right corner of a chord node.
           </li>
           <li>
             You can clear your chord progression using the "clear"

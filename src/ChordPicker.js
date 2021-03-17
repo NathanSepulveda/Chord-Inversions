@@ -314,46 +314,7 @@ const ChordPicker = (props) => {
         ) : (
           ""
         )}
-        {props.activeNode !== 0 ? (
-          <DeleteButton
-            onClick={() => {
-              if (props.activeNode !== 0) {
-                props.deleteChord(props.activeNode);
-                props.unsetActiveNode();
-              }
-            }}
-          >
-            DELETE
-          </DeleteButton>
-        ) : (
-          ""
-        )}
 
-        <div>
-          {/* {chordRoot}
-        {noteAccidental}
-        {chordQuality} */}
-          {/* <button
-      style={{marginLeft: "10px"}}
-        onClick={() => {
-          let root = chordRoot + noteAccidental;
-          props.setChord(
-            Number(props.activeNode),
-            props.activeNode === 0
-              ? [root, chordQuality, position]
-              : [root, chordQuality]
-          );
-          props.unsetActiveNode();
-        }}
-      >
-        Set Chord
-      </button> */}
-          {/* <button onClick={props.unsetActiveNode}> 
-          Close
-      </button> */}
-        </div>
-
-        {/* <button onClick={this.props.unsetActiveNode}></button> */}
       </div>
     </React.Fragment>
   );
