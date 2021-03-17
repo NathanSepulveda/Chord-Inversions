@@ -71,7 +71,7 @@ const AddChordButton = styled.div`
   }
   /* cursor: pointer; */
 
-  @media (max-width: 410px) {
+  @media (max-width: 320px) {
     font-size: 38px;
 
     width: 46px;

@@ -111,7 +111,7 @@ const ChordNode = styled.div`
     font-size: ${(props) => props.chordLength > 5 && "15px"}; */
   }
 
-  @media (max-width: 440px) {
+  @media (max-width: 320px) {
     font-size: 22px;
 
     width: 46px;

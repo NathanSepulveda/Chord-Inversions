@@ -4,14 +4,14 @@ import useSound from "use-sound";
 
 import click from "./button.mp3";
 const LetterTile = styled.div`
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
 
   /* background-color: ${(props) => props.selected && "blue"}; */
   font-size: 20px;
   border-radius: 7px;
 
-  line-height: 42px;
+  line-height: 44px;
   text-align: center;
   margin: 7px;
 
@@ -25,16 +25,16 @@ const LetterTile = styled.div`
     line-height: 42px;
   }
 
-  @media (max-width: 440px) {
+  @media (max-width: 320px) {
     font-size: 16px;
 
-    width: 40px;
-    height: 40px;
+    width: 39px;
+    height: 39px;
     margin: 5px;
     /* padding: 5px; */
-    line-height: 40px;
+    line-height: 39px;
 
-    
+
   }
 
   color: ${(props) => (props.selected ? "black" : "white")};
