@@ -25,6 +25,18 @@ const LetterTile = styled.div`
     line-height: 42px;
   }
 
+  @media (max-width: 440px) {
+    font-size: 16px;
+
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    /* padding: 5px; */
+    line-height: 40px;
+
+    
+  }
+
   color: ${(props) => (props.selected ? "black" : "white")};
 
   cursor: ${(props) => !props.disabled && "pointer"};

@@ -15,6 +15,7 @@ import Modal from "react-modal";
 import click from "./soft_button.mp3";
 import colorClick from "./color_button.mp3";
 import Emoji from "./emoji";
+import AddChord from "./AddChord";
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
@@ -36,61 +37,18 @@ const NodeAndChordContainter = styled.div`
 
 const Speaker = styled.div`
   position: relative;
-  /* opacity: ${(props) => !props.disabled && ".3"}; */
   font-size: 18px;
   margin-top: 10px;
   user-select: none;
 
-  /* &:after {
-    left: 0;
 
-    height: 23px;
-    background: ${(props) => !props.allowSound && "#c00"};
-
-
-    display: block;
-
-    position: absolute;
-    top: 1px;
-    left: 7px;
-
-    content: "";
-    width: 1.5px;
-    transform: rotate(40deg);
-    display: block;
-  } */
-`;
-
-const AddChordButton = styled.div`
-  width: 58px;
-  height: 58px;
-  border-radius: 100%;
-  /* border: 1px solid black; */
-  background-color: lightgreen;
-  line-height: 56px;
-  text-align: center;
-  font-size: 30px;
-  margin-right: 5px;
-
-  @media (max-width: 768px) {
-    font-size: 38px;
-
-    width: 50px;
-    height: 50px;
-    margin: 5px;
-    /* padding: 5px; */
-    line-height: 50px;
-
-    /* width: ${(props) => props.chordLength > 5 && "36px"};
-    height: ${(props) => props.chordLength > 5 && "36px"};
-    line-height: ${(props) => props.chordLength > 5 && "33px"};
-    font-size: ${(props) => props.chordLength > 5 && "15px"}; */
+  @media (max-width: 410px) {
+    font-size: 14.5px;
+    margin-top: 8px;
   }
-  /* cursor: pointer; */
 
-  cursor: ${(props) => !props.disabled && "pointer"};
-  display: ${(props) => props.disabled && "none"};
 `;
+
 
 const ChordNodeContainer = styled.div`
   /* display: flex; */
@@ -146,6 +104,21 @@ const ChordNode = styled.div`
     margin: 5px;
     /* padding: 5px; */
     line-height: 50px;
+    /* 
+    width: ${(props) => props.chordLength > 5 && "36px"};
+    height: ${(props) => props.chordLength > 5 && "36px"};
+    line-height: ${(props) => props.chordLength > 5 && "33px"};
+    font-size: ${(props) => props.chordLength > 5 && "15px"}; */
+  }
+
+  @media (max-width: 440px) {
+    font-size: 22px;
+
+    width: 46px;
+    height: 46px;
+    margin: 5px;
+    /* padding: 5px; */
+    line-height: 46px;
     /* 
     width: ${(props) => props.chordLength > 5 && "36px"};
     height: ${(props) => props.chordLength > 5 && "36px"};
@@ -578,7 +551,7 @@ const App = () => {
               justifyContent: "space-between",
             }}
           >
-            <h1 style={{ fontStyle: "bold" }}>Chord Inversion Calculator</h1>
+            <Title>Chord Inversion Calculator</Title>
             {/* <Second>Chord Inversion Calculator</Second>
             <Third>Chord Inversion Calculator</Third> */}
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -665,29 +638,22 @@ const App = () => {
             <AddNodes>
               <ChordNodeContainer>
                 {chordList.map((c, i) => (
-                  <div style={{height: "60px"}}>
+                  <div style={{ height: "60px" }}>
                     <ChordNode
                       currentColor={currentColor}
                       onDoubleClick={() => {
-                        // if (!isPlaying) {
-                        // setActiveNode(i);
+
 
                         onPlayChord(i);
                         setIsCalculated(false);
-                        // }
                       }}
                       chordLength={chordList.length}
                       onClick={() => {
                         setIsPlaying(false);
-                        // sleep(10);
                         setActiveNode(i);
                         // onPlayChord(i);
                         setIsCalculated(false);
                       }}
-                      // onPointerDown={() => {
-                      //   pressingDown
-
-                      // }}
                       active={activeNode === i}
                       playing={activePlayingNode === i}
                       key={i}
@@ -700,9 +666,8 @@ const App = () => {
                     </ChordNode>
                     {activeNode === i && i !== 0 ? (
                       <div
-                      className="buddy"
                         style={{
-                          zIndex: 10,
+                          zIndex: 8,
                           position: "relative",
                           bottom: "60px",
                           left: "40px",
@@ -724,19 +689,13 @@ const App = () => {
                     )}
                   </div>
                 ))}
-                <AddChordButton
-                  disabled={chordList.length > 7}
-                  // onClick={chordList.length > 7 ? null : onClickAddChordNode}
-                  onClick={() => {
-                    onClickAddChordNode();
-                    if (allowSound) {
-                      play();
-                    }
-                  }}
-                  chordLength={chordList.length}
-                >
-                  +
-                </AddChordButton>
+
+                <AddChord
+                  onClickAddChordNode={onClickAddChordNode}
+                  chordList={chordList}
+                  allowSound={allowSound}
+                  play={play}
+                ></AddChord>
               </ChordNodeContainer>
             </AddNodes>
             {activeNode !== undefined ? (
@@ -923,5 +882,15 @@ const ModalTopBar = styled.div`
   text-align: center;
   padding-top: 8px;
 `;
+
+const Title = styled.h1`
+font-size: 28px;
+@media (max-width: 410px) {
+    font-size: 24px;
+  }
+
+
+`
+
 
 export default App;
