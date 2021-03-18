@@ -75,12 +75,6 @@ let Directions = () => {
                   You can clear your chord progression using the "clear" button.
                 </li>
               </ol>
-              <p>
-                Built by{" "}
-                <Link href="https://twitter.com/nateysepy" newTab={true}>
-                  Nathan Sepulveda
-                </Link>
-              </p>
             </div>
           ) : (
             ""

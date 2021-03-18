@@ -744,7 +744,11 @@ const App = () => {
                 Follow me on Twitter{" "}
                 <Link href="https://twitter.com/nateysepy" newTab={true}>
                   @nateysepy
-                </Link>
+                </Link> 
+                {" " }and on {" "}                 <Link href="https://www.instagram.com/nathan_sepulveda_music/" newTab={true}>
+                  Instagram
+                </Link> 
+                
               </p>
               <form onSubmit={handleSubmit} style={{ textAlign: "center" }}>
                 <label>

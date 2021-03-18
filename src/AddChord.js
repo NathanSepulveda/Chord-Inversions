@@ -1,29 +1,14 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React from "react";
 import styled from "styled-components";
 
 const AddChord = ({ chordList, onClickAddChordNode, allowSound, play }) => {
-  const [classNames, setClassNames] = useState("");
-  const [animationFinished, setAmimationFinished] = useState(false);
 
-  const startStopAnimation = () => {
-    setClassNames("animation");
-    setTimeout(() => {
-      setClassNames("");
-    }, 500);
-  };
 
-  const onAnimationStart = () => {
-    setAmimationFinished(false);
-  };
 
-  const onAnimationEnd = () => {
-    setAmimationFinished(true);
-  };
 
   return (
     <AddChordButton
-      onAnimationEnd={onAnimationEnd}
-      onAnimationStart={onAnimationStart}
+
       disabled={chordList.length > 7}
       onClick={() => {
         onClickAddChordNode();
