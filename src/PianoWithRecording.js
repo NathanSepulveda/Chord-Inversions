@@ -1,16 +1,9 @@
 import React from "react";
-import { Piano, KeyboardShortcuts } from "react-piano";
+import { Piano } from "react-piano";
 import DimensionsProvider from "./DimensionsProvider";
 
 const DURATION_UNIT = 2.0;
 const DEFAULT_NOTE_DURATION = DURATION_UNIT;
-
-
-const keyboardShortcuts = KeyboardShortcuts.create({
-  firstNote: 60,
-  lastNote: 77,
-  keyboardConfig: KeyboardShortcuts.HOME_ROW,
-});
 
 class PianoWithRecording extends React.Component {
   static defaultProps = {
@@ -77,7 +70,6 @@ class PianoWithRecording extends React.Component {
               stopNote={stopNote}
               width={containerWidth}
               height={"90px"}
-              keyboardShortcuts={containerWidth > 824 ? keyboardShortcuts : null}
               //   onPlayNoteInput={this.onPlayNoteInput}
                 onStopNoteInput={this.onStopNoteInput}
               activeNotes={activeNotes}
