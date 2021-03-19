@@ -1,26 +1,26 @@
 import React from "react";
-import { Piano } from "react-piano";
+import { Piano, KeyboardShortcuts } from "react-piano";
 import DimensionsProvider from "./DimensionsProvider";
-
 const DURATION_UNIT = 2.0;
 const DEFAULT_NOTE_DURATION = DURATION_UNIT;
-
+const keyboardShortcuts = KeyboardShortcuts.create({
+  firstNote: 60,
+  lastNote: 77,
+  keyboardConfig: KeyboardShortcuts.HOME_ROW,
+});
 class PianoWithRecording extends React.Component {
   static defaultProps = {
     notesRecorded: false,
   };
-
   state = {
     keysDown: {},
     noteDuration: DEFAULT_NOTE_DURATION,
   };
-
   onPlayNoteInput = (midiNumber) => {
     this.setState({
       notesRecorded: false,
     });
   };
-
   onStopNoteInput = (midiNumber, { prevActiveNotes }) => {
     if (this.state.notesRecorded === false) {
       //   this.recordNotes(prevActiveNotes, this.state.noteDuration);
@@ -30,7 +30,6 @@ class PianoWithRecording extends React.Component {
       });
     }
   };
-
   recordNotes = (midiNumbers, duration) => {
     if (this.props.isPlaying) {
       return;
@@ -47,7 +46,6 @@ class PianoWithRecording extends React.Component {
       currentTime: this.props.recording.currentTime + duration,
     });
   };
-
   render() {
     const {
       playNote,
@@ -56,7 +54,6 @@ class PianoWithRecording extends React.Component {
       setRecording,
       ...pianoProps
     } = this.props;
-
     const { currentEvents } = this.props.recording;
     const activeNotes = this.props.isPlaying
       ? currentEvents.map((event) => event.midiNumber)
@@ -70,6 +67,7 @@ class PianoWithRecording extends React.Component {
               stopNote={stopNote}
               width={containerWidth}
               height={"90px"}
+              keyboardShortcuts={containerWidth > 824 ? keyboardShortcuts : null}
               //   onPlayNoteInput={this.onPlayNoteInput}
                 onStopNoteInput={this.onStopNoteInput}
               activeNotes={activeNotes}
@@ -82,5 +80,4 @@ class PianoWithRecording extends React.Component {
     );
   }
 }
-
 export default PianoWithRecording;
