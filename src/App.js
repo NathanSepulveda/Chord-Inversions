@@ -2,7 +2,8 @@ import styled from "styled-components";
 import SoundfontProvider from "./soundfontprovider";
 import React, { useState, useEffect, useReducer } from "react";
 import _ from "lodash";
-import "react-piano/dist/styles.css";
+// import "react-piano/dist/styles.css";
+import "./react-piano-master/src/styles.css";
 import PianoWithRecording from "./PianoWithRecording";
 import processChordChain, { chordChain } from "./chord-info/ChordChain";
 import { notes } from "./chord-info/ChordStepKeys";
@@ -41,14 +42,11 @@ const Speaker = styled.div`
   margin-top: 10px;
   user-select: none;
 
-
   @media (max-width: 410px) {
     font-size: 14.5px;
     margin-top: 8px;
   }
-
 `;
-
 
 const ChordNodeContainer = styled.div`
   /* display: flex; */
@@ -62,6 +60,7 @@ const ChordNodeContainer = styled.div`
 const AddNodes = styled.div`
   display: flex;
   flex-direction: row;
+  margin-top: 25px;
 `;
 
 const ChordNode = styled.div`
@@ -283,6 +282,8 @@ const App = () => {
     setIsCalculated(true);
   };
 
+  const [accidentalType, setNoteAccidentalType] = useState(0);
+
   const onClickPlay = () => {
     setIsPlaying(true);
     unsetActiveNode();
@@ -303,6 +304,7 @@ const App = () => {
             if (event.time <= time && event.time + event.duration > time) {
               count = event.group;
               setActivePlayingNode(count);
+              getAccidentalType(chordList[count][0]);
 
               return event.time <= time && event.time + event.duration > time;
             }
@@ -319,6 +321,16 @@ const App = () => {
       setHasBeenPlayed(true);
       setChordString("");
     }, getRecordingEndTime() * 1000);
+  };
+
+  const getAccidentalType = (note, quality) => {
+    let sharps = ["C#", "D", "D#", "E", "F#", "G#", "A", "A#", "B"];
+
+    if (sharps.includes(note)) {
+      setNoteAccidentalType(0)
+    } else {
+      setNoteAccidentalType(1);
+    }
   };
 
   const onPlayChord = (index) => {
@@ -340,6 +352,7 @@ const App = () => {
 
     setRecordingHandler({ currentEvents });
     setActivePlayingNode(index);
+    getAccidentalType(chordList[index][0], chordList[index][1]);
     convertMIDIToChordLetters(chordName, chordIwant);
   };
 
@@ -623,6 +636,7 @@ const App = () => {
                 noteToPlay={60}
                 stopNote={stopNote}
                 disabled={isLoading}
+                accidentalType={accidentalType}
               />
             )}
           />
@@ -630,11 +644,7 @@ const App = () => {
 
         <div style={{ margin: "0 auto" }}>
           <NodeAndChordContainter>
-            <h4 style={{ marginTop: "25px" }}>
-              {chordString === ""
-                ? "Active Chord Notes: "
-                : "Active Chord Notes: " + chordString}
-            </h4>
+            {/* <h4 style={{ marginTop: "25px" }}>{accidentalType}</h4> */}
             <AddNodes>
               <ChordNodeContainer>
                 {chordList.map((c, i) => (
@@ -642,8 +652,6 @@ const App = () => {
                     <ChordNode
                       currentColor={currentColor}
                       onDoubleClick={() => {
-
-
                         onPlayChord(i);
                         setIsCalculated(false);
                       }}
@@ -744,11 +752,14 @@ const App = () => {
                 Follow me on Twitter{" "}
                 <Link href="https://twitter.com/nateysepy" newTab={true}>
                   @nateysepy
-                </Link> 
-                {" " }and on {" "}                 <Link href="https://www.instagram.com/nathan_sepulveda_music/" newTab={true}>
+                </Link>{" "}
+                and on{" "}
+                <Link
+                  href="https://www.instagram.com/nathan_sepulveda_music/"
+                  newTab={true}
+                >
                   Instagram
-                </Link> 
-                
+                </Link>
               </p>
               <form onSubmit={handleSubmit} style={{ textAlign: "center" }}>
                 <label>
@@ -888,13 +899,10 @@ const ModalTopBar = styled.div`
 `;
 
 const Title = styled.h1`
-font-size: 28px;
-@media (max-width: 410px) {
+  font-size: 28px;
+  @media (max-width: 410px) {
     font-size: 24px;
   }
-
-
-`
-
+`;
 
 export default App;

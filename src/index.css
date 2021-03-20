@@ -84,3 +84,19 @@ input[type=submit] {
   max-width: 1250px;
   margin: 0 auto;
 }
+
+.ReactPiano__NoteLabel--natural.ReactPiano__NoteLabel--active {
+  color: black !important
+}
+
+.ReactPiano__NoteLabel--accidental.ReactPiano__NoteLabel--active {
+  color: black
+}
+
+.ReactPiano__NoteLabel {
+  font-size: 1.5em !important;
+  text-align: center;
+  text-transform: capitalize;
+  /* Disable text selection */
+  user-select: none;
+}
