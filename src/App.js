@@ -17,9 +17,12 @@ import click from "./soft_button.mp3";
 import colorClick from "./color_button.mp3";
 import Emoji from "./emoji";
 import AddChord from "./AddChord";
+import Toggle from "react-toggle";
+import "react-toggle/style.css";
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
+
 
 const formReducer = (state, event) => {
   return {
@@ -175,6 +178,7 @@ const App = () => {
 
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [hasSubscribed, setHasSubscribed] = useState(false);
+  const [showMusicalTyping, setShowMusicalTyping] = useState(false)
 
   function openModal() {
     setIsOpen(true);
@@ -287,6 +291,7 @@ const App = () => {
   const onClickPlay = () => {
     setIsPlaying(true);
     unsetActiveNode();
+    setShowMusicalTyping(false)
 
     const startAndEndTimes = _.uniq(
       _.flatMap(recording.events, (event) => [
@@ -327,7 +332,7 @@ const App = () => {
     let sharps = ["C#", "D", "D#", "E", "F#", "G#", "A", "A#", "B"];
 
     if (sharps.includes(note)) {
-      setNoteAccidentalType(0)
+      setNoteAccidentalType(0);
     } else {
       setNoteAccidentalType(1);
     }
@@ -335,7 +340,7 @@ const App = () => {
 
   const onPlayChord = (index) => {
     setIsPlaying(true);
-
+    setShowMusicalTyping(false)
     let chordIwant = recordingAsNotes[index];
     let chordName = chordList[index];
 
@@ -536,10 +541,16 @@ const App = () => {
       marginRight: "-90px",
       transform: "translate(-50%, -50%)",
       zIndex: "100",
-      maxWidth: "600px",
+      maxWidth: "440px",
       backgroundColor: currentColor,
     },
   };
+
+  const handleOnChangeMusicalTyping = (e) => {
+    console.log(e.target.checked)
+    setShowMusicalTyping(e.target.checked)
+    onClickStop()
+  }
 
   return (
     <React.Fragment>
@@ -590,7 +601,6 @@ const App = () => {
                   display: "flex",
                 }}
               >
-                created by:
                 <p
                   onClick={openModal}
                   style={{
@@ -600,7 +610,7 @@ const App = () => {
                     cursor: "pointer",
                   }}
                 >
-                  Nathan Sepulveda
+                  LEARN MORE
                 </p>
               </p>
             </div>
@@ -620,7 +630,7 @@ const App = () => {
         </div>
 
         {/* <h1 className="h3">Chord Calculator</h1> */}
-        <Directions></Directions>
+        <Directions showMusicalTyping={showMusicalTyping} handleOnChangeMusicalTyping={handleOnChangeMusicalTyping}></Directions>
         <div className="mt-5">
           <SoundfontProvider
             instrumentName="acoustic_grand_piano"
@@ -637,14 +647,15 @@ const App = () => {
                 stopNote={stopNote}
                 disabled={isLoading}
                 accidentalType={accidentalType}
+                showMusicalTyping={showMusicalTyping}
               />
             )}
           />
         </div>
+        {/* <p style={{ marginTop: "25px" }}>Musical Typing</p> */}
 
         <div style={{ margin: "0 auto" }}>
           <NodeAndChordContainter>
-            {/* <h4 style={{ marginTop: "25px" }}>{accidentalType}</h4> */}
             <AddNodes>
               <ChordNodeContainer>
                 {chordList.map((c, i) => (
@@ -734,20 +745,22 @@ const App = () => {
           <ModalTopBar>
             {" "}
             <h2>
-              Want to learn more?{" "}
-              <Emoji emoji={"🧠 "} description={"brain"}></Emoji>
+              Want to learn more?  {"  "}
+              <Emoji emoji={"🧠"} description={"brain"}></Emoji>
             </h2>
           </ModalTopBar>
           {!formIsSent ? (
             <div style={{ padding: "8px", alignItems: "center" }}>
-              <p style={{ textAlign: "center", fontSize: "18px" }}>
-                Inversions can be hard, even with the help of the app! I am
-                working on a <b>interactive video course</b> that teaches the
-                ins and outs of using <b>chord inversions on the piano</b> (as
-                well as an iOS version of this app). Sign up below if you want
-                to stay in the loop!{" "}
-                <Emoji emoji={"➰ "} description={"loop "}></Emoji>
-              </p>
+
+                <p style={{ textAlign: "center", fontSize: "18px" }}>Inversions can be hard, even with the help of the app! Sign up below if you want to get:
+
+                </p>
+                <ol>
+                  <li>A free video lesson! (soon!)</li>
+                  <li>Updates on my interactive video course I'm building</li>
+                  <li>Updates on the mobile version of this app</li>
+                </ol>
+
               <p style={{ textAlign: "center", fontSize: "10px" }}>
                 Follow me on Twitter{" "}
                 <Link href="https://twitter.com/nateysepy" newTab={true}>

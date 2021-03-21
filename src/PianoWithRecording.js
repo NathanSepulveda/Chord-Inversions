@@ -1,5 +1,5 @@
 import React from "react";
-import { Piano, KeyboardShortcuts } from "./react-piano-master/src/index"
+import { Piano, KeyboardShortcuts } from "./react-piano-master/src/index";
 import DimensionsProvider from "./DimensionsProvider";
 const DURATION_UNIT = 2.0;
 const DEFAULT_NOTE_DURATION = DURATION_UNIT;
@@ -56,7 +56,7 @@ class PianoWithRecording extends React.Component {
       ...pianoProps
     } = this.props;
 
-    console.log(accidentalType)
+    console.log(accidentalType);
     const { currentEvents } = this.props.recording;
     const activeNotes = this.props.isPlaying
       ? currentEvents.map((event) => event.midiNumber)
@@ -70,9 +70,13 @@ class PianoWithRecording extends React.Component {
               stopNote={stopNote}
               width={containerWidth}
               height={"90px"}
-              // keyboardShortcuts={containerWidth > 824 ? keyboardShortcuts : null}
+              keyboardShortcuts={
+                containerWidth > 824 && this.props.showMusicalTyping
+                  ? keyboardShortcuts
+                  : null
+              }
               //   onPlayNoteInput={this.onPlayNoteInput}
-                onStopNoteInput={this.onStopNoteInput}
+              onStopNoteInput={this.onStopNoteInput}
               activeNotes={activeNotes}
               accidentalType={accidentalType}
               // noteRange={{ first: 53, last: 81 }}

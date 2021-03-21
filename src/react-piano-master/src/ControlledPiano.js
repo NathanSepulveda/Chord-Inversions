@@ -28,7 +28,18 @@ class ControlledPiano extends React.Component {
 
   static defaultProps = {
     renderNoteLabel: ({ keyboardShortcut, midiNumber, isActive, isAccidental, isPlaying, accidentalType }) =>
-    isActive ? (
+
+    keyboardShortcut ? (
+      <div
+        className={classNames('ReactPiano__NoteLabel', {
+          'ReactPiano__NoteLabel--active': isActive,
+          'ReactPiano__NoteLabel--accidental': isAccidental,
+          'ReactPiano__NoteLabel--natural': !isAccidental,
+        })}
+      >
+        {keyboardShortcut}
+      </div>
+    ) : isActive ? (
         <div
           className={classNames('ReactPiano__NoteLabel', {
             'ReactPiano__NoteLabel--active': isActive,

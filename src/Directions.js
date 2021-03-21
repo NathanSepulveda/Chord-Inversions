@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import chev from "./down-chevron.png";
 import DimensionsProvider from "./DimensionsProvider";
+import Toggle from "react-toggle";
 const Cont = styled.div`
   display: flex;
   flex-direction: row;
 `;
 
-let Directions = () => {
+let Directions = (props) => {
   const [isShowing, setIsShowing] = useState(false);
   return (
     <DimensionsProvider>
@@ -34,10 +35,24 @@ let Directions = () => {
                 src={chev}
               />
             </Cont>
-            {containerWidth < 440 && (
+            {containerWidth < 824  ? (
               <p style={{ fontSize: "10px", lineHeight: "25px" }}>
                 (You're on mobile. Make sure your device sound is on!){" "}
               </p>
+            ) : (
+              <div style={{position: "relative"}}>
+                <label
+                  style={{ fontSize: "10px", height: "100%", margin: "0 4px 20px 0", position:"relative", bottom: "5px"}}
+                  htmlFor="showing-musical-typing"
+                >
+                  Show Musical Typing
+                </label>
+                <Toggle
+                  id="show-musical-typing-status"
+                  checked={props.showMusicalTyping}
+                  onChange={props.handleOnChangeMusicalTyping}
+                />
+              </div>
             )}
           </div>
           {isShowing ? (

@@ -79,7 +79,7 @@ let getTransform = (prev, destination) => {
     );
   
 
-    console.log(prevChord, "wow")
+
     let newChord = createChord(notes[nextChordRoot], nextChordQuality);
   
     let invertedChord = invertUp(newChord, transform);
