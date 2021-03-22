@@ -14,10 +14,10 @@ import { useCookies } from "react-cookie";
 import useSound from "use-sound";
 import Modal from "react-modal";
 import click from "./soft_button.mp3";
-import colorClick from "./color_button.mp3";
+import ColorPicker from "./ColorPicker"
+import keyboard from "./keyboard.mp3";
 import Emoji from "./emoji";
 import AddChord from "./AddChord";
-import Toggle from "react-toggle";
 import "react-toggle/style.css";
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -138,7 +138,7 @@ const ChordNode = styled.div`
 
 // }
 
-const colors = ["#add8e6", "#ffb6c1", "#afd275", "#957DAD"];
+
 
 const speeds = [
   { label: "🐢", time: 3.3 },
@@ -153,7 +153,7 @@ const App = () => {
     currentEvents: [],
   });
   const [play] = useSound(click);
-  const [playColor] = useSound(colorClick);
+  const [playClicks] = useSound(keyboard)
   const [chordList, setChordList] = useState([]);
   const [activeNode, setActiveNode] = useState(undefined);
   const [recordingAsNotes, setRecordingAsNotes] = useState([]);
@@ -487,18 +487,6 @@ const App = () => {
     setIsCalculated(false);
   };
 
-  useEffect(() => {
-    if (cookies.color) {
-      document.body.style.backgroundColor = cookies.color;
-      setColor(cookies.color);
-    } else {
-      document.body.style.backgroundColor = currentColor;
-    }
-
-    let current = cookies.test;
-    console.log(current);
-    setCookie("test", 1, { path: "/" });
-  }, [currentColor]);
 
   useEffect(() => {
     if (cookies.hasSubscribed) {
@@ -550,6 +538,9 @@ const App = () => {
     console.log(e.target.checked)
     setShowMusicalTyping(e.target.checked)
     onClickStop()
+    if (allowSound && e.target.checked) {
+      playClicks()
+    }
   }
 
   return (
@@ -579,21 +570,13 @@ const App = () => {
             {/* <Second>Chord Inversion Calculator</Second>
             <Third>Chord Inversion Calculator</Third> */}
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <div style={{ marginTop: "-18px" }}>
-                {colors.map((c) => (
-                  <ColorDot
-                    color={c}
-                    currentColor={currentColor}
-                    onClick={() => {
-                      setCookie("color", c, { path: "/" });
-                      setColor(c);
-                      if (allowSound) {
-                        playColor();
-                      }
-                    }}
-                  ></ColorDot>
-                ))}
-              </div>
+
+                <ColorPicker
+                currentColor={currentColor}
+                setColor={setColor}
+                allowSound={allowSound}
+                ></ColorPicker>
+
               <p
                 style={{
                   margin: "-3px 0 0 0 ",
@@ -867,28 +850,6 @@ const App = () => {
   );
 };
 
-const ColorDot = styled.span`
-  height: 22px;
-  width: 22px;
-  margin: 7px 5px 0 0;
-  background-color: ${(props) => props.color};
-  opacity: ${(props) => props.color};
-  /* border: ${(props) =>
-    props.currentColor === props.color && "1px solid white"}; */
-  border-radius: 50%;
-
-  box-shadow: ${(props) =>
-    props.currentColor === props.color
-      ? "2px 2px 5px 0 rgba(255, 255, 255, 0.3), -0.5px -1px 4px 0 rgba(0, 0, 0, 0.25)"
-      : ""};
-
-  background-image: ${(props) =>
-    props.currentColor === props.color
-      ? "linear-gradient(135deg, rgba(0,0,0,0.255), rgba(255,255,255,.2))"
-      : ""};
-
-  display: inline-block;
-`;
 
 const EmailInput = styled.input`
   /* background-color: ${(props) => props.color}; */
