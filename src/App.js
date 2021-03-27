@@ -510,6 +510,7 @@ const App = () => {
                   setActivePlayingNode={setActivePlayingNode}
                   activeNode={activeNode}
                   deleteChord={deleteChord}
+                  activePlayingNode={activePlayingNode}
                 ></ChordNodes>
 
                 <AddChord
