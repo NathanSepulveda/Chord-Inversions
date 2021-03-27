@@ -14,15 +14,15 @@ import { useCookies } from "react-cookie";
 import useSound from "use-sound";
 import Modal from "react-modal";
 import click from "./soft_button.mp3";
-import ColorPicker from "./ColorPicker"
+import ColorPicker from "./ColorPicker";
 import keyboard from "./keyboard.mp3";
 import Emoji from "./emoji";
 import AddChord from "./AddChord";
+import ChordNodes from "./ChordNodes";
 import "react-toggle/style.css";
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
-
 
 const formReducer = (state, event) => {
   return {
@@ -66,79 +66,8 @@ const AddNodes = styled.div`
   margin-top: 25px;
 `;
 
-const ChordNode = styled.div`
-  width: 58px;
-  height: 58px;
-
-  border-radius: 100%;
-  /* border: 1px solid white; */
-  background-color: ${(props) => props.currentColor};
-  color: white;
-  line-height: 58px;
-  text-align: center;
-  font-size: 18px;
-  margin-right: 20px;
-  background-color: ${(props) => props.active && "#e0b0ff"};
-  background-color: ${(props) => props.playing && "yellow"};
-  color: ${(props) => props.playing && "black"};
-  user-select: none;
-
-  cursor: pointer;
-  z-index: 1;
-
-  /* background-color: ${(props) => (props.selected ? "yellow" : "#add8e6")}; */
-
-  box-shadow: ${(props) =>
-    props.active || props.playing
-      ? "2px 2px 5px 0 rgba(255, 255, 255, 0.3), -0.5px -1px 4px 0 rgba(0, 0, 0, 0.25)"
-      : "2px 2px 5px 0 rgba(0, 0, 0, 0.25), -2px -2px 5px 0 rgba(255, 255, 255, 0.3)"};
-
-  background-image: ${(props) =>
-    props.active || props.playing
-      ? "linear-gradient(135deg, rgba(0,0,0,0.255), rgba(255,255,255,0.25))"
-      : ""};
-
-  @media (max-width: 768px) {
-    font-size: 22px;
-
-    width: 50px;
-    height: 50px;
-    margin: 5px;
-    /* padding: 5px; */
-    line-height: 50px;
-    /* 
-    width: ${(props) => props.chordLength > 5 && "36px"};
-    height: ${(props) => props.chordLength > 5 && "36px"};
-    line-height: ${(props) => props.chordLength > 5 && "33px"};
-    font-size: ${(props) => props.chordLength > 5 && "15px"}; */
-  }
-
-  @media (max-width: 320px) {
-    font-size: 22px;
-
-    width: 46px;
-    height: 46px;
-    margin: 5px;
-    /* padding: 5px; */
-    line-height: 46px;
-    /* 
-    width: ${(props) => props.chordLength > 5 && "36px"};
-    height: ${(props) => props.chordLength > 5 && "36px"};
-    line-height: ${(props) => props.chordLength > 5 && "33px"};
-    font-size: ${(props) => props.chordLength > 5 && "15px"}; */
-  }
-  /* &:after {
-    content: '';
-  flex: 1;
-  padding-left: 2rem;
-  height: 1px;
-  background-color: #000;
-  } */
-`;
 
 // }
-
-
 
 const speeds = [
   { label: "🐢", time: 3.3 },
@@ -153,7 +82,7 @@ const App = () => {
     currentEvents: [],
   });
   const [play] = useSound(click);
-  const [playClicks] = useSound(keyboard)
+  const [playClicks] = useSound(keyboard);
   const [chordList, setChordList] = useState([]);
   const [activeNode, setActiveNode] = useState(undefined);
   const [recordingAsNotes, setRecordingAsNotes] = useState([]);
@@ -178,7 +107,7 @@ const App = () => {
 
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [hasSubscribed, setHasSubscribed] = useState(false);
-  const [showMusicalTyping, setShowMusicalTyping] = useState(false)
+  const [showMusicalTyping, setShowMusicalTyping] = useState(false);
   const [accidentalType, setNoteAccidentalType] = useState(0);
 
   function openModal() {
@@ -283,16 +212,12 @@ const App = () => {
     });
 
     setRecordingAsNotes(events[1]);
-
-
   };
-
-  
 
   const onClickPlay = () => {
     setIsPlaying(true);
     unsetActiveNode();
-    setShowMusicalTyping(false)
+    setShowMusicalTyping(false);
 
     const startAndEndTimes = _.uniq(
       _.flatMap(recording.events, (event) => [
@@ -341,7 +266,7 @@ const App = () => {
 
   const onPlayChord = (index) => {
     setIsPlaying(true);
-    setShowMusicalTyping(false)
+    setShowMusicalTyping(false);
     let chordIwant = recordingAsNotes[index];
     let chordName = chordList[index];
 
@@ -413,8 +338,6 @@ const App = () => {
       events: [],
       currentEvents: [],
     });
-
-
   };
 
   const onClickAddChordNode = () => {
@@ -422,7 +345,6 @@ const App = () => {
     // if (!isPlaying) {
     setChordList([...chordList, undefined]);
     setActiveNode(chordList.length);
-
 
     // }
   };
@@ -437,8 +359,6 @@ const App = () => {
 
       return newItems;
     });
-
-
   };
 
   useEffect(() => {
@@ -480,14 +400,11 @@ const App = () => {
 
     onClickCalculate();
     setActiveNode(index - 1);
-
   };
 
   const unsetActiveNode = () => {
     setActiveNode(undefined);
-
   };
-
 
   useEffect(() => {
     if (cookies.hasSubscribed) {
@@ -536,13 +453,13 @@ const App = () => {
   };
 
   const handleOnChangeMusicalTyping = (e) => {
-    console.log(e.target.checked)
-    setShowMusicalTyping(e.target.checked)
-    onClickStop()
+    console.log(e.target.checked);
+    setShowMusicalTyping(e.target.checked);
+    onClickStop();
     if (allowSound && e.target.checked) {
-      playClicks()
+      playClicks();
     }
-  }
+  };
 
   return (
     <React.Fragment>
@@ -571,12 +488,11 @@ const App = () => {
             {/* <Second>Chord Inversion Calculator</Second>
             <Third>Chord Inversion Calculator</Third> */}
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-
-                <ColorPicker
+              <ColorPicker
                 currentColor={currentColor}
                 setColor={setColor}
                 allowSound={allowSound}
-                ></ColorPicker>
+              ></ColorPicker>
 
               <p
                 style={{
@@ -614,7 +530,10 @@ const App = () => {
         </div>
 
         {/* <h1 className="h3">Chord Calculator</h1> */}
-        <Directions showMusicalTyping={showMusicalTyping} handleOnChangeMusicalTyping={handleOnChangeMusicalTyping}></Directions>
+        <Directions
+          showMusicalTyping={showMusicalTyping}
+          handleOnChangeMusicalTyping={handleOnChangeMusicalTyping}
+        ></Directions>
         <div className="mt-5">
           <SoundfontProvider
             instrumentName="acoustic_grand_piano"
@@ -642,56 +561,16 @@ const App = () => {
           <NodeAndChordContainter>
             <AddNodes>
               <ChordNodeContainer>
-                {chordList.map((c, i) => (
-                  <div style={{ height: "60px" }}>
-                    <ChordNode
-                      currentColor={currentColor}
-                      onDoubleClick={() => {
-                        onPlayChord(i);
-
-                      }}
-                      chordLength={chordList.length}
-                      onClick={() => {
-                        setIsPlaying(false);
-                        setActiveNode(i);
-                        // onPlayChord(i);
-
-                      }}
-                      active={activeNode === i}
-                      playing={activePlayingNode === i}
-                      key={i}
-                    >
-                      {c === undefined
-                        ? ""
-                        : c.includes("m")
-                        ? c[0] + c[1]
-                        : c[0]}
-                    </ChordNode>
-                    {activeNode === i && i !== 0 ? (
-                      <div
-                        style={{
-                          zIndex: 8,
-                          position: "relative",
-                          bottom: "60px",
-                          left: "40px",
-                          borderRadius: "100%",
-                          backgroundColor: "red",
-                          width: "22px",
-                          height: "22px",
-                          fontSize: "1em",
-                          textAlign: "center",
-                          color: "white",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => deleteChord(i)}
-                      >
-                        x
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                ))}
+                <ChordNodes
+                  chordList={chordList}
+                  currentColor={currentColor}
+                  onPlayChord={onPlayChord}
+                  setIsPlaying={setIsPlaying}
+                  setActiveNode={setActiveNode}
+                  setActivePlayingNode={setActivePlayingNode}
+                  activeNode={activeNode}
+                  deleteChord={deleteChord}
+                ></ChordNodes>
 
                 <AddChord
                   onClickAddChordNode={onClickAddChordNode}
@@ -729,21 +608,21 @@ const App = () => {
           <ModalTopBar>
             {" "}
             <h2>
-              Want to learn more?  {"  "}
+              Want to learn more? {"  "}
               <Emoji emoji={"🧠"} description={"brain"}></Emoji>
             </h2>
           </ModalTopBar>
           {!formIsSent ? (
             <div style={{ padding: "8px", alignItems: "center" }}>
-
-                <p style={{ textAlign: "center", fontSize: "18px" }}>Inversions can be hard, even with the help of the app! Sign up below if you want to get:
-
-                </p>
-                <ol>
-                  <li>A free video lesson! (soon!)</li>
-                  <li>Updates on my interactive video course I'm building</li>
-                  <li>Updates on the mobile version of this app</li>
-                </ol>
+              <p style={{ textAlign: "center", fontSize: "18px" }}>
+                Inversions can be hard, even with the help of the app! Sign up
+                below if you want to get:
+              </p>
+              <ol>
+                <li>A free video lesson! (soon!)</li>
+                <li>Updates on my interactive video course I'm building</li>
+                <li>Updates on the mobile version of this app</li>
+              </ol>
 
               <p style={{ textAlign: "center", fontSize: "10px" }}>
                 Follow me on Twitter{" "}
@@ -850,7 +729,6 @@ const App = () => {
     </React.Fragment>
   );
 };
-
 
 const EmailInput = styled.input`
   /* background-color: ${(props) => props.color}; */
