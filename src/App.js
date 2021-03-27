@@ -179,6 +179,7 @@ const App = () => {
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [hasSubscribed, setHasSubscribed] = useState(false);
   const [showMusicalTyping, setShowMusicalTyping] = useState(false)
+  const [accidentalType, setNoteAccidentalType] = useState(0);
 
   function openModal() {
     setIsOpen(true);
@@ -283,10 +284,10 @@ const App = () => {
 
     setRecordingAsNotes(events[1]);
 
-    setIsCalculated(true);
+
   };
 
-  const [accidentalType, setNoteAccidentalType] = useState(0);
+  
 
   const onClickPlay = () => {
     setIsPlaying(true);
@@ -413,7 +414,7 @@ const App = () => {
       currentEvents: [],
     });
 
-    setIsCalculated(false);
+
   };
 
   const onClickAddChordNode = () => {
@@ -422,7 +423,7 @@ const App = () => {
     setChordList([...chordList, undefined]);
     setActiveNode(chordList.length);
 
-    setIsCalculated(false);
+
     // }
   };
 
@@ -437,7 +438,7 @@ const App = () => {
       return newItems;
     });
 
-    // setIsCalculated(false)
+
   };
 
   useEffect(() => {
@@ -479,12 +480,12 @@ const App = () => {
 
     onClickCalculate();
     setActiveNode(index - 1);
-    setIsCalculated(false);
+
   };
 
   const unsetActiveNode = () => {
     setActiveNode(undefined);
-    setIsCalculated(false);
+
   };
 
 
@@ -647,14 +648,14 @@ const App = () => {
                       currentColor={currentColor}
                       onDoubleClick={() => {
                         onPlayChord(i);
-                        setIsCalculated(false);
+
                       }}
                       chordLength={chordList.length}
                       onClick={() => {
                         setIsPlaying(false);
                         setActiveNode(i);
                         // onPlayChord(i);
-                        setIsCalculated(false);
+
                       }}
                       active={activeNode === i}
                       playing={activePlayingNode === i}

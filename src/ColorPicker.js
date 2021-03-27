@@ -29,42 +29,40 @@ const ColorDot = styled.span`
 
 const colors = ["#add8e6", "#ffb6c1", "#afd275", "#957DAD"];
 
-const ColorPicker = props => {
-    const [playColor] = useSound(colorClick);
-    const [cookies, setCookie] = useCookies();
+const ColorPicker = (props) => {
+  const [playColor] = useSound(colorClick);
+  const [cookies, setCookie] = useCookies();
 
+  useEffect(() => {
+    if (cookies.color) {
+      document.body.style.backgroundColor = cookies.color;
+      props.setColor(cookies.color);
+    } else {
+      document.body.style.backgroundColor = props.currentColor;
+    }
 
+    let current = cookies.test;
+    console.log(current);
+    setCookie("test", 1, { path: "/" });
+  }, [props.currentColor]);
 
-    useEffect(() => {
-        if (cookies.color) {
-          document.body.style.backgroundColor = cookies.color;
-          props.setColor(cookies.color);
-        } else {
-          document.body.style.backgroundColor = props.currentColor;
-        }
-    
-        let current = cookies.test;
-        console.log(current);
-        setCookie("test", 1, { path: "/" });
-      }, [props.currentColor]);
+  return (
+    <div style={{ marginTop: "-18px" }}>
+      {colors.map((c) => (
+        <ColorDot
+          color={c}
+          currentColor={props.currentColor}
+          onClick={() => {
+            setCookie("color", c, { path: "/" });
+            props.setColor(c);
+            if (props.allowSound) {
+              playColor();
+            }
+          }}
+        ></ColorDot>
+      ))}
+    </div>
+  );
+};
 
-    return (
-        <div style={{ marginTop: "-18px" }}>
-        {colors.map((c) => (
-          <ColorDot
-            color={c}
-            currentColor={props.currentColor}
-            onClick={() => {
-              setCookie("color", c, { path: "/" });
-              props.setColor(c);
-              if (props.allowSound) {
-                playColor();
-              }
-            }}
-          ></ColorDot>
-        ))}
-      </div>
-    )
-}
-
-export default ColorPicker
+export default ColorPicker;
