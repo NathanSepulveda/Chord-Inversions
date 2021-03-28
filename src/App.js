@@ -205,6 +205,10 @@ const App = () => {
       onClickStop();
       setHasBeenPlayed(true);
       setChordString("");
+      if (isLooping) {
+        onClickPlay()
+      }
+      
     }, getRecordingEndTime() * 1000);
   };
 
@@ -510,6 +514,7 @@ const App = () => {
                   setActivePlayingNode={setActivePlayingNode}
                   activeNode={activeNode}
                   deleteChord={deleteChord}
+                  activePlayingNode={activePlayingNode}
                 ></ChordNodes>
 
                 <AddChord
@@ -559,6 +564,8 @@ const App = () => {
         onClickClear={onClickClear}
         onClickPlay={onClickPlay}
         onClickStop={onClickStop}
+        isLooping={isLooping}
+        setIsLooping={setIsLooping}
       ></BottomControlls>
     </React.Fragment>
   );

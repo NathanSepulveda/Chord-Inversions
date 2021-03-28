@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PlayButton from "./playbutton";
+import loopImage from './repeat-button.svg';
 import TempoBox from "./Tempo";
 
 const F = styled.div`
@@ -16,12 +17,10 @@ const F = styled.div`
   align-items: center;
   width: 100%;
 
-
-   @media (min-height: 810px) {
+  @media (min-height: 810px) {
     height: initial;
     padding: 35px;
-  } 
-
+  }
 `;
 
 const Phantom = styled.div`
@@ -30,7 +29,6 @@ const Phantom = styled.div`
   height: 74px;
   /* width: 100%; */
   max-width: 400px;
-
 `;
 
 const DeleteButton = styled.button`
@@ -55,6 +53,9 @@ const DeleteButton = styled.button`
 `;
 
 function BottomControlls(props) {
+
+
+
   return (
     <div>
       <Phantom />
@@ -68,6 +69,19 @@ function BottomControlls(props) {
               disabled={props.isPlaying}
               color={props.currentColor}
             ></TempoBox>
+
+            {/* <div
+
+              style={{width: "40px", position: "relative", left:"60px"}}
+            >loop</div> */}
+            <img style={{height: "40px", height: "30px", position: "relative", left:"46px", top: "7px", opacity: (!props.isLooping ? ".3" : "" ), cursor: "pointer" }} src={loopImage} alt="Logo" 
+            
+            onClick={() => {
+              !props.isPlaying && (props.isLooping ? props.setIsLooping(false) : props.setIsLooping(true)) 
+            }}
+            
+            />
+
             <PlayButton
               onClick={props.isPlaying ? props.onClickStop : props.onClickPlay}
               playing={props.isPlaying}
