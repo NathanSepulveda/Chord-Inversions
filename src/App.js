@@ -21,6 +21,7 @@ import AddChord from "./AddChord";
 import ChordNodes from "./ChordNodes";
 import "react-toggle/style.css";
 import EmailModal from "./emailcapture";
+import LogRocket from 'logrocket';
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
@@ -361,6 +362,7 @@ const App = () => {
   };
 
   useEffect(() => {
+    LogRocket.init('lrd9dg/chordinversions');
     if (cookies.hasSubscribed) {
       setHasSubscribed(cookies.hasSubscribed);
     } else {

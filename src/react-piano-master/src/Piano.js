@@ -76,7 +76,6 @@ class Piano extends React.Component {
 
   render() {
     const { activeNotes, onPlayNoteInput, onStopNoteInput, accidentalType, ...otherProps } = this.props;
-    console.log(accidentalType)
     return (
       <ControlledPiano
         activeNotes={this.state.activeNotes}
