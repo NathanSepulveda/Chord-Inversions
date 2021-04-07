@@ -5,7 +5,7 @@ import _ from "lodash";
 // import "react-piano/dist/styles.css";
 import "./react-piano-master/src/styles.css";
 import PianoWithRecording from "./PianoWithRecording";
-import processChordChain, { chordChain } from "./chord-info/ChordChain";
+import processChordChain, { chordChain, processChain } from "./chord-info/ChordChain";
 import { notes } from "./chord-info/ChordStepKeys";
 import Directions, { Link } from "./Directions";
 import ChordPicker from "./ChordPicker";
@@ -30,7 +30,7 @@ const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
 const NodeAndChordContainter = styled.div`
   margin-left: auto;
   margin-right: auto;
-  width: 400px;
+  width: 500px;
 `;
 
 const Speaker = styled.div`
@@ -158,7 +158,7 @@ const App = () => {
       return;
     }
     let events = processChordChain(
-      chordChain(chordList[0], chordList.slice(1)),
+      processChain(chordList),
       speeds[speedIndex].time
     );
     setRecordingHandler({
@@ -189,14 +189,14 @@ const App = () => {
             if (event.time <= time && event.time + event.duration > time) {
               count = event.group;
               setActivePlayingNode(count);
-              getAccidentalType(chordList[count][0]);
+              getAccidentalType(chordList[count].root);
 
               return event.time <= time && event.time + event.duration > time;
             }
           });
 
           setRecordingHandler({ currentEvents });
-          convertMIDIToChordLetters(chordList[count], recordingAsNotes[count]);
+          // convertMIDIToChordLetters(chordList[count], recordingAsNotes[count]);
         }, time * 1000)
       );
     });
@@ -241,8 +241,8 @@ const App = () => {
 
     setRecordingHandler({ currentEvents });
     setActivePlayingNode(index);
-    getAccidentalType(chordList[index][0], chordList[index][1]);
-    convertMIDIToChordLetters(chordName, chordIwant);
+    getAccidentalType(chordList[index].root, chordList[index].quality);
+    // convertMIDIToChordLetters(chordName, chordIwant);
   };
 
   const convertMIDIToChordLetters = (chordFromList, chordIwant) => {

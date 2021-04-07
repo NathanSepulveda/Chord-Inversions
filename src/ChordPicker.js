@@ -3,6 +3,7 @@ import styled from "styled-components";
 import useSound from "use-sound";
 
 import click from "./button.mp3";
+import PlayButton from "./playbutton";
 const LetterTile = styled.div`
   width: 44px;
   height: 44px;
@@ -120,7 +121,7 @@ const ChordPicker = (props) => {
 
   const letters = ["C", "D", "E", "F", "G", "A", "B"];
   const accidentals = ["#", "b"];
-  const qualities = ["M", "m"];
+  const qualities = ["M", "m", "sus", "sus2", "dim", "aug", "m7", "7"];
   const positions = [0, 1, 2];
   const [increment, setIncrement] = useState("plus");
 
@@ -160,42 +161,42 @@ const ChordPicker = (props) => {
     props.setChord(
       Number(props.activeNode),
       props.activeNode === 0
-        ? [root, chordQuality, position]
-        : [root, chordQuality]
+        ? {root : root, quality: chordQuality, position}
+        : {root : root, quality: chordQuality, position}
     );
 
-    console.log("here");
+    console.log("here", [chordRoot, noteAccidental, chordQuality, position]);
   }, [chordRoot, noteAccidental, chordQuality, position]);
 
   useEffect(() => {
     let current = props.chordList[props.activeNode];
     console.log(current);
     if (current !== undefined) {
-      if (current[0].includes("#") || current[0].includes("b")) {
-        let [r, acc] = current[0].split("");
+      if (current.root.includes("#") || current.root.includes("b")) {
+        let [r, acc] = current.root.split("");
         setChordRoot(r);
         setNoteAccidental(acc);
-        setChordQuality(current[1]);
+        setChordQuality(current.quality);
       } else {
-        setChordRoot(current[0]);
+        setChordRoot(current.root);
         setNoteAccidental("");
-        setChordQuality(current[1]);
+        setChordQuality(current.quality);
       }
       if (current.length > 2) {
-        setPosition(current[2]);
+        setPosition(current.position);
       }
     } else {
       setChordRoot("C");
       setNoteAccidental("");
       setChordQuality("M");
-      console.log("my dog");
+      console.log("my dog",);
 
       let root = chordRoot + noteAccidental;
       props.setChord(
         Number(props.activeNode),
         props.activeNode === 0
-          ? [root, chordQuality, position]
-          : [root, chordQuality]
+        ? {root : root, quality: chordQuality, position}
+        : {root : root, quality: chordQuality, position}
       );
     }
   }, [props.activeNode]);
@@ -231,7 +232,6 @@ const ChordPicker = (props) => {
 
     setChordRoot(v);
   };
-
 
 
 
@@ -282,7 +282,7 @@ const ChordPicker = (props) => {
               {l}
             </LetterTile>
           ))}
-          <div style={{ width: "35px" }}></div>
+          <div style={{ width: "15px" }}></div>
           {qualities.map((l, i) => (
             <LetterTile
               key={i}
@@ -299,7 +299,7 @@ const ChordPicker = (props) => {
               }}
               currentColor={props.currentColor}
             >
-              {l === "M" ? "maj" : "min"}
+              {l === "M" ? "maj" : l === "m" ? "min" : l}
             </LetterTile>
           ))}
         </TileContainer>

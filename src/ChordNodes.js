@@ -87,6 +87,18 @@ const ChordNode = styled.div`
 `;
 
 const ChordNodes = (props) => {
+  const nameRendering = (name) => {
+    if (name !== undefined) {
+      console.log(name.quality)
+      if (name.quality == "M") {
+        console.log(name.quality)
+        return name.root ;
+
+      } else {
+        return name.root + name.quality;
+      }
+    }
+  };
   return (
     <React.Fragment>
       {props.chordList.map((c, i) => (
@@ -106,7 +118,7 @@ const ChordNodes = (props) => {
             playing={props.activePlayingNode === i}
             key={i}
           >
-            {c === undefined ? "" : c.includes("m") ? c[0] + c[1] : c[0]}
+            {nameRendering(c)}
           </ChordNode>
           {props.activeNode === i && i !== 0 ? (
             <DeleteButton onClick={() => props.deleteChord(i)}>x</DeleteButton>
