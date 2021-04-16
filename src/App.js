@@ -21,10 +21,13 @@ import AddChord from "./AddChord";
 import ChordNodes from "./ChordNodes";
 import "react-toggle/style.css";
 import EmailModal from "./emailcapture";
+import netlifyIdentity from "netlify-identity-widget";
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
 
+
+netlifyIdentity.init({});
 
 
 const NodeAndChordContainter = styled.div`
@@ -88,6 +91,36 @@ const App = () => {
   const [currentColor, setColor] = useState("#add8e6");
   const [cookies, setCookie] = useCookies();
   const [allowSound, setAllowSound] = useState(false);
+
+  
+
+  // type User {
+  //   netlifyID: ID!
+  //   stripeID: ID!
+  //   savedProgression: [ChordProgression!]!
+  // }
+
+  // type Chord {
+  //   root: String!
+  //   quality: String!
+  //   posistion: Int
+  // }
+
+  // type ChordProgression {
+  //   chords: [Chord]
+  // }
+
+
+  // type Query {
+  //   getUserByNetlifyID(netlifyID: ID!): User!
+  //   getUserByStripeID(stripeID: ID!): User!
+  // }
+
+  // [{root: "C". quality: "M", position: 0}, {root: "F". quality: "M", position: 1}]
+
+  const handleUserStateChange = (user) => {
+    console.log(user, "logged in")
+  }
 
   const [formIsSent, setFormIsSent] = useState(false);
 
@@ -365,6 +398,8 @@ const App = () => {
   };
 
   useEffect(() => {
+    netlifyIdentity.init({});
+    netlifyIdentity.on('login', handleUserStateChange);
     if (cookies.hasSubscribed) {
       setHasSubscribed(cookies.hasSubscribed);
     } else {
@@ -553,6 +588,14 @@ const App = () => {
         />
        
       </div>
+      <button
+        // sx={{ marginTop: 2 }}
+        onClick={() => {
+          netlifyIdentity.open();
+        }}
+      >
+        Log In
+      </button>
 
       <BottomControlls
         style={{ zIndex: 1000 }}
