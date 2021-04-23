@@ -22,6 +22,7 @@ import ChordNodes from "./ChordNodes";
 import "react-toggle/style.css";
 import EmailModal from "./emailcapture";
 import netlifyIdentity from "netlify-identity-widget";
+import LogRocket from 'logrocket';
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
@@ -71,6 +72,9 @@ const speeds = [
   { label: "🐇", time: 1.7 },
   { label: "🐆", time: 1.0 },
 ];
+
+let scheduledEvents = [];
+let playbackTimeID = null
 
 const App = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -159,7 +163,7 @@ const App = () => {
     }
   };
 
-  let scheduledEvents = [];
+  
 
   useEffect(() => {
     onClickCalculate();
@@ -213,16 +217,16 @@ const App = () => {
       ])
     );
 
-    let count = 0;
-    console.log(startAndEndTimes);
+    let currentChordIndex = 0;
+    console.log(startAndEndTimes, "start end");
     startAndEndTimes.forEach((time) => {
       scheduledEvents.push(
         setTimeout(() => {
           const currentEvents = recording.events.filter((event) => {
             if (event.time <= time && event.time + event.duration > time) {
-              count = event.group;
-              setActivePlayingNode(count);
-              getAccidentalType(chordList[count].root);
+              currentChordIndex = event.group;
+              setActivePlayingNode(currentChordIndex);
+              getAccidentalType(chordList[currentChordIndex].root);
 
               return event.time <= time && event.time + event.duration > time;
             }
@@ -230,11 +234,12 @@ const App = () => {
 
           setRecordingHandler({ currentEvents });
           // convertMIDIToChordLetters(chordList[count], recordingAsNotes[count]);
+          convertMIDIToChordLetters(chordList[currentChordIndex], recordingAsNotes[currentChordIndex]);
         }, time * 1000)
       );
     });
 
-    setTimeout(() => {
+    playbackTimeID = setTimeout(() => {
       onClickStop();
       setHasBeenPlayed(true);
       setChordString("");
@@ -300,17 +305,24 @@ const App = () => {
   };
 
   const onClickStop = () => {
-    var id = window.setTimeout(function () {}, 0);
+    // var id = window.setTimeout(function () {}, 0);
 
-    while (id--) {
-      window.clearTimeout(id); // will do nothing if no timeout with id is present
-    }
+    // while (id--) {
+    //   window.clearTimeout(id); // will do nothing if no timeout with id is present
+    // }
+
+
+
 
     scheduledEvents.forEach((scheduledEvent) => {
       console.log(scheduledEvent);
       clearTimeout(scheduledEvent);
     });
     setIsPlaying(false);
+    clearTimeout(playbackTimeID)
+    scheduledEvents = []
+
+
 
     setActivePlayingNode(undefined);
     setRecordingHandler({
@@ -400,6 +412,7 @@ const App = () => {
   useEffect(() => {
     netlifyIdentity.init({});
     netlifyIdentity.on('login', handleUserStateChange);
+    LogRocket.init('lrd9dg/chordinversions');
     if (cookies.hasSubscribed) {
       setHasSubscribed(cookies.hasSubscribed);
     } else {
