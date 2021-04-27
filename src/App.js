@@ -95,7 +95,12 @@ const App = () => {
   const [currentColor, setColor] = useState("#add8e6");
   const [cookies, setCookie] = useCookies();
   const [allowSound, setAllowSound] = useState(false);
+  const [userStatus, setUserStatus] = useState("free")
 
+  useEffect(() => {
+    alert('changed')
+    setUserStatus("free")
+  }, [userStatus])
   
 
   // type User {
@@ -233,8 +238,7 @@ const App = () => {
           });
 
           setRecordingHandler({ currentEvents });
-          // convertMIDIToChordLetters(chordList[count], recordingAsNotes[count]);
-          convertMIDIToChordLetters(chordList[currentChordIndex], recordingAsNotes[currentChordIndex]);
+
         }, time * 1000)
       );
     });
