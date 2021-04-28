@@ -25,7 +25,7 @@ let Directions = (props) => {
               justifyContent: "space-between",
             }}
           >
-            <Cont>
+            {/* <Cont>
               <h3>Directions</h3>
               <img
                 onClick={() => {
@@ -34,7 +34,8 @@ let Directions = (props) => {
                 style={{ height: "16px", margin: "6px 5px", cursor: "pointer" }}
                 src={chev}
               />
-            </Cont>
+            </Cont> */}
+            <button onClick={() => props.setHelpIsOpen(true)}><h5>How To Use</h5></button>
             {containerWidth < 824  ? (
               <p style={{ fontSize: "10px", lineHeight: "25px" }}>
                 (You're on mobile. Make sure your device sound is on!){" "}

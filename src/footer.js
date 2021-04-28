@@ -67,6 +67,9 @@ function BottomControlls(props) {
               handleSetSpeeds={props.handleSetSpeeds}
               disabled={props.isPlaying}
               color={props.currentColor}
+              setCurrentStep={props.setCurrentStep}
+              currentStep={props.currentStep}
+              joyRideOpen={props.joyRideOpen}
             ></TempoBox>
             <PlayButton
               onClick={props.isPlaying ? props.onClickStop : props.onClickPlay}
