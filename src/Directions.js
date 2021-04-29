@@ -8,8 +8,25 @@ const Cont = styled.div`
   flex-direction: row;
 `;
 
+const DirectionButton = styled.button`
+  border: none;
+  border-radius: 20px;
+  color: white;
+  height: 23px;
+  outline: none;
+  background-color: inherit;
+  /* box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.25), -2px -2px 5px 0 rgba(255, 255, 255, 0.3) */
+
+  box-shadow: ${(props) =>
+    props.open
+      ? "2px 2px 5px 0 rgba(255, 255, 255, 0.3), -0.5px -1px 4px 0 rgba(0, 0, 0, 0.25)"
+      : "2px 2px 5px 0 rgba(0, 0, 0, 0.25), -2px -2px 5px 0 rgba(255, 255, 255, 0.3)"};
+`;
+
 let Directions = (props) => {
   const [isShowing, setIsShowing] = useState(false);
+
+
   return (
     <DimensionsProvider>
       {({ containerWidth, containerHeight }) => (
@@ -35,15 +52,26 @@ let Directions = (props) => {
                 src={chev}
               />
             </Cont> */}
-            <button onClick={() => props.setHelpIsOpen(true)}><h5>How To Use</h5></button>
-            {containerWidth < 824  ? (
+            <DirectionButton
+              onClick={props.handleTutorialOpen}
+              open={props.helpIsOpen}
+            >
+              <h5>Tutorial</h5>
+            </DirectionButton>
+            {containerWidth < 824 ? (
               <p style={{ fontSize: "10px", lineHeight: "25px" }}>
                 (You're on mobile. Make sure your device sound is on!){" "}
               </p>
             ) : (
-              <div style={{position: "relative"}}>
+              <div style={{ position: "relative" }}>
                 <label
-                  style={{ fontSize: "10px", height: "100%", margin: "0 4px 20px 0", position:"relative", bottom: "5px"}}
+                  style={{
+                    fontSize: "10px",
+                    height: "100%",
+                    margin: "0 4px 20px 0",
+                    position: "relative",
+                    bottom: "5px",
+                  }}
                   htmlFor="showing-musical-typing"
                 >
                   Show Musical Typing

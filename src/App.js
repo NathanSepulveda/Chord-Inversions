@@ -46,7 +46,7 @@ const steps = [
   {
     target: ".chordSelections",
     content:
-      "Go through the same process, just note you can't choose the inversion because the app will figure out the best one for you!",
+      "Go through the same process, just note you can't choose the inversion because the app will figure out the best one for you! You can add up to 8 chords in a progression. Try adding a few more before going to the next step!",
   },
   {
     target: ".play-button",
@@ -150,6 +150,18 @@ const App = () => {
 
   function openModal() {
     setIsOpen(true);
+  }
+
+
+  const handleTutorialOpen = () => {
+    if (helpIsOpen) {
+      setHelpIsOpen(false)
+      setCurrentStep(0)
+      
+    } else {
+      setHelpIsOpen(true)
+      onClickClear()
+    }
   }
 
   function afterOpenModal() {
@@ -534,7 +546,9 @@ const App = () => {
         {/* <h1 className="h3">Chord Calculator</h1> */}
         <Directions
           showMusicalTyping={showMusicalTyping}
-          setHelpIsOpen={setHelpIsOpen}
+          // setHelpIsOpen={setHelpIsOpen}
+          helpIsOpen={helpIsOpen}
+          handleTutorialOpen={handleTutorialOpen}
           handleOnChangeMusicalTyping={handleOnChangeMusicalTyping}
         ></Directions>
         <div className="mt-5">
