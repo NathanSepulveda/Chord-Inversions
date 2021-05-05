@@ -521,6 +521,7 @@ const App = () => {
                     textDecoration: "underline",
                     color: "white",
                     marginLeft: "2px",
+                    marginTop: "-2px",
                     cursor: "pointer",
                   }}
                 >
@@ -669,6 +670,7 @@ const App = () => {
 
 const Title = styled.h1`
   font-size: 28px;
+  /* font-family: inherit; */
   @media (max-width: 410px) {
     font-size: 24px;
   }

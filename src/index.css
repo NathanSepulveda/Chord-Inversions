@@ -128,3 +128,29 @@ input[type=submit] {
 li {
   margin: 2px 0;
 }
+
+h1 {
+  font-family: 'primus-300-light'  !important;
+  text-decoration: underline !important;
+
+
+  
+  /* font-size: 1.8rem  !important; */
+}
+
+@media only screen and (max-width: 736px) {
+  h1 {
+    font-size: 1.8rem  !important
+  }
+}
+
+
+
+@font-face {
+  font-family: 'primus-300-light';
+  src: url('./fonts/primus-300-light-webfont.woff2') format('woff2'),
+       url('./fonts/primus-300-light-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
