@@ -102,7 +102,7 @@ const ChordNodes = (props) => {
   return (
     <React.Fragment>
       {props.chordList.map((c, i) => (
-        <div style={{ height: "60px" }}>
+        <div style={{ height: "60px" }} className="chord-nodes">
           <ChordNode
             currentColor={props.currentColor}
             onDoubleClick={() => {

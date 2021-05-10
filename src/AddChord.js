@@ -1,19 +1,23 @@
 import React from "react";
 import styled from "styled-components";
 
-const AddChord = ({ chordList, onClickAddChordNode, allowSound, play }) => {
+const AddChord = ({ chordList, onClickAddChordNode, allowSound, play, setCurrentStep, currentStep, joyRideOpen }) => {
 
 
 
 
   return (
     <AddChordButton
-
+    className="addChord"
       disabled={chordList.length > 7}
       onClick={() => {
         onClickAddChordNode();
         if (allowSound) {
           play();
+        }
+        if (joyRideOpen && (currentStep === 0 || currentStep === 2)) {
+        console.log(currentStep)
+        setCurrentStep(currentStep + 1)
         }
       }}
     >

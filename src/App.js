@@ -23,6 +23,9 @@ import "react-toggle/style.css";
 import EmailModal from "./emailcapture";
 import netlifyIdentity from "netlify-identity-widget";
 import LogRocket from 'logrocket';
+// import Tour from "reactour";
+
+import JoyRide from "react-joyride";
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
@@ -30,6 +33,65 @@ const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
 
 netlifyIdentity.init({});
 
+
+const songBook = [
+
+    {
+      name: "Sentimental",
+      chords: [
+        {position: 0, quality: "sus2", root: "F", duration: "whole"},
+        {position: 0, quality: "M", root: "G", duration: "whole"},
+        {position: 0, quality: "m", root: "A", duration: "whole"},
+        {position: 0, quality: "M", root: "C", duration: "whole"}
+      ]
+    },
+    {
+      name: "Basic Pop",
+      chords: [
+        {position: 0, quality: "M", root: "C", duration: "whole"},
+        {position: 0, quality: "M", root: "F", duration: "whole"},
+        {position: 0, quality: "m", root: "A", duration: "whole"},
+        {position: 0, quality: "M", root: "G", duration: "whole"}
+      ]
+    }
+]
+
+const steps = [
+  {
+    target: ".addChord",
+    content: "Click the plus button to add your first chord of the progression",
+  },
+  {
+    target: ".chordSelections",
+    content:
+      "Click the chord root, if it is sharp or flat, major or minor, and the position (if you need to).",
+  },
+  {
+    target: ".addChord",
+    content: "Add another chord!",
+  },
+  {
+    target: ".chordSelections",
+    content:
+      "Go through the same process, just note you can't choose the inversion because the app will figure out the best one for you! You can add up to 8 chords in a progression. Try adding a few more before going to the next step!",
+  },
+  {
+    target: ".play-button",
+    content:
+      "Press play to see and hear your chords with the best chord inversions!",
+  },
+  {
+    target: ".speed",
+    content:
+      "Change the speed of the playback if you want it slower or faster.",
+  },
+  {
+    target: ".chord-nodes",
+    content: "Double click one chord to hold that chord's position.",
+  },
+
+  // ...
+];
 
 const NodeAndChordContainter = styled.div`
   margin-left: auto;
@@ -64,7 +126,6 @@ const AddNodes = styled.div`
   margin-top: 25px;
 `;
 
-
 // }
 
 const speeds = [
@@ -74,7 +135,7 @@ const speeds = [
 ];
 
 let scheduledEvents = [];
-let playbackTimeID = null
+let playbackTimeID = null;
 
 const App = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -132,6 +193,9 @@ const App = () => {
   }
 
   const [formIsSent, setFormIsSent] = useState(false);
+  const [step, setCurrentStep] = useState(0);
+  // const [, setHacky]
+  const [helpIsOpen, setHelpIsOpen] = useState(false);
 
   // const [formData, setFormData] = useReducer(formReducer, {});
 
@@ -150,6 +214,18 @@ const App = () => {
     setIsOpen(true);
   }
 
+
+  const handleTutorialOpen = () => {
+    if (helpIsOpen) {
+      setHelpIsOpen(false)
+      setCurrentStep(0)
+      
+    } else {
+      setHelpIsOpen(true)
+      onClickClear()
+    }
+  }
+
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
     // subtitle.style.color = '#f00';
@@ -159,7 +235,6 @@ const App = () => {
     setIsOpen(false);
   }
 
-
   const handleSetSpeeds = () => {
     if (speedIndex !== 2) {
       setSpeedIndex((prevState) => prevState + 1);
@@ -167,8 +242,6 @@ const App = () => {
       setSpeedIndex(0);
     }
   };
-
-  
 
   useEffect(() => {
     onClickCalculate();
@@ -194,7 +267,7 @@ const App = () => {
     if (chordList.length < 1) {
       return;
     }
-    console.log(chordList);
+
 
     if (chordList.includes(undefined) || chordList == []) {
       return;
@@ -223,7 +296,7 @@ const App = () => {
     );
 
     let currentChordIndex = 0;
-    console.log(startAndEndTimes, "start end");
+
     startAndEndTimes.forEach((time) => {
       scheduledEvents.push(
         setTimeout(() => {
@@ -238,13 +311,16 @@ const App = () => {
           });
 
           setRecordingHandler({ currentEvents });
-
         }, time * 1000)
       );
     });
 
     playbackTimeID = setTimeout(() => {
       onClickStop();
+      if (step === 4 && helpIsOpen) {
+        setCurrentStep(5)
+
+      }
       setHasBeenPlayed(true);
       setChordString("");
       if (isLooping) {
@@ -298,7 +374,7 @@ const App = () => {
       return getKeyByValue(notes, n, quality, accidental);
     });
 
-    console.log(asNotes);
+
     let str = asNotes.join(" - ");
 
     let chordS = str;
@@ -315,24 +391,31 @@ const App = () => {
     //   window.clearTimeout(id); // will do nothing if no timeout with id is present
     // }
 
-
-
-
     scheduledEvents.forEach((scheduledEvent) => {
-      console.log(scheduledEvent);
+
       clearTimeout(scheduledEvent);
     });
     setIsPlaying(false);
-    clearTimeout(playbackTimeID)
-    scheduledEvents = []
-
-
+    clearTimeout(playbackTimeID);
+    scheduledEvents = [];
 
     setActivePlayingNode(undefined);
     setRecordingHandler({
       mode: "RECORDING",
       currentEvents: [],
     });
+  };
+
+  const handlesTourCallback = (s) => {
+    console.log(s);
+    setCurrentStep(s.index);
+    // if (s.index === 0) {
+
+    // }
+    if (s.index === 6 && s.lifecycle === "complete") {
+      setHelpIsOpen(false)
+      setCurrentStep(0)
+    }
   };
 
   const onClickClear = () => {
@@ -357,12 +440,12 @@ const App = () => {
   };
 
   const setChord = (index, chordValue) => {
-    console.log(index);
+
     onClickStop();
     setChordList((prevState) => {
       const newItems = [...prevState];
       newItems[index] = chordValue;
-      console.log(newItems);
+
 
       return newItems;
     });
@@ -373,7 +456,7 @@ const App = () => {
   }, [chordList]);
 
   const getKeyByValue = (object, value, quality, accidental) => {
-    console.log(value);
+
     let found = Object.keys(object).filter((key) => object[key] === value);
     if (value > 71) {
       found = Object.keys(object).filter((key) => object[key] === value - 12);
@@ -390,7 +473,7 @@ const App = () => {
       found = found.find((n) => n.includes("b"));
     }
 
-    console.log(found);
+
     return found;
   };
 
@@ -413,6 +496,8 @@ const App = () => {
     setActiveNode(undefined);
   };
 
+
+
   useEffect(() => {
     netlifyIdentity.init({});
     netlifyIdentity.on('login', handleUserStateChange);
@@ -432,7 +517,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    console.log(cookies);
+
     // setCookie("hasSubscribed", false, { path: "/" });
     if (!isPlaying && hasBeenPlayed) {
       let pageVisits = Number(cookies.pageVisit);
@@ -447,7 +532,6 @@ const App = () => {
     }
   }, [hasBeenPlayed]);
 
-
   const handleOnChangeMusicalTyping = (e) => {
     console.log(e.target.checked);
     setShowMusicalTyping(e.target.checked);
@@ -456,6 +540,12 @@ const App = () => {
       playClicks();
     }
   };
+
+  const handleLoadSong = song => {
+    if (!isPlaying) {
+      setChordList(song.chords)
+    }
+  }
 
   return (
     <React.Fragment>
@@ -503,6 +593,7 @@ const App = () => {
                     textDecoration: "underline",
                     color: "white",
                     marginLeft: "2px",
+                    marginTop: "-2px",
                     cursor: "pointer",
                   }}
                 >
@@ -528,6 +619,9 @@ const App = () => {
         {/* <h1 className="h3">Chord Calculator</h1> */}
         <Directions
           showMusicalTyping={showMusicalTyping}
+          // setHelpIsOpen={setHelpIsOpen}
+          helpIsOpen={helpIsOpen}
+          handleTutorialOpen={handleTutorialOpen}
           handleOnChangeMusicalTyping={handleOnChangeMusicalTyping}
         ></Directions>
         <div className="mt-5">
@@ -574,6 +668,9 @@ const App = () => {
                   chordList={chordList}
                   allowSound={allowSound}
                   play={play}
+                  setCurrentStep={setCurrentStep}
+                  currentStep={step}
+                  joyRideOpen={helpIsOpen}
                 ></AddChord>
               </ChordNodeContainer>
             </AddNodes>
@@ -587,6 +684,9 @@ const App = () => {
                 currentColor={currentColor}
                 onPlayChord={onPlayChord}
                 allowSound={allowSound}
+                setCurrentStep={setCurrentStep}
+                currentStep={step}
+                joyRideOpen={helpIsOpen}
               />
             ) : (
               ""
@@ -595,15 +695,13 @@ const App = () => {
         </div>
         {/* <button onClick={() => openModal()}>Open Modal</button> */}
         <EmailModal
-        modalIsOpen={modalIsOpen}
-        closeModal={closeModal}
-        currentColor={currentColor}
-        setIsOpen={setIsOpen}
-        afterOpenModal={afterOpenModal}
-        setHasSubscribed={setHasSubscribed}
-        
+          modalIsOpen={modalIsOpen}
+          closeModal={closeModal}
+          currentColor={currentColor}
+          setIsOpen={setIsOpen}
+          afterOpenModal={afterOpenModal}
+          setHasSubscribed={setHasSubscribed}
         />
-       
       </div>
       <button
         // sx={{ marginTop: 2 }}
@@ -613,6 +711,11 @@ const App = () => {
       >
         Log In
       </button>
+      {
+        songBook.map(song => {
+          return <p onClick={() => handleLoadSong(song)} >{song.name}</p>
+        })
+      }
 
       <BottomControlls
         style={{ zIndex: 1000 }}
@@ -626,14 +729,35 @@ const App = () => {
         onClickStop={onClickStop}
         isLooping={isLooping}
         setIsLooping={setIsLooping}
+        setCurrentStep={setCurrentStep}
+        currentStep={step}
+        joyRideOpen={helpIsOpen}
       ></BottomControlls>
+      {/* <Tour
+        getCurrentStep={curr => setCurrentStep(curr)}
+        steps={steps}
+        isOpen={helpIsOpen}
+        onRequestClose={() => setHelpIsOpen(false)}
+        goToStep={step}
+      /> */}
+
+      <JoyRide
+        steps={steps}
+        continuous={true}
+        callback={handlesTourCallback}
+        run={helpIsOpen}
+        stepIndex={step}
+        hideBackButton
+        continuous={false}
+
+      />
     </React.Fragment>
   );
 };
 
-
 const Title = styled.h1`
   font-size: 28px;
+  /* font-family: inherit; */
   @media (max-width: 410px) {
     font-size: 24px;
   }

@@ -34,8 +34,6 @@ const LetterTile = styled.div`
     margin: 5px;
     /* padding: 5px; */
     line-height: 39px;
-
-
   }
 
   color: ${(props) => (props.selected ? "black" : "white")};
@@ -121,7 +119,7 @@ const ChordPicker = (props) => {
 
   const letters = ["C", "D", "E", "F", "G", "A", "B"];
   const accidentals = ["#", "b"];
-  const qualities = ["M", "m", "sus", "sus2", "dim", "aug", "m7", "7"];
+  const qualities = ["M", "m", "sus", "sus2", "dim", "aug"];
   const positions = [0, 1, 2];
   const [increment, setIncrement] = useState("plus");
 
@@ -129,14 +127,14 @@ const ChordPicker = (props) => {
 
   const [play] = useSound(click, {
     playbackRate,
-    volume: .9,
+    volume: 0.9,
   });
 
   const handleAccidental = (v) => {
     if (props.allowSound) {
       play();
     }
-    
+
     setNoteAccidental((prevState) => {
       if (["C", "F"].includes(chordRoot) && v === "b") {
         return prevState;
@@ -165,12 +163,11 @@ const ChordPicker = (props) => {
         : {root : root, quality: chordQuality, position}
     );
 
-    console.log("here", [chordRoot, noteAccidental, chordQuality, position]);
   }, [chordRoot, noteAccidental, chordQuality, position]);
 
   useEffect(() => {
     let current = props.chordList[props.activeNode];
-    console.log(current);
+
     if (current !== undefined) {
       if (current.root.includes("#") || current.root.includes("b")) {
         let [r, acc] = current.root.split("");
@@ -189,7 +186,6 @@ const ChordPicker = (props) => {
       setChordRoot("C");
       setNoteAccidental("");
       setChordQuality("M");
-      console.log("my dog",);
 
       let root = chordRoot + noteAccidental;
       props.setChord(
@@ -233,11 +229,20 @@ const ChordPicker = (props) => {
     setChordRoot(v);
   };
 
-
-
   return (
     <React.Fragment>
-      <div>
+      <div
+        className="chordSelections"
+        onClick={() => {
+          if (
+            props.joyRideOpen &&
+            (props.currentStep === 1 || props.currentStep === 3)
+          ) {
+            console.log(props.currentStep);
+            props.setCurrentStep(props.currentStep + 1);
+          }
+        }}
+      >
         <TileContainer currentColor={props.currentColor}>
           {letters.map((l, i) => (
             <LetterTile
@@ -267,8 +272,6 @@ const ChordPicker = (props) => {
               //   handleAccidental(l);
               // }}
               onClick={() => {
-
-
                 handleAccidental(l);
               }}
               disabled={
@@ -311,11 +314,11 @@ const ChordPicker = (props) => {
                 className="position"
                 selected={l === position}
                 // onClick={() => setPosition(l)}
-                onClick={()=> {
+                onClick={() => {
                   if (props.allowSound) {
                     play();
                   }
-                  setPosition(l)
+                  setPosition(l);
                 }}
                 currentColor={props.currentColor}
               >
@@ -326,7 +329,6 @@ const ChordPicker = (props) => {
         ) : (
           ""
         )}
-
       </div>
     </React.Fragment>
   );

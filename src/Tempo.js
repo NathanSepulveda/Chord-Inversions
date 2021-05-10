@@ -25,9 +25,20 @@ const NumberBox = styled.div`
 `;
 
 const TempoBox = (props) => {
+
+  const handleClick = e => {
+    console.log(props)
+    if (!props.disabled) {
+      props.handleSetSpeeds()
+    }
+    if (props.joyRideOpen && props.currentStep === 5) {
+      props.setCurrentStep(6)
+    }
+  }
+
   return (
-    <div>
-      <NumberBox onClick={() => !props.disabled ? props.handleSetSpeeds() : ""} disabled={props.disabled} color={props.color}>
+    <div className="speed">
+      <NumberBox onClick={handleClick} disabled={props.disabled} color={props.color}>
         {props.speeds[props.speedIndex].label}
       </NumberBox>
       <label style={{position: "relative", left: "-18px", color: "white", fontSize: "11px"}}>PLAYBACK SPEED</label>
